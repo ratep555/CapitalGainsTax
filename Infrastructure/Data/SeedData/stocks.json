@@ -1,0 +1,16 @@
+[
+    {
+      "CompanyName": "Ingra d.d.",
+      "Symbol": "INGR-R-A",
+      "CurrentPrice": 11.2,
+      "CountryId": 1,
+      "CategoryId": 1
+    },
+    {
+        "CompanyName": "Rivijera Porec d.d.",
+        "Symbol": "RIVP-R-A",
+        "CurrentPrice": 29.60,
+        "CountryId": 1,
+        "CategoryId": 6
+      }
+  ]
