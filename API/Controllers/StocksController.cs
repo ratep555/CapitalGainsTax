@@ -11,6 +11,7 @@ using API.Dtos;
 using AutoMapper;
 using API.Errors;
 using Microsoft.AspNetCore.Http;
+using API.Helpers;
 
 namespace API.Controllers
 {
@@ -35,13 +36,20 @@ namespace API.Controllers
         }
 
         [HttpGet]
-        public async Task<ActionResult<IReadOnlyList<StockToReturnDto>>> GetStocks() 
+        public async Task<ActionResult<Pagination<StockToReturnDto>>> GetStocks(
+            [FromQuery]StockSpecParams stockParams) 
         {
-            var spec = new StocksWithCategoriesAndCountriesSpecification();
+            var spec = new StocksWithCategoriesAndCountriesSpecification(stockParams);
 
-            var stocks = await _stocksRepo.ListAsync(spec);
+            var countSpec = new StockWithFiltersForCountSpecification(stockParams);
 
-            return Ok(_mapper.Map<IReadOnlyList<Stock>, IReadOnlyList<StockToReturnDto>>(stocks)); 
+            var totalItems = await _stocksRepo.CountAsync(countSpec);
+
+            var stocks = await _stocksRepo.ListAsync(countSpec);
+
+            var data = _mapper.Map<IReadOnlyList<Stock>, IReadOnlyList<StockToReturnDto>>(stocks); 
+
+            return Ok(new Pagination<StockToReturnDto>(stockParams.PageIndex, stockParams.PageSize, totalItems, data));
         }
 
         [HttpGet("{id}")]
