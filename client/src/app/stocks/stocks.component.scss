@@ -1,0 +1,16 @@
+thead {
+    background-color: lightblue;
+}
+
+tbody:nth-child(even) {
+    background-color: lightgrey;
+}
+tbody:nth-child(odd) {
+    background-color: lightgoldenrodyellow;
+}
+
+/* .form-control {
+   
+}
+ */
+

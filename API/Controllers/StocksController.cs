@@ -45,7 +45,7 @@ namespace API.Controllers
 
             var totalItems = await _stocksRepo.CountAsync(countSpec);
 
-            var stocks = await _stocksRepo.ListAsync(countSpec);
+            var stocks = await _stocksRepo.ListAsync(spec);
 
             var data = _mapper.Map<IReadOnlyList<Stock>, IReadOnlyList<StockToReturnDto>>(stocks); 
 

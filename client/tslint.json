@@ -83,7 +83,7 @@
       }
     },
     "typedef": [
-      true,
+      false,
       "call-signature"
     ],
     "typedef-whitespace": {
@@ -95,6 +95,7 @@
           "property-declaration": "nospace",
           "variable-declaration": "nospace"
         },
+        
         {
           "call-signature": "onespace",
           "index-signature": "onespace",
@@ -136,6 +137,8 @@
     "template-no-negated-async": true,
     "use-lifecycle-interface": true,
     "use-pipe-transform-interface": true,
+    "no-shadowed-variable": false,
+
     "directive-selector": [
       true,
       "attribute",

@@ -1,0 +1,16 @@
+<header
+    class="d-flex flex-column flex-md-row align-items-center justify-content-between p-3 px-md-4 mb-3 bg-white border-bottom shadow-sm fixed-top">
+    <img src="/assets/images/calculator.jpg" style="max-height: 70px; cursor: pointer; outline: none;" alt="logo" class="logo"
+    routerLink="/">
+    <nav class="my-2 my-md-0 me-md-3 text-uppercase" style="font-size: larger;">
+        <a class="p-2" [routerLink]="['/']" routerLinkActive="active" 
+        [routerLinkActiveOptions]="{exact:true}" >Home</a>
+        <a class="p-2" routerLink="/stocks" routerLinkActive="active" >List of Stocks</a>
+        <a class="p-2"  routerLink="/stocks">My Portfolio</a>
+        <a class="p-2" routerLink="/">Tax Liability</a>
+    </nav>
+    <div class="d-flex align-items-center">      
+        <a class="btn btn-outline-secondary mr-2" href="#">Login</a>
+        <a class="btn btn-outline-secondary mr-3" href="#">Sign up</a>
+    </div>
+</header>

@@ -11,8 +11,7 @@ namespace Core.Specifications
             (!stockParams.CategoryId.HasValue || x.CategoryId == stockParams.CategoryId) &&
             (!stockParams.CountryId.HasValue || x.CountryId == stockParams.CountryId))
         {
-            AddInclude(x => x.Category);
-            AddInclude(x => x.Country);
+            
         }
     }
 }
