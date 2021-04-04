@@ -6,13 +6,14 @@ import { IPagination } from '../shared/models/pagination';
 import { StockParams } from '../shared/models/stockParams';
 import {map} from 'rxjs/operators';
 import { IStock } from '../shared/models/stock';
+import { environment } from 'src/environments/environment';
 
 
 @Injectable({
   providedIn: 'root'
 })
 export class StocksService {
-  baseUrl = 'https://localhost:5001/api/';
+  baseUrl = environment.apiUrl;
 
   constructor(private http: HttpClient) { }
 

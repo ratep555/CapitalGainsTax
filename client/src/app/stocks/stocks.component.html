@@ -1,36 +1,31 @@
-<br><br>
-<div class="container">        
+
+<div class="container mt-3">        
     <div class="form-inline pull-right" *ngIf="stocks">
             <input (keyup.enter)="onSearch()" type="text" 
             class="form-control mr-2" #search style="width: 300px;"  
             placeholder="Search">
             <button (click)="onSearch()" class="btn btn-info my-2">Search</button>
             <button (click)="onReset()" class="btn btn-success ml-2">Reset</button>
-        </div>     
-
-    
-    
+        </div>             
     <table class="table table-bordered table-striped table-condensed table-hover">
         <thead>
-          <tr>
+          <tr style="color: black;">
               <th>
                   Symbol
-              </th>
+              </th>              
               <th>
                   Price
-              </th>
-              <th 
-              (click)="onSortSelected($event.target.value)"              
-              >
+              </th>                    
+              <th>
                   Category
               </th>
               <th>
-                  
-              </th>
+              </th>              
           </tr>
               </thead>
               <tbody>
-      <tr *ngFor="let stock of stocks">
+      <tr *ngFor="let stock of stocks" style="color: black;">
+         
           <td>{{stock.symbol}}</td>
           <td>{{stock.currentPrice | currency}}</td>
           <td>{{stock.category}}</td>
