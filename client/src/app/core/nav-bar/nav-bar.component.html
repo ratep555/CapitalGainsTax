@@ -10,7 +10,31 @@
         <a class="p-2" routerLink="/">Tax Liability</a>
     </nav>
     <div class="d-flex align-items-center">      
-        <a class="btn btn-outline-secondary mr-2" href="#">Login</a>
-        <a class="btn btn-outline-secondary mr-3" href="#">Sign up</a>
+        <ng-container *ngIf="(currentUser$ | async) === null">
+            <a routerLink="/account/login" class="btn btn-outline-secondary mr-2" href="#">Login</a>
+            <a routerLink="/account/register" class="btn btn-outline-secondary mr-3" href="#">Sign up</a>
+        </ng-container>
+        <ng-container *ngIf="currentUser$ | async">
+            <div class="dropdown ml-3 mr-5" dropdown>
+                <a class="dropdown-toggle park" style="cursor: pointer;" dropdownToggle>
+                   <strong>Welcome {{(currentUser$ | async).displayName}} </strong> 
+                </a>
+                <div class="dropdown-menu dropdown-menu-right stark" style="cursor: pointer;" *dropdownMenu>
+                   <a class="dropdown-items d-flex align-items-center py-2">
+                    <i class="fa fa-balance-scale mr-3 ml-3"></i> Tax Liability
+                   </a>
+                   <div class="dropdown-divider"></div>
+                   <a (click)="logout()" class="dropdown-items d-flex align-items-center py-2" >
+                    <i class="fa fa-sign-out mr-4 ml-3"></i> Logout
+                   </a>
+                </div>
+            </div>
+        </ng-container>
+
+        <!-- <ng-container *ngIf="currentUser$ | async">
+            <a style="margin-right: 17px;" href="#">Welcome {{(currentUser$ | async).displayName}}</a>
+            <a routerLink="" class="btn btn-outline-secondary mr-3" href="#">Logout</a>
+        </ng-container> -->
+        
     </div>
 </header>
