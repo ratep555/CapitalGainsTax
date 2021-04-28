@@ -1,0 +1,46 @@
+
+<div class="container mt-3">     
+    <div class="form-inline pull-left">
+        <button class="btn-btn primary mr-5" routerLink="/transactions/addtransaction">
+            Buy Stock
+        </button>
+        <button class="btn-btn primary" routerLink="/transactions/sellstock">
+            Sell Stock
+        </button>
+   </div>
+    <div class="form-inline pull-right">
+            <input (keyup.enter)="onSearchUser()" type="text" 
+            class="form-control mr-2" #searchTu style="width: 300px;"  
+            placeholder="Search">
+            <button (click)="onSearchUser()" class="btn btn-info my-2">Search</button>
+            <button (click)="onResetTu()" class="btn btn-success ml-2">Reset</button>
+        </div>             
+    <table class="table table-bordered table-striped table-condensed table-hover">
+        <thead>
+          <tr style="color: black;">
+              <th>
+                  Symbol
+              </th>              
+              <th>
+                  Price
+              </th>              
+              <th>
+                  Quantity
+              </th>                    
+              <th>
+                  Resolved
+              </th>       
+          </tr>
+              </thead>
+              <tbody>
+      <tr *ngFor="let transaction of transactionsForUser" style="color: black;">
+         
+          <td>{{transaction.stock}}</td>
+          <td>{{transaction.price | currency}}</td>
+          <td>{{transaction.quantity}}</td>
+          <td>{{transaction.resolved}}</td>
+      </tr>
+              </tbody>    
+    </table>
+    </div>
+    

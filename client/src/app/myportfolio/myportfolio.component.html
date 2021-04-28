@@ -1,1 +1,35 @@
-<p>myportfolio works!</p>
+
+<div class="container mt-3">                 
+    <table class="table table-bordered table-striped table-condensed table-hover">
+        <thead>
+          <tr style="color: black;">
+              <th>
+                  Symbol
+              </th>              
+              <th>
+                  Quantity
+              </th>                    
+              <th>
+                  Current Price
+              </th>
+              <th>
+              </th>              
+          </tr>
+              </thead>
+              <tbody>
+      <tr *ngFor="let item of portfolioAccount" style="color: black;">
+         
+          <td>{{item.symbol}}</td>
+          <td>{{item.totalQuantity}}</td>
+          <td>{{item.currentPrice | currency}}</td>
+          <td>  
+              <div class="text-center">
+                <button mdbBtn size="sm" mdbWavesEffect type="button" class="m-0 btn btn-info mr-5">Details</button>
+                <button mdbBtn size="sm" mdbWavesEffect type="button" class="m-0 btn btn-success">Add Stock</button>
+              </div>
+        </td>
+      </tr>
+              </tbody>    
+    </table>
+    </div>
+    

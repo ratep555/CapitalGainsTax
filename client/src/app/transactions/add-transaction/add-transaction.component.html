@@ -1,0 +1,36 @@
+<form novalidate autocomplete="off" #form="ngForm" (submit)="onSubmit(form)">    
+<!--     <input type="hidden" name="id" [value]="transactionService.formData.id" />
+ -->    <div class="form-group col-md-6">
+        <label>Stock ID</label>
+        <input class="form-control form-control-lg" placeholder="Stock Id" name="stockId"
+        #stockId="ngModel" [(ngModel)]="transactionService.formData.stockId">
+    </div>
+    <div class="form-group col-md-6">
+        <label>Price</label>
+        <input class="form-control form-control-lg" placeholder="Price" name="price"
+        #price="ngModel" [(ngModel)]="transactionService.formData.price">
+    </div>
+    <div class="form-group col-md-6">
+        <label>Quantity</label>
+        <input class="form-control form-control-lg" placeholder="Quantity" name="quantity"
+        #quantity="ngModel" [(ngModel)]="transactionService.formData.quantity">
+    </div>
+   <!--  <div class="form-group col-md-6">
+        <label>Purchase</label>
+        <input class="form-control form-control-lg" placeholder="Purchase" name="purchase"
+        #purchase="ngModel" [(ngModel)]="transactionService.formData.purchase">
+    </div> -->
+    <div class="form-group col-md-6">
+        <label>Resolved</label>
+        <input class="form-control form-control-lg" placeholder="Resolved" name="resolved"
+        #resolved="ngModel" [(ngModel)]="transactionService.formData.resolved">
+    </div>
+    <div class="form-group col-md-3">
+        <button class="btn btn-info btn-lg btn-block" type="submit">SUBMIT</button>
+    </div>
+    </form>
+
+
+
+
+

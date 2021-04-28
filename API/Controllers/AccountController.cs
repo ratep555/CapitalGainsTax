@@ -33,6 +33,7 @@ namespace API.Controllers
         public async Task<ActionResult<UserDto>> GetCurrentUser()
         {
             var user = await _userManager.FindByEmailFromClaimsPrinciple(User);
+            
 
             return new UserDto
             {
@@ -43,7 +44,7 @@ namespace API.Controllers
         }
         [HttpGet("emailexists")]
         public async Task<ActionResult<bool>> CheckEmailExistsAsync([FromQuery]string email)
-        {
+        {             
              return await _userManager.FindByEmailAsync(email) != null;
         }
         [HttpPost("login")]

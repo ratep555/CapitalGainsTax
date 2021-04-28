@@ -1,6 +1,7 @@
 using System;
 using System.Linq.Expressions;
 using Core.Entities;
+using Core.ViewModels;
 
 namespace Core.Specifications
 {

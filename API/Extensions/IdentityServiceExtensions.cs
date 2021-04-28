@@ -1,3 +1,4 @@
+using System.Security.Claims;
 using System.Text;
 using Core.Entities;
 using Infrastructure.Data;
@@ -19,6 +20,9 @@ namespace API.Extensions
             builder = new IdentityBuilder(builder.UserType, builder.Services);
             builder.AddEntityFrameworkStores<StoreContext>();
             builder.AddSignInManager<SignInManager<AppUser>>();
+
+           /*  services.Configure<IdentityOptions>(options => 
+    options.ClaimsIdentity.UserIdClaimType = ClaimTypes.NameIdentifier); */
 
             services.AddAuthentication();
 
