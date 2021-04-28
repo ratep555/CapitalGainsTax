@@ -7,8 +7,8 @@ import { AddStockComponent } from './add-stock/add-stock.component';
 
 const routes: Routes = [
   {path: '', component: StocksComponent},
-  {path: ':id', component: StockDetailsComponent, data: {breadcrumb: {alias: 'stockDetails'}}},
-  {path: 'addstock', component: AddStockComponent}
+  {path: 'addstock', component: AddStockComponent},
+  {path: ':id', component: StockDetailsComponent, data: {breadcrumb: {alias: 'stockDetails'}}}
 ];
 
 

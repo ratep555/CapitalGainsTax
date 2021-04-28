@@ -1,5 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { NgForm } from '@angular/forms';
+import { Router } from '@angular/router';
 import { IStockTransaction, IStTransaction } from 'src/app/shared/models/transaction';
 import { StocksService } from 'src/app/stocks/stocks.service';
 import { TransactionsService } from '../transactions.service';
@@ -11,20 +12,26 @@ import { TransactionsService } from '../transactions.service';
 })
 export class AddTransactionComponent implements OnInit {
 
-  constructor(public transactionService: TransactionsService) { }
+  constructor(public transactionService: TransactionsService, private router: Router) { }
 
   ngOnInit(): void {
   }
 
   onSubmit(form: NgForm) {
       this.creatingTransaction(form);
+    /*   this.creatingTransaction(form).subscribe(response => {
+        this.router.navigateByUrl('transactions');
+      }, error => {
+        console.log(error);
+      }
+      ); */
   }
 
   creatingTransaction(form: NgForm) {
     this.transactionService.createTransaction().subscribe(
      response => {
        this.resetForm(form);
-       console.log('success!');
+       this.router.navigateByUrl('transactions');
      }, error => {
        console.log(error);
      }
