@@ -13,7 +13,18 @@ namespace Core.Interfaces
         Task<IReadOnlyList<Category>> GetCategoriesAsync();
         Task<IReadOnlyList<Country>> GetCountriesAsync();
 
-        Task<IEnumerable<ClientPortfolioViewModel>> ShowClientPortfolio(string email );
+        Task<IEnumerable<ClientPortfolioViewModel>> ShowClientPortfolio(QueryParameters queryParameters, string email );
+        Task<IQueryable<ClientPortfolioViewModel>> ShowClientPortfolio1( string email);
+        Task<IEnumerable<ClientPortfolioViewModel>> ShowClientPortfolio2(
+           QueryParameters queryParameters,
+           string email,
+           string userId);
+        
+        string GetUserId();
+
+
 
     }
 }
+
+

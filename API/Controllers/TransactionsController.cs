@@ -131,6 +131,17 @@ namespace API.Controllers
 
         return Ok(list);
     }
+   /*  [HttpGet("pekidrekiski")]
+    public async Task<ActionResult<TransactionsForUserVM>> GetTransactionsForSpecificUser3(
+        [FromQuery]QueryParameters queryParameters)
+    {
+         var email = HttpContext.User.RetrieveEmailFromPrincipal();
+
+         List<TransactionsForUserVM> list = await _transactionService
+         .ShowTransactionsForSpecificUser2(queryParameters, email).ToListAsync();
+
+        return Ok(list);
+    } */
     [HttpPost]
     public async Task<ActionResult> CreateTransaction(StockTransaction transaction)
     {
@@ -158,6 +169,42 @@ namespace API.Controllers
         };
        
          var transaction1 = await _transactionService.CreateTransaction(transaction);
+
+        return Ok(transaction1);
+    }
+    [HttpPost("kreativo/{id}")]
+    public async Task<ActionResult> CreateTransactionist1(int id, TransactionToCreateVM transactionVM)
+    {
+        var transaction = new StockTransaction 
+        {
+             Date = DateTime.Now,
+             UserId = _transactionService.GetUserId(),
+             StockId = id,
+             Purchase = true,
+             Quantity = transactionVM.Quantity,
+             Price = transactionVM.Price,
+             Resolved = transactionVM.Resolved
+        };
+       
+         var transaction1 = await _transactionService.CreateTransaction(transaction);
+
+        return Ok(transaction1);
+    }
+    [HttpPost("kreativissimo/{id}")]
+    public async Task<ActionResult> CreateTransactionist2(int id, TransactionToCreateVM transactionVM)
+    {
+        var transaction = new StockTransaction 
+        {
+             Date = DateTime.Now,
+             UserId = _transactionService.GetUserId(),
+             StockId = id,
+             Purchase = false,
+             Quantity = transactionVM.Quantity,
+             Price = transactionVM.Price,
+             Resolved = transactionVM.Resolved
+        };
+       
+         var transaction1 = await _transactionService.CreateTransaction1(transaction, id, _transactionService.GetUserId());
 
         return Ok(transaction1);
     }

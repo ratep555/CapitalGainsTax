@@ -43,7 +43,8 @@ namespace Infrastructure.Data
             .ToListAsync();
         }
 
-        public async Task<IEnumerable<ClientPortfolioViewModel>> ShowClientPortfolio(/* string userId, */ string email )
+        public async Task<IEnumerable<ClientPortfolioViewModel>> ShowClientPortfolio(QueryParameters queryParameters,
+         string email )
         {
             var clientPortfolio = (from t in _context.StockTransactions
                                    //where t.UserId == userId
@@ -90,12 +91,150 @@ namespace Infrastructure.Data
                                        Where(b => b.StockId == s.Id && b.UserId == u.Id && b.Purchase == false).
                                        Sum(b => (int?)b.Quantity) ?? 0))
 
+                                   }).AsEnumerable();  
 
-                                   }).AsEnumerable().OrderBy(d => d.Symbol);              
+                    if (queryParameters.HasQuery())
+            {
+            clientPortfolio = clientPortfolio
+                    .Where(t => t.Symbol.ToLowerInvariant().Contains(queryParameters.Query.ToLowerInvariant()));
+            }
 
-            return await Task.FromResult(clientPortfolio.GroupBy(d => d.Symbol).Select(d => d.FirstOrDefault()));
+           /*  foreach(var item in clientPortfolio)
+            {
+                var list1 = _context.StockTransactions.ToList();
+                decimal basket = 0;
+                decimal basket1 = 0;
+                decimal basket3 = 0;
+                foreach(var subitem in list1)
+                {
+                    if(subitem)
+                }
+            } */
+
+            return await Task.FromResult(clientPortfolio.OrderBy(d => d.Symbol).GroupBy(d => d.Symbol).Select(d => d.FirstOrDefault()));
 
         }
+        public async Task<IQueryable<ClientPortfolioViewModel>> ShowClientPortfolio1(string email )
+        {
+            IQueryable<ClientPortfolioViewModel> clientPortfolio = 
+                                   (from t in _context.StockTransactions
+                                   join s in _context.Stocks
+                                   on t.StockId equals s.Id
+                                   join u in _context.Users.Where(u => /* u.Id == userId && */ u.Email == email)                                    
+                                   on t.UserId equals u.Id
+                                   select new ClientPortfolioViewModel
+                                   {
+                                       StockId = s.Id,
+                                       TransactionId = t.Id,
+                                       UserId = u.Id,
+                                       Symbol = s.Symbol,
+                                       CurrentPrice = s.CurrentPrice,
+                                       Email = u.Email,
+
+                                       TotalQuantity = (_context.StockTransactions.
+                                       Where(b => b.StockId == s.Id && b.UserId == u.Id && b.Purchase == true).
+                                       Sum(b => (int?)b.Quantity) ?? 0) - (_context.StockTransactions.
+                                       Where(b => b.StockId == s.Id && b.UserId == u.Id && b.Purchase == false).
+                                       Sum(b => (int?)b.Quantity) ?? 0),
+
+                                       TotalPriceOfPurchase = ((_context.StockTransactions.
+                                       Where(b => b.StockId == s.Id && b.UserId == u.Id && b.Purchase == true).
+                                       Sum(b => (int?)b.Quantity) ?? 0) - (_context.StockTransactions.
+                                       Where(b => b.StockId == s.Id && b.UserId == u.Id && b.Purchase == false).
+                                       Sum(b => (int?)b.Quantity) ?? 0)) * ((_context.StockTransactions.
+                                       Where(b => b.StockId == s.Id && b.UserId == u.Id && b.Purchase == true).
+                                       Sum(b => b.Price * b.Quantity)) /
+                                       (_context.StockTransactions.Where(b => b.StockId == s.Id && b.UserId == u.Id && b.Purchase == true).
+                                       Sum(b => b.Quantity))),
+
+                                       AveragePriceOfPurchase = (((_context.StockTransactions.
+                                       Where(b => b.StockId == s.Id && b.UserId == u.Id && b.Purchase == true).
+                                       Sum(b => (int?)b.Quantity) ?? 0) - (_context.StockTransactions.
+                                       Where(b => b.StockId == s.Id && b.UserId == u.Id && b.Purchase == false).
+                                       Sum(b => (int?)b.Quantity) ?? 0)) * ((_context.StockTransactions.
+                                       Where(b => b.StockId == s.Id && b.UserId == u.Id && b.Purchase == true).
+                                       Sum(b => b.Price * b.Quantity)) /
+                                       (_context.StockTransactions.Where(b => b.StockId == s.Id && b.UserId == u.Id && b.Purchase == true).
+                                       Sum(b => b.Quantity)))) / ((_context.StockTransactions.
+                                       Where(b => b.StockId == s.Id && b.UserId == u.Id && b.Purchase == true).
+                                       Sum(b => (int?)b.Quantity) ?? 0) - (_context.StockTransactions.
+                                       Where(b => b.StockId == s.Id && b.UserId == u.Id && b.Purchase == false).
+                                       Sum(b => (int?)b.Quantity) ?? 0))
+
+                                   }).AsQueryable().OrderBy(d => d.Symbol);              
+
+            return await Task.FromResult(clientPortfolio);
+
+        }
+        public async Task<IEnumerable<ClientPortfolioViewModel>> ShowClientPortfolio2(
+        QueryParameters queryParameters,
+         string email,
+         string userId)
+        {
+            var clientPortfolio = await (from t in _context.StockTransactions
+                                   where t.UserId == userId
+                                   join s in _context.Stocks
+                                   on t.StockId equals s.Id
+                                   join u in _context.Users.Where(u => /* u.Id == userId && */ u.Email == email)                                    
+                                   on t.UserId equals u.Id
+                                   select new ClientPortfolioViewModel
+                                   {
+                                       StockId = s.Id,
+                                       TransactionId = t.Id,
+                                       UserId = userId,
+                                       Symbol = s.Symbol,
+                                       CurrentPrice = s.CurrentPrice,
+                                       Email = u.Email,
+
+                                       TotalQuantity = (_context.StockTransactions.
+                                       Where(b => b.StockId == s.Id && b.UserId == u.Id && b.Purchase == true).
+                                       Sum(b => (int?)b.Quantity) ?? 0) - (_context.StockTransactions.
+                                       Where(b => b.StockId == s.Id && b.UserId == u.Id && b.Purchase == false).
+                                       Sum(b => (int?)b.Quantity) ?? 0),
+                                              
+                                   }).ToListAsync();                    
+
+            foreach(var item in clientPortfolio)
+            {
+                var list1 = _context.StockTransactions.ToList();
+                decimal basket = 0;
+                decimal basket1 = 0;
+                decimal basket3 = 0;
+                foreach(var subitem in list1)
+                {
+                    if(subitem.UserId == userId &&
+                    subitem.StockId == item.StockId && subitem.Purchase == true)
+                    {
+                        if(subitem.Quantity != subitem.Resolved)
+                        {
+                            basket += (subitem.Quantity - subitem.Resolved);
+                            basket1 += (subitem.Price * basket);
+
+                            basket3 += (subitem.Quantity - subitem.Resolved);
+
+                            item.AveragePriceOfPurchase = basket1 / basket3;                      
+                        }
+                        basket = 0;
+
+                    }
+                }
+            } 
+           /*  if (queryParameters.HasQuery())
+            {
+            clientPortfolio = (List<ClientPortfolioViewModel>)clientPortfolio
+                    .Where(t => t.Symbol.ToLowerInvariant().Contains(queryParameters.Query.ToLowerInvariant()));
+            } */
+
+            return await Task.FromResult(clientPortfolio.OrderBy(d => d.Symbol).GroupBy(d => d.Symbol).Select(d => d.FirstOrDefault()));
+
+        }
+         public string GetUserId()
+         {
+            var userId = (from u in _context.Users
+                         select u.Id).FirstOrDefault();         
+
+            return userId;         
+         } 
 
     }
 }

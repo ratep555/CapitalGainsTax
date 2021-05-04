@@ -5,6 +5,7 @@ import { SharedModule } from '../shared/shared.module';
 import { StockDetailsComponent } from './stock-details/stock-details.component';
 import { StocksRoutingModule } from './stocks-routing.module';
 import { AddStockComponent } from './add-stock/add-stock.component';
+import { FormsModule } from '@angular/forms';
 
 
 
@@ -13,7 +14,8 @@ import { AddStockComponent } from './add-stock/add-stock.component';
   imports: [
     CommonModule,
     SharedModule,
-    StocksRoutingModule
+    StocksRoutingModule,
+    FormsModule
   ]
 
 })

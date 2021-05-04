@@ -7,6 +7,7 @@ import { StockParams } from '../shared/models/stockParams';
 import {map} from 'rxjs/operators';
 import { IStock } from '../shared/models/stock';
 import { environment } from 'src/environments/environment';
+import { IStTransaction } from '../shared/models/transaction';
 
 
 @Injectable({
@@ -14,8 +15,15 @@ import { environment } from 'src/environments/environment';
 })
 export class StocksService {
   baseUrl = environment.apiUrl;
+  baseUrlTup = 'https://localhost:5001/api/transactions/kreativo';
+  formData: IStTransaction = new IStTransaction();
+
 
   constructor(private http: HttpClient) { }
+
+  buyStock() {
+    return this.http.post(`${this.baseUrlTup}/${this.formData.stockId}`, this.formData);
+  }
 
   getStocks(stockParams: StockParams) {
     let params = new HttpParams();

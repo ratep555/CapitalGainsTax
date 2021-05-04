@@ -15,6 +15,10 @@ namespace Core.Interfaces
         Task<IQueryable<TransactionsForUserVM>> ShowTransactionsForSpecificUser2(QueryParameters queryParameters, string email);
 
         Task<StockTransaction> CreateTransaction(StockTransaction transaction);
+        Task<StockTransaction> CreateTransaction1(
+            StockTransaction transaction, 
+            int stockId, 
+            string userId);
 
         string GetUserId();
 

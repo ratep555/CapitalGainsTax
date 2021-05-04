@@ -1,5 +1,12 @@
 
-<div class="container mt-3">                 
+<div class="container mt-3">     
+    <div class="form-inline pull-right">
+        <input (keyup.enter)="onSearchUser()" type="text" 
+        class="form-control mr-2" #searchTu style="width: 300px;"  
+        placeholder="Search">
+        <button (click)="onSearchUser()" class="btn btn-info my-2">Search</button>
+        <button (click)="onResetTu()" class="btn btn-success ml-2">Reset</button>
+    </div>   
     <table class="table table-bordered table-striped table-condensed table-hover">
         <thead>
           <tr style="color: black;">
@@ -13,6 +20,9 @@
                   Current Price
               </th>
               <th>
+                  Average Price of Purchase
+              </th>
+              <th>
               </th>              
           </tr>
               </thead>
@@ -22,10 +32,12 @@
           <td>{{item.symbol}}</td>
           <td>{{item.totalQuantity}}</td>
           <td>{{item.currentPrice | currency}}</td>
+          <td>{{item.averagePriceOfPurchase | currency}}</td>
           <td>  
               <div class="text-center">
-                <button mdbBtn size="sm" mdbWavesEffect type="button" class="m-0 btn btn-info mr-5">Details</button>
-                <button mdbBtn size="sm" mdbWavesEffect type="button" class="m-0 btn btn-success">Add Stock</button>
+                <button routerLink="/stocks/{{item.stockId}}" mdbBtn size="sm" mdbWavesEffect type="button" class="m-0 btn btn-info mr-5">Details</button>
+                <button routerLink="/stocks/addstock/{{item.stockId}}"  mdbBtn size="sm" mdbWavesEffect type="button" class="mr-5 btn btn-success">Add Stock</button>
+                <button routerLink="/stocks/addstock/{{item.stockId}}"  mdbBtn size="sm" mdbWavesEffect type="button" class="m-0 btn btn-danger">Sell Stock</button>
               </div>
         </td>
       </tr>

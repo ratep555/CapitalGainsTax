@@ -26,7 +26,9 @@ namespace API.Controllers
            // _userManager = userManager;
         }
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<ClientPortfolioViewModel>>> GetClientPortfolio()
+        public async Task<ActionResult<IEnumerable<ClientPortfolioViewModel>>> GetClientPortfolio(
+            [FromQuery]QueryParameters queryParameters
+        )
         {
             // var userId = HttpContext.User.RetrieveIdFromPrincipal();
            // var userId = User.GetLoggedInUserId<string>(); // Specify the type of your UserId;
@@ -35,9 +37,48 @@ namespace API.Controllers
 
             var email = HttpContext.User.RetrieveEmailFromPrincipal();
 
-            var list = await __repo.ShowClientPortfolio(email);
+            var list = await __repo.ShowClientPortfolio(queryParameters, email);
+
+            return Ok(list);
+        }
+        [HttpGet("zeko")]
+        public async Task<ActionResult<IQueryable<ClientPortfolioViewModel>>> GetClientPortfolio1()
+        {
+            var email = HttpContext.User.RetrieveEmailFromPrincipal();
+
+            var list = await __repo.ShowClientPortfolio1(email);
+
+            return Ok(list.GroupBy(d => d.Symbol).Select(d => d.FirstOrDefault()));
+        }
+        [HttpGet("yes")]
+        public async Task<ActionResult<IEnumerable<ClientPortfolioViewModel>>> GetClientPortfolio2(
+            [FromQuery]QueryParameters queryParameters
+        )
+        {
+            var email = HttpContext.User.RetrieveEmailFromPrincipal();
+
+            var list = await __repo.ShowClientPortfolio2(queryParameters, email, __repo.GetUserId());
+
+             if (queryParameters.HasQuery())
+            {
+            list = list
+                    .Where(t => t.Symbol.ToLowerInvariant().Contains(queryParameters.Query.ToLowerInvariant()));
+            }
 
             return Ok(list);
         }
     }
 }
+
+
+
+
+
+
+
+
+
+
+
+
+

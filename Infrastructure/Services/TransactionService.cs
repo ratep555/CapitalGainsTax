@@ -137,13 +137,67 @@ namespace Infrastructure.Services
 
              return transaction;
         }
-         public string GetUserId()
-         {
+        public async Task<StockTransaction> CreateTransaction1(
+            StockTransaction transaction, 
+            int stockId, 
+            string userId)
+        {
+             _context.StockTransactions.Add(transaction);
+             await _context.SaveChangesAsync();
+
+             int soldQuantity = 0;
+
+             var list = _context.StockTransactions
+             .Where(x => x.StockId == stockId && x.UserId == userId).ToList();
+
+             foreach(var item in list)
+             {
+                 if(item.Purchase == false)
+                 {
+                     soldQuantity = soldQuantity + item.Quantity;
+                 }
+             }
+
+             foreach(var item in list)
+             {
+                    if(item.Purchase == true)
+                    {
+                        var model1 = _context.StockTransactions.Where
+                        (x => x.Id == item.Id && x.StockId == stockId).FirstOrDefault();
+                    
+                        if(model1 != null) 
+                        {
+                                if(soldQuantity > 0)
+                                {
+                                    var newSoldQuantity = soldQuantity - item.Quantity;
+
+                                    if(newSoldQuantity >= 0)
+                                    {
+                                        model1.Resolved = item.Quantity;
+
+                                        _context.SaveChanges();
+                                    }
+                                    else if(newSoldQuantity < 0)
+                                    {
+                                        model1.Resolved = soldQuantity;
+
+                                        _context.SaveChanges();
+                                    }
+                                    soldQuantity = newSoldQuantity;
+                                }
+                        }
+                    }                   
+             }
+
+             return transaction;
+        }
+        public string GetUserId()
+        {
             var userId = (from u in _context.Users
                          select u.Id).FirstOrDefault();         
 
             return userId;         
-         } 
+        } 
     }
 }
 
