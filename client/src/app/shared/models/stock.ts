@@ -5,4 +5,5 @@ export interface IStock {
     companyName: string;
     country: string;
     category: string;
+    totalQuantity: number;
   }

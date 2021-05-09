@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { FormGroup, NgForm } from '@angular/forms';
+import { NgForm } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
 import { IStock } from 'src/app/shared/models/stock';
 import { IStTransaction } from 'src/app/shared/models/transaction';
@@ -8,13 +8,12 @@ import { BreadcrumbService } from 'xng-breadcrumb';
 import { StocksService } from '../stocks.service';
 
 @Component({
-  selector: 'app-add-stock',
-  templateUrl: './add-stock.component.html',
-  styleUrls: ['./add-stock.component.scss']
+  selector: 'app-selling-stocks',
+  templateUrl: './selling-stocks.component.html',
+  styleUrls: ['./selling-stocks.component.scss']
 })
-export class AddStockComponent implements OnInit {
+export class SellingStocksComponent implements OnInit {
   stock: IStock;
-
 
   constructor(public stocksService: StocksService,
               private activatedRoute: ActivatedRoute,
@@ -26,11 +25,6 @@ export class AddStockComponent implements OnInit {
     this.loadStock();
   }
 
-  onSubmit(form: NgForm) {
-    this.stocksService.formData.stockId = this.stock.id;
-    this.buyingStock(form);
-}
-
   loadStock() {
     return this.stocksService.getStock(+this.activatedRoute.snapshot.paramMap.get('id')).subscribe(response => {
       this.stock = response;
@@ -40,9 +34,16 @@ export class AddStockComponent implements OnInit {
     });
   }
 
-  buyingStock(form: NgForm) {
-    this.stocksService.buyStock().subscribe(
+  onSubmit(form: NgForm) {
+    this.stocksService.formData.stockId = this.stock.id;
+    this.sellingStock(form);
+}
+
+
+  sellingStock(form: NgForm) {
+    this.stocksService.sellStock().subscribe(
       response => {
+      //  this.stock.id = this.stocksService.formData.stockId;
         this.resetForm(form);
         this.router.navigateByUrl('myportfolio');
       }, error => {
@@ -51,8 +52,8 @@ export class AddStockComponent implements OnInit {
      );
    }
 
-resetForm(form: NgForm) {
-  form.form.reset();
-  this.transactionService.formData = new IStTransaction();
-}
+   resetForm(form: NgForm) {
+    form.form.reset();
+    this.transactionService.formData = new IStTransaction();
+  }
 }

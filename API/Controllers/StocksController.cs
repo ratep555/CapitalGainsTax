@@ -19,17 +19,20 @@ namespace API.Controllers
     public class StocksController : BaseApiController
     {
         private readonly IGenericRepository<Stock> _stocksRepo;
+        private readonly IStockService _stockService;
         private readonly IGenericRepository<Category> _categoriesRepo;
         private readonly IGenericRepository<Country> _countriesRepo;
         private readonly IMapper _mapper;
 
         public StocksController(IGenericRepository<Stock> stocksRepo,
+        IStockService stockService,
         IGenericRepository<Category> categoriesRepo,
         IGenericRepository<Country> countriesRepo,
         IMapper mapper
         )
         {
             _stocksRepo = stocksRepo;
+            _stockService = stockService;
             _categoriesRepo = categoriesRepo;
             _countriesRepo = countriesRepo;
             _mapper = mapper;
@@ -55,6 +58,26 @@ namespace API.Controllers
         [HttpGet("{id}")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(typeof(ApiResponse), StatusCodes.Status404NotFound)]
+        public async Task<ActionResult<StockToReturnDto1>> GetStock(int id) 
+        {
+            var userId = await _stockService.GetUserId();
+
+            var spec = new StocksWithCategoriesAndCountriesSpecification(id);
+            
+            var stock = await _stocksRepo.GetEntityWithSpec(spec);
+
+            if(stock == null) return NotFound(new ApiResponse(404));
+
+            var stocky = _mapper.Map<Stock, StockToReturnDto1>(stock);
+
+            stocky.TotalQuantity = await _stockService.TotalQuantity(userId, id);
+
+            return stocky;
+
+        }
+       /*  [HttpGet("{id}")]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(ApiResponse), StatusCodes.Status404NotFound)]
         public async Task<ActionResult<StockToReturnDto>> GetStock(int id) 
         {
             var spec = new StocksWithCategoriesAndCountriesSpecification(id);
@@ -64,7 +87,7 @@ namespace API.Controllers
             if(stock == null) return NotFound(new ApiResponse(404));
 
             return _mapper.Map<Stock, StockToReturnDto>(stock);
-        }
+        } */
 
         [HttpGet("categories")]
         public async Task<ActionResult<IReadOnlyList<Category>>> GetCategories()

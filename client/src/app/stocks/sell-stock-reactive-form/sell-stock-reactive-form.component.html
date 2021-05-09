@@ -1,0 +1,14 @@
+<div class="d-flex justify-content-center mt-5 mb-3">
+    <div class="col-5">
+        <div class="form-group">
+            <input class="form-control form-control-lg" placeholder="{{stock?.symbol}}">
+        </div>
+        <form [formGroup]="loginForm" (ngSubmit)="onSubmit()">
+            <app-text-input formControlName="price" [label]="'Price'"></app-text-input>
+            <app-text-input formControlName="quantity" [label]="'Quantity'"></app-text-input>
+           
+            <button [disabled]="loginForm.invalid" class="btn btn-lg btn-primary btn-block" type="submit">Submit</button>
+          </form>
+        </div>
+      </div>
+

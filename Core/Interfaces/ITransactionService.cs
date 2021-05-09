@@ -20,7 +20,8 @@ namespace Core.Interfaces
             int stockId, 
             string userId);
 
-        string GetUserId();
+        Task<string> GetUserId();
+        Task<int> TotalQuantity(string userId, int stockId);
 
 
     }

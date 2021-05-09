@@ -191,13 +191,24 @@ namespace Infrastructure.Services
 
              return transaction;
         }
-        public string GetUserId()
+        public async Task<string> GetUserId()
         {
-            var userId = (from u in _context.Users
-                         select u.Id).FirstOrDefault();         
+            var userId = await (from u in _context.Users
+                         select u.Id).FirstOrDefaultAsync();         
 
-            return userId;         
+            return await Task.FromResult(userId);         
         } 
+        public async Task<int> TotalQuantity(string userId, int stockId)
+        {
+             int totalQuantity =  (_context.StockTransactions
+             .Where(t => t.UserId == userId && t.StockId == stockId && t.Purchase == true)
+             .Sum(t => t.Quantity)) - 
+             (_context.StockTransactions
+             .Where(t => t.UserId == userId && t.StockId == stockId && t.Purchase == false)
+             .Sum(t => t.Quantity));
+
+             return await Task.FromResult(totalQuantity);
+        }
     }
 }
 

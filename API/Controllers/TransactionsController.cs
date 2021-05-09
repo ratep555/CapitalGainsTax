@@ -147,7 +147,7 @@ namespace API.Controllers
     {
         transaction.Date = DateTime.Now;
        // transaction.UserId = User.FindFirstValue(ClaimTypes.NameIdentifier);
-        transaction.UserId = _transactionService.GetUserId();
+        transaction.UserId = await _transactionService.GetUserId();
 
         var stockTrans = await _transactionService.CreateTransaction(transaction);
 
@@ -159,7 +159,7 @@ namespace API.Controllers
         var transaction = new StockTransaction 
         {
              Date = DateTime.Now,
-             UserId = _transactionService.GetUserId(),
+             UserId = await _transactionService.GetUserId(),
              StockId = transactionVM.StockId,
              Purchase = transactionVM.Purchase,
              Quantity = transactionVM.Quantity,
@@ -174,11 +174,11 @@ namespace API.Controllers
     }
     [HttpPost("kreativo/{id}")]
     public async Task<ActionResult> CreateTransactionist1(int id, TransactionToCreateVM transactionVM)
-    {
-        var transaction = new StockTransaction 
+    {                                     
+        var transaction = new StockTransaction                                                                                                    
         {
              Date = DateTime.Now,
-             UserId = _transactionService.GetUserId(),
+             UserId = await _transactionService.GetUserId(),
              StockId = id,
              Purchase = true,
              Quantity = transactionVM.Quantity,
@@ -196,7 +196,7 @@ namespace API.Controllers
         var transaction = new StockTransaction 
         {
              Date = DateTime.Now,
-             UserId = _transactionService.GetUserId(),
+             UserId = await _transactionService.GetUserId(),
              StockId = id,
              Purchase = false,
              Quantity = transactionVM.Quantity,
@@ -204,11 +204,11 @@ namespace API.Controllers
              Resolved = transactionVM.Resolved
         };
        
-         var transaction1 = await _transactionService.CreateTransaction1(transaction, id, _transactionService.GetUserId());
+         var transaction1 = await _transactionService.CreateTransaction1(transaction, id, await _transactionService.GetUserId());
 
         return Ok(transaction1);
-    }
-}
+    }    
+  }
 }
 
 

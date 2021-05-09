@@ -6,11 +6,14 @@ import { StockDetailsComponent } from './stock-details/stock-details.component';
 import { StocksRoutingModule } from './stocks-routing.module';
 import { AddStockComponent } from './add-stock/add-stock.component';
 import { FormsModule } from '@angular/forms';
+import { SellingStocksComponent } from './selling-stocks/selling-stocks.component';
+import { AddStockReactiveFormComponent } from './add-stock-reactive-form/add-stock-reactive-form.component';
+import { SellStockReactiveFormComponent } from './sell-stock-reactive-form/sell-stock-reactive-form.component';
 
 
 
 @NgModule({
-  declarations: [StocksComponent, StockDetailsComponent, AddStockComponent],
+  declarations: [StocksComponent, StockDetailsComponent, AddStockComponent, SellingStocksComponent, AddStockReactiveFormComponent, SellStockReactiveFormComponent],
   imports: [
     CommonModule,
     SharedModule,

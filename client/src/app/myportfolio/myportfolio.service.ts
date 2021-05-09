@@ -4,6 +4,7 @@ import {map} from 'rxjs/operators';
 import { environment } from 'src/environments/environment';
 import { MyportfolioParams } from '../shared/models/myportfolioParams';
 import { IPortfolioAccount } from '../shared/models/portfolioAccount';
+import { IStock } from '../shared/models/stock';
 
 @Injectable({
   providedIn: 'root'
@@ -24,5 +25,9 @@ export class MyportfolioService {
       return response.body;
           })
         );
+      }
+
+      getStock(id: number) {
+        return this.http.get<IStock>(this.baseUrl + 'stocks/' + id);
       }
 }

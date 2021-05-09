@@ -14,8 +14,11 @@ const routes: Routes = [
   {path: 'transactions', canActivate: [AuthGuard],
   loadChildren: () => import('./transactions/transactions.module').then(mod => mod.TransactionsModule),
   data: {breadcrumb: 'List of Transactions'}},
-  {path: 'myportfolio', canActivate: [AuthGuard], component: MyportfolioComponent,
-  data: {breadcrumb: 'My Portfolio'}},
+  /* {path: 'myportfolio', canActivate: [AuthGuard], component: MyportfolioComponent,
+  data: {breadcrumb: 'My Portfolio'}}, */
+  {path: 'myportfolio', canActivate: [AuthGuard],
+  loadChildren: () => import('./myportfolio/myportfolio.module').then(mod => mod.MyportfolioModule),
+  component: MyportfolioComponent, data: {breadcrumb: 'My Portfolio'}},
   {path: 'account', loadChildren: () => import('./account/account.module').then(mod => mod.AccountModule),
   data: {breadcrumb: {skip: true}}},
   {path: '**', redirectTo: '', pathMatch: 'full'}

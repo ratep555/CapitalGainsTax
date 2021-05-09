@@ -16,6 +16,7 @@ import { IStTransaction } from '../shared/models/transaction';
 export class StocksService {
   baseUrl = environment.apiUrl;
   baseUrlTup = 'https://localhost:5001/api/transactions/kreativo';
+  baseUrlTup1 = 'https://localhost:5001/api/transactions/kreativissimo';
   formData: IStTransaction = new IStTransaction();
 
 
@@ -23,6 +24,18 @@ export class StocksService {
 
   buyStock() {
     return this.http.post(`${this.baseUrlTup}/${this.formData.stockId}`, this.formData);
+  }
+
+  buyStock1(values: any) {
+    return this.http.post(`${this.baseUrlTup}/${this.formData.stockId}`, values);
+  }
+
+  sellStock() {
+    return this.http.post(`${this.baseUrlTup1}/${this.formData.stockId}`, this.formData);
+  }
+
+  sellStock1(values: any) {
+    return this.http.post(`${this.baseUrlTup1}/${this.formData.stockId}`, values);
   }
 
   getStocks(stockParams: StockParams) {

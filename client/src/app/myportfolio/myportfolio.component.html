@@ -1,5 +1,5 @@
 
-<div class="container mt-3">     
+<div class="container mt-3 mb-5">     
     <div class="form-inline pull-right">
         <input (keyup.enter)="onSearchUser()" type="text" 
         class="form-control mr-2" #searchTu style="width: 300px;"  
@@ -37,7 +37,7 @@
               <div class="text-center">
                 <button routerLink="/stocks/{{item.stockId}}" mdbBtn size="sm" mdbWavesEffect type="button" class="m-0 btn btn-info mr-5">Details</button>
                 <button routerLink="/stocks/addstock/{{item.stockId}}"  mdbBtn size="sm" mdbWavesEffect type="button" class="mr-5 btn btn-success">Add Stock</button>
-                <button routerLink="/stocks/addstock/{{item.stockId}}"  mdbBtn size="sm" mdbWavesEffect type="button" class="m-0 btn btn-danger">Sell Stock</button>
+                <button routerLink="/stocks/sellingstocks/{{item.stockId}}"  mdbBtn size="sm" mdbWavesEffect type="button" class="m-0 btn btn-danger">Sell Stock</button>
               </div>
         </td>
       </tr>
