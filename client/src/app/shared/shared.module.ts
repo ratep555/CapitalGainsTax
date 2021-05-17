@@ -6,12 +6,13 @@ import { CarouselModule } from 'ngx-bootstrap/carousel';
 import { ReactiveFormsModule } from '@angular/forms';
 import { BsDropdownModule } from 'ngx-bootstrap/dropdown';
 import { TextInputComponent } from './components/text-input/text-input.component';
+import { Pager1Component } from './components/pager1/pager1.component';
 
 
 
 
 @NgModule({
-  declarations: [PagerComponent, TextInputComponent],
+  declarations: [PagerComponent, TextInputComponent, Pager1Component],
   imports: [
     CommonModule,
     PaginationModule.forRoot(),
@@ -22,6 +23,7 @@ import { TextInputComponent } from './components/text-input/text-input.component
   exports: [
     PaginationModule,
     PagerComponent,
+    Pager1Component,
     CarouselModule,
     ReactiveFormsModule,
     BsDropdownModule,

@@ -12,6 +12,7 @@ using AutoMapper;
 using API.Errors;
 using Microsoft.AspNetCore.Http;
 using API.Helpers;
+using API.Extensions;
 
 namespace API.Controllers
 {
@@ -52,7 +53,8 @@ namespace API.Controllers
 
             var data = _mapper.Map<IReadOnlyList<Stock>, IReadOnlyList<StockToReturnDto>>(stocks); 
 
-            return Ok(new Pagination<StockToReturnDto>(stockParams.PageIndex, stockParams.PageSize, totalItems, data));
+            return Ok(new Pagination<StockToReturnDto>
+            (stockParams.PageIndex, stockParams.PageSize, totalItems, data));
         }
 
         [HttpGet("{id}")]
@@ -60,7 +62,7 @@ namespace API.Controllers
         [ProducesResponseType(typeof(ApiResponse), StatusCodes.Status404NotFound)]
         public async Task<ActionResult<StockToReturnDto1>> GetStock(int id) 
         {
-            var userId = await _stockService.GetUserId();
+            var email = User.RetrieveEmailFromPrincipal();
 
             var spec = new StocksWithCategoriesAndCountriesSpecification(id);
             
@@ -70,7 +72,7 @@ namespace API.Controllers
 
             var stocky = _mapper.Map<Stock, StockToReturnDto1>(stock);
 
-            stocky.TotalQuantity = await _stockService.TotalQuantity(userId, id);
+            stocky.TotalQuantity = await _stockService.TotalQuantity(email, id);
 
             return stocky;
 

@@ -39,17 +39,17 @@ onSubmit() {
   this.service.formData.stockId = this.stock.id;
   this.service.buyStock1(this.loginForm.value).subscribe(() => {
     this.resetForm(this.loginForm);
+    this.router.navigateByUrl('myportfolio');
   },
   error => {
     console.log(error);
   });
-  this.router.navigateByUrl('myportfolio');
 }
 
 loadStock() {
   return this.service.getStock(+this.activatedRoute.snapshot.paramMap.get('id')).subscribe(response => {
     this.stock = response;
-    this.bcService.set('@stockDetails', this.stock.companyName);
+   // this.bcService.set('@stockDetails', this.stock.companyName);
   }, error => {
     console.log(error);
   });

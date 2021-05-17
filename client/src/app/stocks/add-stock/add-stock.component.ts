@@ -34,7 +34,7 @@ export class AddStockComponent implements OnInit {
   loadStock() {
     return this.stocksService.getStock(+this.activatedRoute.snapshot.paramMap.get('id')).subscribe(response => {
       this.stock = response;
-      this.bcService.set('@stockDetails', this.stock.companyName);
+     // this.bcService.set('@stockDetails', this.stock.companyName);
     }, error => {
       console.log(error);
     });

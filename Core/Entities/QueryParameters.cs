@@ -2,7 +2,7 @@ namespace Core.Entities
 {
     public class QueryParameters
     {
-        private const int MaxPageCount = 20;
+        private const int MaxPageCount = 5;
         public int Page { get; set; } = 1;
         private int _pageCount = MaxPageCount;
         public int PageCount

@@ -7,7 +7,8 @@
         [routerLinkActiveOptions]="{exact:true}" >Home</a>
         <a class="p-2" routerLink="/stocks" routerLinkActive="active" >List of Stocks</a>
         <a class="p-2"  routerLink="/myportfolio" routerLinkActive="active">My Portfolio</a>
-        <a class="p-2" routerLink="/transactions" routerLinkActive="active">Tax Liability</a>
+        <a class="p-2" routerLink="/transactions" routerLinkActive="active">Transactions</a>
+        <a class="p-2" routerLink="/taxliability" routerLinkActive="active">Tax Liability</a>
     </nav>
     <div class="d-flex align-items-center">      
         <ng-container *ngIf="(currentUser$ | async) === null">
@@ -21,8 +22,14 @@
                 </a>
                 <div class="dropdown-menu dropdown-menu-right stark" style="cursor: pointer;" *dropdownMenu>
                    <a class="dropdown-items d-flex align-items-center py-2">
+                  <a routerLink="/taxliability">
                     <i class="fa fa-balance-scale mr-3 ml-3"></i> Tax Liability
+                  </a>  
                    </a>
+                   <div class="dropdown-divider"></div>
+                   <a routerLink="/categories">
+                     <i class="fa fa-balance-scale mr-3 ml-3"></i> Categories
+                   </a>  
                    <div class="dropdown-divider"></div>
                    <a (click)="logout()" class="dropdown-items d-flex align-items-center py-2" >
                     <i class="fa fa-sign-out mr-4 ml-3"></i> Logout

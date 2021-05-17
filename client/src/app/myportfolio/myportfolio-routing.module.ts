@@ -7,7 +7,7 @@ import { StockDetailComponent } from './stock-detail/stock-detail.component';
 
 const routes: Routes = [
   {path: '', component: MyportfolioComponent},
-  {path: ':id', component: StockDetailComponent, data: {breadcrumb: 'Stock Detail'}},
+//  {path: ':id', component: StockDetailComponent, data: {breadcrumb: 'Stock Detail'}},
   {path: 'sellstock/:id', component: SellStockComponent, data: {breadcrumb: 'Sell Stock'}}
 
 ];

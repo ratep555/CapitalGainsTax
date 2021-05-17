@@ -4,7 +4,7 @@ namespace Core.Interfaces
 {
     public interface IStockService
     {
-        Task<int> TotalQuantity(string userId, int stockId);
+        Task<int> TotalQuantity(string email, int stockId);
         Task<string> GetUserId();
 
 

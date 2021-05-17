@@ -19,9 +19,19 @@ namespace Core.Interfaces
             StockTransaction transaction, 
             int stockId, 
             string userId);
+        Task<StockTransaction> CreateTransaction3(
+            StockTransaction transaction, 
+            int stockId, 
+            string email);
 
+        Task<IEnumerable<TransactionsForUserVM>> ShowTransactionsForSpecificUser3(
+        QueryParameters queryParameters,
+        string email);
         Task<string> GetUserId();
         Task<int> TotalQuantity(string userId, int stockId);
+        Task<decimal> TotalNetProfit(string email);
+        Task<TaxLiabilityVM> TotalNetProfit1(string email);
+        Task<TaxLiabilityVM> ReturnTaxLiability(string email);
 
 
     }

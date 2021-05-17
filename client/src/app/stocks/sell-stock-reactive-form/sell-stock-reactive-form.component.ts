@@ -1,6 +1,8 @@
 import { Component, OnInit } from '@angular/core';
-import { FormControl, FormGroup, Validators } from '@angular/forms';
+import { AsyncValidatorFn, FormControl, FormGroup, Validators } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
+import { of, timer } from 'rxjs';
+import { map, switchMap } from 'rxjs/operators';
 import { IStock } from 'src/app/shared/models/stock';
 import { IStTransaction } from 'src/app/shared/models/transaction';
 import { TransactionsService } from 'src/app/transactions/transactions.service';
@@ -16,7 +18,7 @@ export class SellStockReactiveFormComponent implements OnInit {
   loginForm: FormGroup;
   stock: IStock;
 
-  constructor(private service: StocksService,
+  constructor(public service: StocksService,
               private activatedRoute: ActivatedRoute,
               private bcService: BreadcrumbService,
               private transactionService: TransactionsService,
@@ -30,26 +32,29 @@ export class SellStockReactiveFormComponent implements OnInit {
 
   createLoginForm() {
     this.loginForm = new FormGroup({
-    price: new FormControl('', [Validators.required]),
-    quantity: new FormControl('', Validators.required)
+    price: new FormControl('', Validators.required),
+    quantity: new FormControl('', [Validators.required],
+    [this.validateQuantity()])
   });
 }
 
 onSubmit() {
   this.service.formData.stockId = this.stock.id;
-  this.router.navigateByUrl('myportfolio');
   this.service.sellStock1(this.loginForm.value).subscribe(() => {
     this.resetForm(this.loginForm);
+    this.router.navigateByUrl('myportfolio');
+
   },
   error => {
     console.log(error);
   });
+ // this.router.navigateByUrl('stocks');
 }
 
   loadStock() {
     return this.service.getStock(+this.activatedRoute.snapshot.paramMap.get('id')).subscribe(response => {
       this.stock = response;
-      this.bcService.set('@stockDetails', this.stock.companyName);
+     // this.bcService.set('@stockDetails', this.stock.companyName);
     }, error => {
       console.log(error);
     });
@@ -59,5 +64,32 @@ onSubmit() {
     form.reset();
     this.service.formData = new IStTransaction();
   }
+
+  validateQuantity(): AsyncValidatorFn {
+    return control => {
+      return timer(500).pipe(
+        switchMap(() => {
+          if (!control.value) {
+            return of(null);
+          }
+          return this.service.checkQuantity(control.value).pipe(
+            map(res => {
+              return res ? { emailExists1: true } : null;
+            })
+          );
+        })
+      );
+    };
+    this.service.formData.stockId = this.stock.id;
+
   }
+
+}
+
+
+
+
+
+
+
 

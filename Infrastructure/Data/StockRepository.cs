@@ -219,14 +219,81 @@ namespace Infrastructure.Data
                     }
                 }
             } 
-           /*  if (queryParameters.HasQuery())
-            {
-            clientPortfolio = (List<ClientPortfolioViewModel>)clientPortfolio
-                    .Where(t => t.Symbol.ToLowerInvariant().Contains(queryParameters.Query.ToLowerInvariant()));
-            } */
-
             return await Task.FromResult(clientPortfolio.OrderBy(d => d.Symbol).GroupBy(d => d.Symbol).Select(d => d.FirstOrDefault()));
 
+        }
+         public async Task<IEnumerable<ClientPortfolioViewModel>> ShowClientPortfolio3(
+        //QueryParameters queryParameters,
+         string email)
+        {
+            var clientPortfolio = await (from t in _context.StockTransactions
+                                   where t.Email == email
+                                   join s in _context.Stocks
+                                   on t.StockId equals s.Id
+                                   join u in _context.Users.Where(u => /* u.Id == userId && */ u.Email == email)                                    
+                                   on t.Email equals u.Email
+                                   select new ClientPortfolioViewModel
+                                   {
+                                       StockId = s.Id,
+                                       TransactionId = t.Id,
+                                       Symbol = s.Symbol,
+                                       CurrentPrice = s.CurrentPrice,
+                                       Email = email,
+
+                                       TotalQuantity = (_context.StockTransactions.
+                                       Where(b => b.StockId == s.Id && b.Email == u.Email && b.Purchase == true).
+                                       Sum(b => (int?)b.Quantity) ?? 0) - (_context.StockTransactions.
+                                       Where(b => b.StockId == s.Id && b.Email == u.Email && b.Purchase == false).
+                                       Sum(b => (int?)b.Quantity) ?? 0),
+                                              
+                                   }).ToListAsync();                    
+
+            foreach(var item in clientPortfolio)
+            {
+                var list1 = _context.StockTransactions.ToList();
+                decimal basket = 0;
+                decimal basket1 = 0;
+                decimal basket3 = 0;
+
+                foreach(var subitem in list1)
+                {
+                    if(subitem.Email == email &&
+                    subitem.StockId == item.StockId && subitem.Purchase == true)
+                    {
+                        if(subitem.Quantity != subitem.Resolved)
+                        {
+                            basket += (subitem.Quantity - subitem.Resolved);
+                            basket1 += (subitem.Price * basket);
+
+                            basket3 += (subitem.Quantity - subitem.Resolved);
+
+                            item.AveragePriceOfPurchase = basket1 / basket3;                      
+                        }
+                        basket = 0;
+                    }
+                }                
+            } 
+
+            return await Task.FromResult(clientPortfolio.Where(d => d.TotalQuantity > 0).OrderBy(d => d.Symbol)
+            .GroupBy(d => d.Symbol).Select(d => d.FirstOrDefault()));
+
+        }
+
+        public async Task<decimal> SumQuantityAndAveregePriceForAll(string email)
+        {
+            decimal basket = 0;
+            decimal basket1 = 0;
+            var list = new List<ClientPortfolioViewModel>();
+            
+            foreach (var item in list)
+            {
+                if(item.Email == email)
+                {
+                    basket = item.AveragePriceOfPurchase * item.TotalQuantity;
+                    basket1 += basket;
+                }
+            }
+            return await Task.FromResult(basket1);
         }
          public string GetUserId()
          {

@@ -20,6 +20,12 @@ namespace Core.Interfaces
            string email,
            string userId);
         
+        Task<IEnumerable<ClientPortfolioViewModel>> ShowClientPortfolio3(
+           //QueryParameters queryParameters,
+           string email);
+        
+        Task<decimal> SumQuantityAndAveregePriceForAll(string email);
+
         string GetUserId();
 
 

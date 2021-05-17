@@ -57,15 +57,40 @@ namespace API.Controllers
         {
             var email = HttpContext.User.RetrieveEmailFromPrincipal();
 
-            var list = await __repo.ShowClientPortfolio2(queryParameters, email, __repo.GetUserId());
+            var list = await __repo.ShowClientPortfolio3(/* queryParameters, */ email);
 
-             if (queryParameters.HasQuery())
+            decimal basket4 = 0;
+            decimal basket6 = 0;
+            decimal? basket7 = 0;
+
+            foreach (var item in list)
             {
-            list = list
+                basket4 = item.AveragePriceOfPurchase * item.TotalQuantity;   
+                basket6 = list.Where(x => x.TotalQuantity > 0)
+                .Sum(x => x.TotalQuantity * x.AveragePriceOfPurchase);
+
+                if (basket7.HasValue)
+                basket7 = (basket4 / basket6) * 100;
+                item.PortfolioPercentage = basket7;
+
+            }
+
+            if (queryParameters.HasQuery())
+            {
+                    list = list
                     .Where(t => t.Symbol.ToLowerInvariant().Contains(queryParameters.Query.ToLowerInvariant()));
             }
 
             return Ok(list);
+        }
+        [HttpGet("no")]
+        public async Task<ActionResult<decimal>> ReturnQuantity()
+        {
+            var email = User.RetrieveEmailFromPrincipal();
+
+            decimal quantity = await __repo.SumQuantityAndAveregePriceForAll(email);
+
+            return Ok(quantity);
         }
     }
 }

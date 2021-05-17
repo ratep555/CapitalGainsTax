@@ -13,6 +13,7 @@ namespace Core.ViewModels
         public decimal AveragePriceOfPurchase { get; set; }
         public decimal CurrentPrice { get; set; }
         public string Email { get; set; }
+        public decimal? PortfolioPercentage { get; set; }
 
     }
 }

@@ -23,6 +23,12 @@
                   Average Price of Purchase
               </th>
               <th>
+                  Total
+              </th>
+              <th>
+                  Portfolio Percentage
+              </th>
+              <th>
               </th>              
           </tr>
               </thead>
@@ -33,11 +39,13 @@
           <td>{{item.totalQuantity}}</td>
           <td>{{item.currentPrice | currency}}</td>
           <td>{{item.averagePriceOfPurchase | currency}}</td>
+          <td>{{item.averagePriceOfPurchase * item.totalQuantity | currency}}</td>
+          <td>{{item.portfolioPercentage | number : '1.2-2'}} % </td>
           <td>  
               <div class="text-center">
                 <button routerLink="/stocks/{{item.stockId}}" mdbBtn size="sm" mdbWavesEffect type="button" class="m-0 btn btn-info mr-5">Details</button>
                 <button routerLink="/stocks/addstock/{{item.stockId}}"  mdbBtn size="sm" mdbWavesEffect type="button" class="mr-5 btn btn-success">Add Stock</button>
-                <button routerLink="/stocks/sellingstocks/{{item.stockId}}"  mdbBtn size="sm" mdbWavesEffect type="button" class="m-0 btn btn-danger">Sell Stock</button>
+                <button routerLink="/stocks/sellstockReactive/{{item.stockId}}"  mdbBtn size="sm" mdbWavesEffect type="button" class="m-0 btn btn-danger">Sell Stock</button>
               </div>
         </td>
       </tr>

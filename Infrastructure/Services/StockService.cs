@@ -14,13 +14,13 @@ namespace Infrastructure.Services
             _context = context;
         }
 
-         public async Task<int> TotalQuantity(string userId, int stockId)
+         public async Task<int> TotalQuantity(string email, int stockId)
         {
              int totalQuantity =  (_context.StockTransactions
-             .Where(t => t.UserId == userId && t.StockId == stockId && t.Purchase == true)
+             .Where(t => t.Email == email && t.StockId == stockId && t.Purchase == true)
              .Sum(t => t.Quantity)) - 
              (_context.StockTransactions
-             .Where(t => t.UserId == userId && t.StockId == stockId && t.Purchase == false)
+             .Where(t => t.Email == email && t.StockId == stockId && t.Purchase == false)
              .Sum(t => t.Quantity));
 
              return await Task.FromResult(totalQuantity);

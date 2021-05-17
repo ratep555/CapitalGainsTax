@@ -23,5 +23,7 @@ namespace Core.ViewModels
         public int Quantity { get; set; }
         public bool Purchase { get; set; }
         public int Resolved { get; set; }
+        public string Email { get; set; }
+        public decimal? NetProfit { get; set; }
     }
 }

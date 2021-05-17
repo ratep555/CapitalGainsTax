@@ -11,6 +11,7 @@ export interface IStockTransaction {
 }
 
 export class IStTransaction {
+    id: number;
     stockId: number = 0;
     price: number = 0;
     quantity: number = 0;

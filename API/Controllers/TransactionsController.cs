@@ -25,17 +25,20 @@ namespace API.Controllers
     public class TransactionsController : BaseApiController
     {
     private readonly IMapper _mapper;
-         private readonly ITransactionService _transactionService;
+        private readonly ITransactionService _transactionService;
         private readonly IGenericRepository<StockTransaction> _transactionsRepo;
+        private readonly IGenericRepository<Stock> _stocksRepo;
 
     public TransactionsController(
     IGenericRepository<StockTransaction> transactionsRepo,
     IMapper mapper,
-    ITransactionService transactionService)
+    ITransactionService transactionService,
+    IGenericRepository<Stock> stocksRepo)
     {
         _transactionsRepo = transactionsRepo;
         _mapper = mapper;
         _transactionService = transactionService;
+        _stocksRepo = stocksRepo;
         }
     [HttpGet]
     public async Task<ActionResult<Pagination<TransactionToReturnDto>>> GetTransactionsAsync(
@@ -127,21 +130,28 @@ namespace API.Controllers
     {
          var email = HttpContext.User.RetrieveEmailFromPrincipal();
 
-         var list = await _transactionService.ShowTransactionsForSpecificUser1(queryParameters, email);
+         var list = await _transactionService.ShowTransactionsForSpecificUser3(queryParameters, email);
+
+        if (queryParameters.HasQuery())
+        {
+            list = list
+                .Where(t => t.Stock.ToLowerInvariant().Contains(queryParameters.Query.ToLowerInvariant()
+                ));
+        } 
 
         return Ok(list);
     }
-   /*  [HttpGet("pekidrekiski")]
-    public async Task<ActionResult<TransactionsForUserVM>> GetTransactionsForSpecificUser3(
+   /*  [HttpGet("pekidreki")]
+    public async Task<ActionResult<IQueryable<TransactionsForUserVM>>> GetTransactionsForSpecificUser2(
         [FromQuery]QueryParameters queryParameters)
     {
          var email = HttpContext.User.RetrieveEmailFromPrincipal();
 
-         List<TransactionsForUserVM> list = await _transactionService
-         .ShowTransactionsForSpecificUser2(queryParameters, email).ToListAsync();
+         var list = await _transactionService.ShowTransactionsForSpecificUser1(queryParameters, email);
 
         return Ok(list);
     } */
+
     [HttpPost]
     public async Task<ActionResult> CreateTransaction(StockTransaction transaction)
     {
@@ -174,40 +184,90 @@ namespace API.Controllers
     }
     [HttpPost("kreativo/{id}")]
     public async Task<ActionResult> CreateTransactionist1(int id, TransactionToCreateVM transactionVM)
-    {                                     
+    {     
+        transactionVM.Email = User.RetrieveEmailFromPrincipal();
+
         var transaction = new StockTransaction                                                                                                    
         {
+             Id = transactionVM.Id,
              Date = DateTime.Now,
-             UserId = await _transactionService.GetUserId(),
              StockId = id,
              Purchase = true,
              Quantity = transactionVM.Quantity,
              Price = transactionVM.Price,
-             Resolved = transactionVM.Resolved
+             Resolved = transactionVM.Resolved,
+             Email = transactionVM.Email
         };
        
-         var transaction1 = await _transactionService.CreateTransaction(transaction);
+        var transaction1 = await _transactionService.CreateTransaction(transaction);
 
         return Ok(transaction1);
     }
     [HttpPost("kreativissimo/{id}")]
     public async Task<ActionResult> CreateTransactionist2(int id, TransactionToCreateVM transactionVM)
     {
+        transactionVM.Email = User.RetrieveEmailFromPrincipal();
+
+       // var userId = await _transactionService.GetUserId();
+
+        if(await _transactionService.TotalQuantity(transactionVM.Email, id) < transactionVM.Quantity)
+        {
+              return new BadRequestObjectResult
+              (new ApiValidationErrorResponse{Errors = new []{"You are selling more than you have!"}});
+        }
+
         var transaction = new StockTransaction 
         {
+             Id = transactionVM.Id,
              Date = DateTime.Now,
-             UserId = await _transactionService.GetUserId(),
              StockId = id,
              Purchase = false,
              Quantity = transactionVM.Quantity,
              Price = transactionVM.Price,
-             Resolved = transactionVM.Resolved
+             Resolved = transactionVM.Resolved,
+             Email = transactionVM.Email
         };
        
-         var transaction1 = await _transactionService.CreateTransaction1(transaction, id, await _transactionService.GetUserId());
+        var transaction1 = await _transactionService
+        .CreateTransaction1(transaction, id, User.RetrieveEmailFromPrincipal());
 
         return Ok(transaction1);
     }    
+    [HttpGet("exceed/{id1}/{id2}")]
+    public async Task<ActionResult<bool>> CheckTotalQuantity(int transactionId, 
+    int stockId, 
+    [FromQuery]string quantity)
+    {
+        var email = User.RetrieveEmailFromPrincipal();
+
+        var transaction = await _transactionsRepo.GetByIdAsync(transactionId);
+
+        if (await _transactionService.TotalQuantity(email, stockId) < transaction.Quantity)
+        {
+            return true;
+        }
+            return false;
+    }
+    [HttpGet("profit")]
+    public async Task<ActionResult<decimal>> CheckTotalProfit()
+    {
+        var email = User.RetrieveEmailFromPrincipal();
+
+        var totalProfit = await _transactionService.TotalNetProfit(email);
+
+        return totalProfit;
+
+    }
+    [HttpGet("profitwow")]
+    public async Task<ActionResult<TaxLiabilityVM>> CheckTotalProfit1()
+    {
+        var email = User.RetrieveEmailFromPrincipal();
+
+        var taxLiability = await _transactionService.ReturnTaxLiability(email);
+
+        return Ok(taxLiability);
+
+    }
   }
 }
 

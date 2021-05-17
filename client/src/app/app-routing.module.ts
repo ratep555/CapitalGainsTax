@@ -1,9 +1,11 @@
 import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
 import { LoginComponent } from './account/login/login.component';
+import { CategoriesComponent } from './categories/categories.component';
 import { AuthGuard } from './core/guards/auth.guard';
 import { HomeComponent } from './home/home.component';
 import { MyportfolioComponent } from './myportfolio/myportfolio.component';
+import { TaxliabilityComponent } from './taxliability/taxliability.component';
 import { TransactionsComponent } from './transactions/transactions.component';
 
 const routes: Routes = [
@@ -14,11 +16,11 @@ const routes: Routes = [
   {path: 'transactions', canActivate: [AuthGuard],
   loadChildren: () => import('./transactions/transactions.module').then(mod => mod.TransactionsModule),
   data: {breadcrumb: 'List of Transactions'}},
-  /* {path: 'myportfolio', canActivate: [AuthGuard], component: MyportfolioComponent,
-  data: {breadcrumb: 'My Portfolio'}}, */
   {path: 'myportfolio', canActivate: [AuthGuard],
-  loadChildren: () => import('./myportfolio/myportfolio.module').then(mod => mod.MyportfolioModule),
   component: MyportfolioComponent, data: {breadcrumb: 'My Portfolio'}},
+  {path: 'taxliability', canActivate: [AuthGuard], component: TaxliabilityComponent,
+  data: {breadcrumb: 'Tax Liability'}},
+  {path: 'categories', component: CategoriesComponent, data: {breadcrumb: 'Categories'}},
   {path: 'account', loadChildren: () => import('./account/account.module').then(mod => mod.AccountModule),
   data: {breadcrumb: {skip: true}}},
   {path: '**', redirectTo: '', pathMatch: 'full'}

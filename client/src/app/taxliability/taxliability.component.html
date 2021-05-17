@@ -1,1 +1,49 @@
-<p>taxliability works!</p>
+<div class="container mt-5 mb-3">
+    <table class="center table table-bordered table-striped table-condensed table-hover">
+        <thead>
+            <tr>
+                <th>
+                  Profit
+                </th>
+                <th>
+<!--                    {{profit | currency : 'GBP' : true : '1.2-2'}}
+ -->                   {{profit1.grossProfit | currency}}
+                </th>
+            </tr>
+            <tr>
+                <th>
+                  Capital Gains Tax (12%)
+                </th>
+                <th>
+<!--  {{((12 / 100) *  +profit | currency)}} -->       
+              {{profit1.capitalGainsTax | currency}}
+          </th>
+            </tr>
+            <tr>
+                <th>
+                  Surtax (18%)
+                </th>
+                <th>
+                   {{profit1.surtax | currency}}
+                </th>
+            </tr>
+            <tr>
+              <th>
+                  Total Tax Liability
+              </th>
+              <th>
+                  {{profit1.totalTaxLiaility | currency}}
+              </th>
+            </tr>
+            <tr>
+                <th>
+                  Total Net Profit
+                </th>
+                <th>
+                   {{profit1.netProfit | currency}}
+                </th>
+            </tr>
+        </thead>
+        </table>
+
+</div>

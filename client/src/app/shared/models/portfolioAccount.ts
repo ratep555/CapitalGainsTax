@@ -10,5 +10,6 @@ export interface IPortfolioAccount {
         averagePriceOfPurchase: number;
         currentPrice: number;
         email: string;
+        portfolioPercentage: number;
 
     }

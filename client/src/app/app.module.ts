@@ -13,6 +13,8 @@ import { TransactionsModule } from './transactions/transactions.module';
 import { MyportfolioModule } from './myportfolio/myportfolio.module';
 import { JwtInterceptor } from './core/interceptors/jwt.interceptor';
 import { FormsModule } from '@angular/forms';
+import { TaxliabilityModule } from './taxliability/taxliability.module';
+import { CategoriesModule } from './categories/categories.module';
 
 
 @NgModule({
@@ -28,7 +30,9 @@ import { FormsModule } from '@angular/forms';
     CoreModule,
     HomeModule,
     TransactionsModule,
-    MyportfolioModule
+    MyportfolioModule,
+    TaxliabilityModule,
+    CategoriesModule
   ],
   providers: [
     {provide: HTTP_INTERCEPTORS, useClass: JwtInterceptor, multi: true}

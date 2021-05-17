@@ -10,7 +10,6 @@ import { SellStockReactiveFormComponent } from './sell-stock-reactive-form/sell-
 
 const routes: Routes = [
   {path: '', component: StocksComponent},
- // {path: ':id', component: AddStockComponent},
   {path: ':id', component: StockDetailsComponent, data: {breadcrumb: {alias: 'stockDetails'}}},
   {path: 'addstock/:id', component: AddStockComponent, data: {breadcrumb: 'Add Stock'}},
   {path: 'sellingstocks/:id', component: SellingStocksComponent, data: {breadcrumb: 'Sell Stock'}},

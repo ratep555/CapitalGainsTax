@@ -13,7 +13,13 @@ import { SellStockReactiveFormComponent } from './sell-stock-reactive-form/sell-
 
 
 @NgModule({
-  declarations: [StocksComponent, StockDetailsComponent, AddStockComponent, SellingStocksComponent, AddStockReactiveFormComponent, SellStockReactiveFormComponent],
+  declarations: [
+    StocksComponent,
+    AddStockComponent,
+    SellingStocksComponent,
+    AddStockReactiveFormComponent,
+    SellStockReactiveFormComponent,
+    StockDetailsComponent],
   imports: [
     CommonModule,
     SharedModule,

@@ -8,6 +8,7 @@ import {map} from 'rxjs/operators';
 import { IStock } from '../shared/models/stock';
 import { environment } from 'src/environments/environment';
 import { IStTransaction } from '../shared/models/transaction';
+import { Router } from '@angular/router';
 
 
 @Injectable({
@@ -17,6 +18,7 @@ export class StocksService {
   baseUrl = environment.apiUrl;
   baseUrlTup = 'https://localhost:5001/api/transactions/kreativo';
   baseUrlTup1 = 'https://localhost:5001/api/transactions/kreativissimo';
+  baseUrlTup2 = 'https://localhost:5001/api/transactions/exceed';
   formData: IStTransaction = new IStTransaction();
 
 
@@ -32,6 +34,10 @@ export class StocksService {
 
   sellStock() {
     return this.http.post(`${this.baseUrlTup1}/${this.formData.stockId}`, this.formData);
+  }
+
+  checkQuantity(quantity: string) {
+    return this.http.get(`${this.baseUrlTup2}/${this.formData.id}/${this.formData.stockId}/exceed?quantiy=` + quantity);
   }
 
   sellStock1(values: any) {
