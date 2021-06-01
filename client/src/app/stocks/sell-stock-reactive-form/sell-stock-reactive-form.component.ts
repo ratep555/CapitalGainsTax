@@ -17,6 +17,7 @@ import { StocksService } from '../stocks.service';
 export class SellStockReactiveFormComponent implements OnInit {
   loginForm: FormGroup;
   stock: IStock;
+  quantitivo: number;
 
   constructor(public service: StocksService,
               private activatedRoute: ActivatedRoute,
@@ -27,8 +28,10 @@ export class SellStockReactiveFormComponent implements OnInit {
 
   ngOnInit(): void {
     this.loadStock();
+    this.loadStock1();
     this.createLoginForm();
   }
+
 
   createLoginForm() {
     this.loginForm = new FormGroup({
@@ -37,6 +40,9 @@ export class SellStockReactiveFormComponent implements OnInit {
     [this.validateQuantity()])
   });
 }
+
+  get f() { return this.loginForm.controls; }
+
 
 onSubmit() {
   this.service.formData.stockId = this.stock.id;
@@ -54,6 +60,15 @@ onSubmit() {
   loadStock() {
     return this.service.getStock(+this.activatedRoute.snapshot.paramMap.get('id')).subscribe(response => {
       this.stock = response;
+     // this.bcService.set('@stockDetails', this.stock.companyName);
+    }, error => {
+      console.log(error);
+    });
+  }
+
+  loadStock1() {
+    return this.service.getStock1(+this.activatedRoute.snapshot.paramMap.get('id')).subscribe((response: number) => {
+      this.quantitivo = response;
      // this.bcService.set('@stockDetails', this.stock.companyName);
     }, error => {
       console.log(error);

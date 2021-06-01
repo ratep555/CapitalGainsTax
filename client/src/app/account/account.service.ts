@@ -5,6 +5,7 @@ import { BehaviorSubject, of, ReplaySubject } from 'rxjs';
 import { map } from 'rxjs/operators';
 import { environment } from 'src/environments/environment';
 import { IUser } from '../shared/models/user';
+import { IUser1 } from '../shared/models/user1';
 
 @Injectable({
   providedIn: 'root'
@@ -12,6 +13,7 @@ import { IUser } from '../shared/models/user';
 export class AccountService {
   baseUrl = environment.apiUrl;
   private currentUserSource = new ReplaySubject<IUser>(1);
+
   currentUser$ = this.currentUserSource.asObservable();
 
   constructor(private http: HttpClient, private router: Router) { }
@@ -34,6 +36,7 @@ export class AccountService {
      })
     );
   }
+
 
   login(values: any) {
     return this.http.post(this.baseUrl + 'account/login', values).pipe(

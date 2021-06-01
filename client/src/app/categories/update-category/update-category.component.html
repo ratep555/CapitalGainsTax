@@ -1,0 +1,33 @@
+<div class="d-flex justify-content-center mt-5">
+    <div class="col-3">
+        <form [formGroup]="categoryForm" (ngSubmit)="onSubmit()">
+<!--             <input type="hidden" name="id" [value]="category?.id" />
+ -->            <div class="text-center mb-4">
+          <h1 class="h3 mb-3 font-weight-normal">Update Category</h1>
+            </div>
+          
+            <div class="form-label-group mb-3">
+              <input class="form-control" name="id"
+              [value]="category?.id">
+              <input formControlName="categoryName" id="categoryName" class="form-control" 
+               [value]="category?.categoryName">
+              <span class="text-danger" *ngIf="categoryForm.get('categoryName').invalid
+                 && categoryForm.get('categoryName').touched
+                 && categoryForm.get('categoryName').errors['required']">
+                 This field is required
+            </span>
+            <span class="text-danger" *ngIf="categoryForm.get('categoryName').invalid
+                 && categoryForm.get('categoryName').dirty
+                 && categoryForm.get('categoryName').errors['minLength']">
+                 4 characters!
+            </span>
+            <br>
+            </div>
+          
+            <button [disabled]="categoryForm.invalid" class="btn btn-lg 
+            btn-primary btn-block" type="submit">Save</button>
+          </form>
+    </div>
+    </div>
+   
+

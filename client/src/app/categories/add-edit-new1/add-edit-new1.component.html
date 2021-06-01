@@ -1,0 +1,28 @@
+<div class="d-flex justify-content-center mt-5">
+    <div class="col-3">
+        <form [formGroup]="form" (ngSubmit)="onSubmit()">
+          <input formControlName="id" id="id" class="form-control" hidden>
+
+            <div class="text-center mb-4">
+          <h1 class="h3 mb-3 font-weight-normal">Update Category</h1>
+            </div>
+          
+            <div class="form-label-group mb-3">
+              <input formControlName="categoryName" id="categoryName" class="form-control" 
+              placeholder="Category Name">
+              <div *ngIf="f.categoryName.errors">
+                <span class="text-danger" *ngIf="f.categoryName.errors.required">
+                  This field is required
+             </span>
+              </div>
+              
+            <br>
+            </div>
+          
+            <button [disabled]="form.invalid" class="btn btn-lg 
+            btn-primary btn-block" type="submit">Save</button>
+          </form>
+    </div>
+    </div>
+   
+

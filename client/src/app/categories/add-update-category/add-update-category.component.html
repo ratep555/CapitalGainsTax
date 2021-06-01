@@ -1,0 +1,23 @@
+<div class="d-flex justify-content-center mt-5">
+    <div class="col-3">
+        <form [formGroup]="categoryForm" (ngSubmit)="onSubmit()" #formDir="ngForm">
+            <div class="text-center mb-4">
+          <h1 class="h3 mb-3 font-weight-normal">Create Category</h1>
+            </div>
+          
+            <div class="form-label-group mb-3">
+              <input formControlName="categoryName" id="categoryName" class="form-control" 
+              placeholder="Category Name">
+              <span class="text-danger" *ngIf="categoryName?.invalid && formDir.submitted">
+                Name is required.
+            </span>
+            <br>
+            </div>
+          
+            <button class="btn btn-lg 
+            btn-primary btn-block" type="submit">Save</button>
+          </form>
+    </div>
+    </div>
+   
+

@@ -32,6 +32,10 @@ namespace Core.Interfaces
         Task<decimal> TotalNetProfit(string email);
         Task<TaxLiabilityVM> TotalNetProfit1(string email);
         Task<TaxLiabilityVM> ReturnTaxLiability(string email);
+        Task<StockTransaction> GetTransactionByEmailAndId(string email, int stockId, int quantity);
+        Task<Stock> FindStockById(int id);
+
+
 
 
     }

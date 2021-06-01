@@ -12,6 +12,7 @@ import { AccountService } from '../account.service';
 })
 export class RegisterComponent implements OnInit {
   registerForm: FormGroup;
+  errors: string[];
 
   constructor(private fb: FormBuilder, private accountService: AccountService, private router: Router) { }
 
@@ -52,6 +53,7 @@ export class RegisterComponent implements OnInit {
       this.router.navigateByUrl('/stocks');
     }, error => {
       console.log(error);
+      this.errors = error.errors;
     });
   }
 

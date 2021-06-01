@@ -1,4 +1,7 @@
 import { Component, ElementRef, OnInit, ViewChild } from '@angular/core';
+import { Router } from '@angular/router';
+import { ToastrService } from 'ngx-toastr';
+import { first } from 'rxjs/operators';
 import { ICategory } from '../shared/models/category';
 import { MycategoryParams } from '../shared/models/mycategoryParams';
 import { CategoriesService } from './categories.service';
@@ -16,10 +19,14 @@ export class CategoriesComponent implements OnInit {
 
 
 
-  constructor(private categoryService: CategoriesService) { }
+  constructor(private categoryService: CategoriesService,
+              private toastr: ToastrService,
+              private router: Router) { }
 
   ngOnInit(): void {
     this.getCategories();
+   // this.categoryService.refreshList();
+
   }
 
   getCategories() {
@@ -53,6 +60,20 @@ export class CategoriesComponent implements OnInit {
     }
 }
 
+onDelete(id: number) {
+  if (confirm('Are you sure you want to delete this record?')) {
+    this.categoryService.deleteCategory(id)
+      .subscribe(
+        res => {
+          this.getCategories();
+         // this.categoryService.refreshList();
+          this.toastr.error('Deleted successfully!');
+        },
+        err => { console.log(err);
+         }
+      );
+  }
+}
 }
 
 

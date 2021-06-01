@@ -248,6 +248,25 @@ namespace API.Controllers
         }
             return false;
     }
+    [HttpGet("exceedy/{id}/{id1}")]
+    public async Task<ActionResult<bool>> CheckTotalQuantity1( 
+    int stockId, int quantity, [FromQuery] string email)
+    {
+        email = User.RetrieveEmailFromPrincipal();
+        var stock = _transactionService.FindStockById(stockId);
+
+        var transaction = await _transactionService.GetTransactionByEmailAndId(email, stockId, quantity);
+        /* transaction.Quantity = quantity;
+        transaction.Email = email;
+        transaction.StockId = stockId; */
+
+        if (await _transactionService
+        .TotalQuantity(email, stock.Id) < quantity)
+        {
+            return true;
+        }
+            return false;
+    }
     [HttpGet("profit")]
     public async Task<ActionResult<decimal>> CheckTotalProfit()
     {

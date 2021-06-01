@@ -451,6 +451,17 @@ namespace Infrastructure.Services
 
             return await Task.FromResult(taxLiability);
         }
+        public async Task<StockTransaction> GetTransactionByEmailAndId(string email, int stockId, int quantity)
+        {
+            var transaction = await _context.StockTransactions.Where(t => t.Email == email && t.StockId == stockId && t.Quantity == quantity)
+            .FirstOrDefaultAsync();
+
+            return await Task.FromResult(transaction);
+        }
+        public async Task<Stock> FindStockById(int id)
+        {
+            return await _context.Stocks.Where(s => s.Id == id).FirstOrDefaultAsync();
+        }
     }
 }
 

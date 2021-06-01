@@ -8,6 +8,11 @@ namespace Core.Interfaces
     {
         Task CreateCategoryAsync(Category category);
         Task<IEnumerable<Category>> ListAllAsync();
+        Task UpdateCategoryAsync(Category category);
+
+        Task<Category> FindCategoryByIdAsync(int id);
+        Task DeleteCategory(Category category);
+
 
 
     }

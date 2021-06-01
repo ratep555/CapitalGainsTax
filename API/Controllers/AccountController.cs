@@ -1,3 +1,4 @@
+using System.Linq;
 using System.Threading.Tasks;
 using API.Dtos;
 using API.Errors;
@@ -5,6 +6,7 @@ using API.Extensions;
 using AutoMapper;
 using Core.Entities;
 using Core.Interfaces;
+using Core.ViewModels;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
@@ -17,31 +19,61 @@ namespace API.Controllers
         private readonly SignInManager<AppUser> _signInManager;
         private readonly ITokenService _tokenService;
         private readonly IMapper _mapper;
+        private readonly IUserService _userService;
 
         public AccountController(UserManager<AppUser> userManager,
         SignInManager<AppUser> signInManager,
         ITokenService tokenService,
-        IMapper mapper)
+        IMapper mapper,
+        IUserService userService)
         {
             _tokenService = tokenService;
             _mapper = mapper;
             _userManager = userManager;
             _signInManager = signInManager;
+            _userService = userService;
+
         }
         [Authorize]
         [HttpGet]
         public async Task<ActionResult<UserDto>> GetCurrentUser()
         {
-            var user = await _userManager.FindByEmailFromClaimsPrinciple(User);
-            
+            //kod iz felipe - udemy
+           // var email = HttpContext.User.Claims.FirstOrDefault(x => x.Type == "email").Value;
+           // var user = await _userManager.FindByEmailAsync(email);
+           // var userId = user.Id;
 
+            var user = await _userManager.FindByEmailFromClaimsPrinciple(User);
+
+            var userId = user.Id;
+
+            
             return new UserDto
             {
                 Email = user.Email,
                 Token = _tokenService.CreateToken(user),
-                DisplayName = user.DisplayName
+                DisplayName = user.DisplayName,
+                RoleName = await _userService.RoleName(userId)
             };
         }
+        [Authorize]
+        [HttpGet("gethim")]
+        public async Task<ActionResult<UserDto1>> GetCurrentUser1()
+        {
+            var user = await _userManager.FindByEmailFromClaimsPrinciple(User);
+
+            var userId = user.Id;
+            
+            return new UserDto1
+            {
+                Email = user.Email,
+                Token = _tokenService.CreateToken(user),
+                UserId = userId,
+                DisplayName = user.DisplayName,
+                RoleName = await _userService.RoleName(userId)
+            };
+        }
+        
         [HttpGet("emailexists")]
         public async Task<ActionResult<bool>> CheckEmailExistsAsync([FromQuery]string email)
         {             
@@ -62,7 +94,8 @@ namespace API.Controllers
             {
                 Email = user.Email,
                 Token = _tokenService.CreateToken(user),
-                DisplayName = user.DisplayName
+                DisplayName = user.DisplayName,
+                RoleName = await _userService.RoleName(user.Id)
             };
         }
         [HttpPost("register")]

@@ -9,6 +9,7 @@ import { IStock } from '../shared/models/stock';
 import { environment } from 'src/environments/environment';
 import { IStTransaction } from '../shared/models/transaction';
 import { Router } from '@angular/router';
+import { IStockToCreate } from '../shared/models/stockToCreate';
 
 
 @Injectable({
@@ -65,6 +66,14 @@ export class StocksService {
 
   getStock(id: number) {
     return this.http.get<IStock>(this.baseUrl + 'stocks/' + id);
+  }
+
+  getStock2(id: number) {
+    return this.http.get<IStockToCreate>(this.baseUrl + 'stocksAdmin/' + id);
+  }
+
+  getStock1(id: number) {
+    return this.http.get(this.baseUrl + 'stocks/ajmoopet/' + id);
   }
 
   getCategories() {

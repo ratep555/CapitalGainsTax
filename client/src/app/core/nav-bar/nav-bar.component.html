@@ -9,13 +9,44 @@
         <a class="p-2"  routerLink="/myportfolio" routerLinkActive="active">My Portfolio</a>
         <a class="p-2" routerLink="/transactions" routerLinkActive="active">Transactions</a>
         <a class="p-2" routerLink="/taxliability" routerLinkActive="active">Tax Liability</a>
+        <!-- <ng-container *ngIf="isAdmin">
+        <a class="p-2" routerLink="/taxliability" routerLinkActive="active">{{(currentUser$ | async)?.roleName}}</a>
+        </ng-container> -->
     </nav>
     <div class="d-flex align-items-center">      
         <ng-container *ngIf="(currentUser$ | async) === null">
             <a routerLink="/account/login" class="btn btn-outline-secondary mr-2" href="#">Login</a>
             <a routerLink="/account/register" class="btn btn-outline-secondary mr-3" href="#">Sign up</a>
         </ng-container>
-        <ng-container *ngIf="currentUser$ | async">
+
+       <ng-container *ngIf="(currentUser$ | async) && (currentUser$ | async)?.roleName==='Admin'">
+        <div class="dropdown ml-3 mr-5" dropdown>
+          <a class="dropdown-toggle park" style="cursor: pointer;" dropdownToggle>
+             <strong>Welcome {{(currentUser$ | async).roleName}} </strong> 
+          </a>
+          <div class="dropdown-menu dropdown-menu-right stark" style="cursor: pointer;" *dropdownMenu>
+             <a class="dropdown-items d-flex align-items-center py-2">
+             </a>
+             <a routerLink="/categories">
+               <i class="fa fa-balance-scale mr-3 ml-3"></i> Categories
+             </a>  
+             <div class="dropdown-divider"></div>
+             <a routerLink="/countries">
+               <i class="fa fa-balance-scale mr-3 ml-3"></i> Countries
+             </a>  
+             <div class="dropdown-divider"></div>
+             <a routerLink="/stocksAdmin">
+               <i class="fa fa-balance-scale mr-3 ml-3"></i> Stocks
+             </a>  
+             <div class="dropdown-divider"></div>
+             <a (click)="logout()" class="dropdown-items d-flex align-items-center py-2" >
+              <i class="fa fa-sign-out mr-4 ml-3"></i> Logout
+             </a>
+          </div>
+      </div>
+       </ng-container>
+        
+ <ng-container *ngIf="(currentUser$ | async) && (currentUser$ | async)?.roleName!=='Admin'">
             <div class="dropdown ml-3 mr-5" dropdown>
                 <a class="dropdown-toggle park" style="cursor: pointer;" dropdownToggle>
                    <strong>Welcome {{(currentUser$ | async).displayName}} </strong> 
@@ -26,10 +57,18 @@
                     <i class="fa fa-balance-scale mr-3 ml-3"></i> Tax Liability
                   </a>  
                    </a>
-                   <div class="dropdown-divider"></div>
+                   <!--  <div class="dropdown-divider"></div>
                    <a routerLink="/categories">
                      <i class="fa fa-balance-scale mr-3 ml-3"></i> Categories
                    </a>  
+                   <div class="dropdown-divider"></div>
+                   <a routerLink="/countries">
+                     <i class="fa fa-balance-scale mr-3 ml-3"></i> Countries
+                   </a>  
+                   <div class="dropdown-divider"></div>
+                   <a routerLink="/stocksAdmin">
+                     <i class="fa fa-balance-scale mr-3 ml-3"></i> Stocks
+                   </a>   -->
                    <div class="dropdown-divider"></div>
                    <a (click)="logout()" class="dropdown-items d-flex align-items-center py-2" >
                     <i class="fa fa-sign-out mr-4 ml-3"></i> Logout

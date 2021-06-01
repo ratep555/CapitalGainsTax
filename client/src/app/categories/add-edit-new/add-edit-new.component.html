@@ -1,0 +1,24 @@
+<div class="d-flex justify-content-center mt-5">
+    <div class="col-3">
+        <form [formGroup]="editForm" (ngSubmit)="onSubmit(editForm)">
+            <div class="text-center mb-4">
+          <h1 class="h3 mb-3 font-weight-normal">Update Category</h1>
+            </div>
+            <input formControlName="id"
+           id="id"
+           [value]="category?.id"
+            />
+
+            <div class="form-label-group mb-3">
+              <input formControlName="categoryName" id="categoryName" class="form-control" 
+              [value]="category?.categoryName">
+            <br>
+            </div>
+          
+            <button [disabled]="!editForm.valid" class="btn btn-lg 
+            btn-primary btn-block" type="submit">Update</button>
+          </form>
+    </div>
+    </div>
+   
+

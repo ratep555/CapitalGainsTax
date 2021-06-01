@@ -1,7 +1,13 @@
 export interface ICountry {
     id: number;
     countryName: string;
-    stockExchange: string;
   }
+
+export class INewCountry {
+    id: number;
+    countryName: string;
+    }
+
+
 
 

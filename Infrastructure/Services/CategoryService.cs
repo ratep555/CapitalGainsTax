@@ -26,6 +26,30 @@ namespace Infrastructure.Services
                 throw;
             }             
         }
+        public async Task UpdateCategoryAsync(Category category)
+        {
+            try
+            {
+                _categoryRepo.Update(category);
+                var result = await _unitOfWork.Complete();
+            }
+            catch
+            {
+                  throw;
+            }
+        }
+        public async Task DeleteCategory(Category category)
+        {
+            try
+            {
+                _categoryRepo.Delete(category);
+                var result = await _unitOfWork.Complete();
+            }
+            catch
+            {
+                  throw;
+            }
+        }
         public async Task<IEnumerable<Category>> ListAllAsync()
         {
             return await _unitOfWork.Repository<Category>().ListAllAsync();
@@ -33,6 +57,10 @@ namespace Infrastructure.Services
         public async Task<IEnumerable<Category>> ListAllAsync1(QueryParameters queryParameters)
         {
             return await _unitOfWork.Repository<Category>().ListAllAsync();
+        }
+        public async Task<Category> FindCategoryByIdAsync(int id)
+        {
+            return await _categoryRepo.GetByIdAsync(id);
         }
 
     }

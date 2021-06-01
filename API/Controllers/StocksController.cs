@@ -77,19 +77,25 @@ namespace API.Controllers
             return stocky;
 
         }
-       /*  [HttpGet("{id}")]
+        // ova je bez specifikacija
+        [HttpGet("ajmoopet/{id}")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(typeof(ApiResponse), StatusCodes.Status404NotFound)]
-        public async Task<ActionResult<StockToReturnDto>> GetStock(int id) 
+        public async Task<ActionResult<int>> GetStock1(int id) 
         {
-            var spec = new StocksWithCategoriesAndCountriesSpecification(id);
+            var email = User.RetrieveEmailFromPrincipal();
             
-            var stock = await _stocksRepo.GetEntityWithSpec(spec);
+            var stock = await _stocksRepo.GetByIdAsync(id);
 
             if(stock == null) return NotFound(new ApiResponse(404));
 
-            return _mapper.Map<Stock, StockToReturnDto>(stock);
-        } */
+            var stocky = _mapper.Map<Stock, StockToReturnDto1>(stock);
+
+            stocky.TotalQuantity = await _stockService.TotalQuantity(email, id);
+
+            return stocky.TotalQuantity;
+
+        }
 
         [HttpGet("categories")]
         public async Task<ActionResult<IReadOnlyList<Category>>> GetCategories()
