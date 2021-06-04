@@ -37,6 +37,10 @@ namespace API
             services.AddApplicationServices();
             services.AddIdentityServices(_config);
             services.AddSwaggerDocumentation();
+            
+            //dodao si novo httpclient
+            services.AddHttpClient();
+
 
             services.AddCors(opt => 
             {

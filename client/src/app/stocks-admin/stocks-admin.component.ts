@@ -69,5 +69,17 @@ onDelete(id: number) {
       );
   }
 }
+
+onRefresh() {
+this.stockAdminService.refreshPrices().subscribe(res => {
+ this.getStocks();
+},
+error => {
+  console.log(error);
+});
 }
+}
+
+
+
 

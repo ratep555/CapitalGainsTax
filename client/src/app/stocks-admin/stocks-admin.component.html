@@ -3,7 +3,10 @@
         <button routerLink="/stocksAdmin/addadminstock/"  class="btn btn-info my-2 mr-2">Add Stock</button>
     </div>
     <div class="form-inline pull-left">
-        <button routerLink="/stocksAdmin/addadminstock1/"  class="btn btn-info my-2">Add Stock</button>
+        <button routerLink="/stocksAdmin/addadminstock1/"  class="btn btn-info my-2 mr-2">Add Stock</button>
+    </div>
+    <div class="form-inline pull-left">
+        <button (click)="onRefresh()" class="btn btn-primary my-2">Refresh Prices</button>
     </div>
     <div class="form-inline pull-right">
         <input (keyup.enter)="onSearch()" type="text" 
@@ -25,7 +28,7 @@
                   Category
               </th>                    
               <th>
-                  Country
+                  Price
               </th>                    
               <th>
               </th>              
@@ -37,7 +40,7 @@
           <td>{{item.id}}</td>
           <td>{{item.symbol}}</td>
           <td>{{item.category}}</td>
-          <td>{{item.country}}</td>
+          <td>{{item.currentPrice}}</td>
           <td>  
             <div class="text-center">
                 <button routerLink="/stocksAdmin/editstock/{{item.id}}" mdbBtn size="sm" 

@@ -15,16 +15,19 @@ namespace API.Extensions
         public static IServiceCollection AddIdentityServices(this IServiceCollection services,
         IConfiguration config)
         {
-            var builder = services.AddIdentityCore<AppUser>();
+            var builder = services.AddIdentityCore<AppUser>();        
 
             builder = new IdentityBuilder(builder.UserType, builder.Services);
+            
+            //ovu liniju koda dolje si dodao naknadno zbog rola, štima iako nije po ps-u
+            builder.AddRoles<IdentityRole>();
             builder.AddEntityFrameworkStores<StoreContext>();
             builder.AddSignInManager<SignInManager<AppUser>>();
 
            /*  services.Configure<IdentityOptions>(options => 
     options.ClaimsIdentity.UserIdClaimType = ClaimTypes.NameIdentifier); */
 
-            services.AddAuthentication();
+           services.AddAuthentication();
 
            services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
                 .AddJwtBearer(options => 

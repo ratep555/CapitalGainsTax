@@ -78,6 +78,10 @@ getStockList() {
 deletingStock(id) {
   return this.http.delete(environment.apiUrl + 'stocksAdmin/' + id);
 }
+
+refreshPrices() {
+  return this.http.put(environment.apiUrl + 'securities', {});
+}
 }
 
 

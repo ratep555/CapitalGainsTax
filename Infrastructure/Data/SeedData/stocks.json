@@ -1,112 +1,112 @@
 [
     {
       "CompanyName": "Ingra d.d.",
-      "Symbol": "INGR-R-A",
+      "Symbol": "INGR",
       "CurrentPrice": 11.2,
       "CountryId": 1,
       "CategoryId": 1
     },
     {
         "CompanyName": "Rivijera Porec d.d.",
-        "Symbol": "RIVP-R-A",
+        "Symbol": "RIVP",
         "CurrentPrice": 29.60,
         "CountryId": 1,
         "CategoryId": 6
       },
       {
         "CompanyName": "Tehnika d.d.",
-        "Symbol": "THNK-R-A",
+        "Symbol": "THNK",
         "CurrentPrice": 220,
         "CountryId": 1,
         "CategoryId": 1
       },
       {
           "CompanyName": "Sunce Koncern d.d.",
-          "Symbol": "SUKC-R-A",
+          "Symbol": "SUKC",
           "CurrentPrice": 150,
           "CountryId": 1,
           "CategoryId": 6
         },
         {
           "CompanyName": "Zagrebacka banka d.d.",
-          "Symbol": "ZABA-R-A",
+          "Symbol": "ZABA",
           "CurrentPrice": 55,
           "CountryId": 1,
           "CategoryId": 3
         },
         {
             "CompanyName": "Podravka d.d.",
-            "Symbol": "PODR-R-A",
+            "Symbol": "PODR",
             "CurrentPrice": 29.60,
             "CountryId": 1,
             "CategoryId": 5
           },
           {
             "CompanyName": "Jadroplov d.d.",
-            "Symbol": "JDPL-R-A",
+            "Symbol": "JDPL",
             "CurrentPrice": 13.50,
             "CountryId": 1,
             "CategoryId": 2
           },
           {
               "CompanyName": "Cakovecki Mlinovi d.d.",
-              "Symbol": "CKML-R-A",
+              "Symbol": "CKML",
               "CurrentPrice": 7200,
               "CountryId": 1,
               "CategoryId": 4
             },
             {
               "CompanyName": "Atlantska Plovidba d.d.",
-              "Symbol": "ATPL-R-A",
+              "Symbol": "ATPL",
               "CurrentPrice": 189,
               "CountryId": 1,
               "CategoryId": 2
             },
             {
                 "CompanyName": "Atlantic Grupa d.d.",
-                "Symbol": "ATGR-R-A",
+                "Symbol": "ATGR",
                 "CurrentPrice": 1440,
                 "CountryId": 1,
                 "CategoryId": 5
               },
               {
                 "CompanyName": "Uljanik Plovidba d.d.",
-                "Symbol": "ULPL-R-A",
+                "Symbol": "ULPL",
                 "CurrentPrice": 20,
                 "CountryId": 1,
                 "CategoryId": 2
               },
               {
                   "CompanyName": "Institut Građevinarstva Hrvatske d.d.",
-                  "Symbol": "IGH-R-A",
+                  "Symbol": "IGH",
                   "CurrentPrice": 129,
                   "CountryId": 1,
                   "CategoryId": 1
                 },
                 {
-                  "CompanyName": "Ingra d.d.",
-                  "Symbol": "INGR-R-A",
+                  "CompanyName": "Plava Laguna d.d.",
+                  "Symbol": "PLAG",
                   "CurrentPrice": 11.2,
                   "CountryId": 1,
                   "CategoryId": 1
                 },
                 {
                     "CompanyName": "Adris grupa d.d.",
-                    "Symbol": "ADRS-R-A",
+                    "Symbol": "ADRS",
                     "CurrentPrice": 410,
                     "CountryId": 1,
                     "CategoryId": 6
                   },
                   {
                     "CompanyName": "Arenaturist d.d.",
-                    "Symbol": "ARNT-R-A",
+                    "Symbol": "ARNT",
                     "CurrentPrice": 350,
                     "CountryId": 1,
                     "CategoryId": 6
                   },
                   {
                       "CompanyName": "Turisthotel d.d.",
-                      "Symbol": "TUHO-R-A",
+                      "Symbol": "TUHO",
                       "CurrentPrice": 3000,
                       "CountryId": 1,
                       "CategoryId": 6
