@@ -35,7 +35,7 @@ namespace API.Controllers
             StockDataModel1 stockData = new StockDataModel1();
 
             var request = new HttpRequestMessage(HttpMethod.Get,
-           "https://rest.zse.hr/web/Bvt9fe2peQ7pwpyYqODM/price-list/XZAG/2021-06-02/json");
+           "https://rest.zse.hr/web/Bvt9fe2peQ7pwpyYqODM/price-list/XZAG/2021-06-14/json");
 
             var client = _clientFactory.CreateClient();
 
@@ -56,7 +56,7 @@ namespace API.Controllers
             StockDataModel1 stockData = new StockDataModel1();
 
             var request = new HttpRequestMessage(HttpMethod.Get,
-           "https://rest.zse.hr/web/Bvt9fe2peQ7pwpyYqODM/price-list/XZAG/2021-06-02/json");
+           "https://rest.zse.hr/web/Bvt9fe2peQ7pwpyYqODM/price-list/XZAG/2021-06-14/json");
 
             var client = _clientFactory.CreateClient();
 
@@ -102,12 +102,12 @@ namespace API.Controllers
         }
         //ovo šljaka, ne trebaš niš drugo!
         [HttpPut]
-        public async Task<ActionResult<List<Stock>>> ConvertStocks1()
+        public async Task<ActionResult<IEnumerable<Stock>>> ConvertStocks1()
         {
             StockDataModel1 stockData = new StockDataModel1();
 
             var request = new HttpRequestMessage(HttpMethod.Get,
-           "https://rest.zse.hr/web/Bvt9fe2peQ7pwpyYqODM/price-list/XZAG/2021-05-04/json");
+           "https://rest.zse.hr/web/Bvt9fe2peQ7pwpyYqODM/price-list/XZAG/2021-06-15/json");
 
             var client = _clientFactory.CreateClient();
 

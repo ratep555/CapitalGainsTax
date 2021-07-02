@@ -27,7 +27,7 @@ export class StocksAdminService {
     }
     params = params.append('page', myParams.pageNumber.toString());
     params = params.append('pageCount', myParams.pageSize.toString());
-    return this.http.get<IPagination3>(this.baseUrl + 'stocksAdmin', {observe: 'response', params})
+    return this.http.get<IPagination3>(this.baseUrl + 'stocksAdmin/novi', {observe: 'response', params})
     .pipe(
       map(response  => {
         return response.body;

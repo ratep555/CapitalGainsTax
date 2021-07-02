@@ -31,10 +31,32 @@ namespace Infrastructure.Services
 
     public async Task<IEnumerable<Stock>> ListAllStocksAsync()
     {
+
             return await _context.Stocks
             .Include(p => p.Category)
             .Include(p => p.Country)
             .ToListAsync();
+    }
+    public async Task<IEnumerable<Stock>> ListAllStocksAsync1(QueryParameters queryParameters)
+    {
+
+             IEnumerable<Stock> list = await _context.Stocks
+                                       .Include(p => p.Category)
+                                       .Include(p => p.Country)
+                                       .OrderBy(p => p.Symbol).ToListAsync();
+
+             if (queryParameters.HasQuery())
+            {
+                list = list
+                .Where(t => t.Symbol.
+                ToLowerInvariant().Contains(queryParameters.Query.ToLowerInvariant()));
+            }
+
+           /*   list = list.Skip(queryParameters.PageCount * (queryParameters.Page - 1))
+                        .Take(queryParameters.PageCount); */
+
+            return list;
+
     }
 
     public async Task<IEnumerable<Country>> ListAllCountriesAsync()
@@ -114,8 +136,11 @@ namespace Infrastructure.Services
         return await Task.FromResult(userId);
     }
     public async Task<Stock> FindStockById(int stockId)
-    {
-        return await _context.Stocks.FindAsync(stockId);
+    {        
+            return await _context.Stocks
+            .Include(p => p.Category)
+            .Include(p => p.Country)
+            .FirstOrDefaultAsync(p => p.Id == stockId);
     }
     public async Task SavingStock(Stock stock)
     {

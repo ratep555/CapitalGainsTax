@@ -1,7 +1,10 @@
+using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using API.Dtos;
 using API.Errors;
 using API.Helpers;
+using AutoMapper;
 using Core.Entities;
 using Core.Interfaces;
 using Microsoft.AspNetCore.Authorization;
@@ -14,8 +17,10 @@ namespace API.Controllers
     public class CountriesController : BaseApiController
     {
         private readonly ICountryService _countryService;
-        public CountriesController(ICountryService countryService)
+        private readonly IMapper _mapper;
+        public CountriesController(ICountryService countryService, IMapper mapper)
         {
+            _mapper = mapper;
             _countryService = countryService;
         }
 
@@ -40,6 +45,23 @@ namespace API.Controllers
             return Ok(new Pagination1<Country>
             (queryParameters.Page, queryParameters.PageCount, list.Count(), listy));
         }
+        // ovo šljaka umjesto standardnog gore!
+        [HttpGet("novi")]
+        public async Task<ActionResult<Pagination1<CountryToReturnDto>>> GetCountries1(
+            [FromQuery] QueryParameters queryParameters
+        )
+        {
+            var list = await _countryService.ListAllAsync1(queryParameters);
+
+            var data = _mapper.Map<IEnumerable<Country>, IEnumerable<CountryToReturnDto>>(list);
+
+            data = data
+                          .Skip(queryParameters.PageCount * (queryParameters.Page - 1))
+                          .Take(queryParameters.PageCount);
+
+            return Ok(new Pagination1<CountryToReturnDto>
+            (queryParameters.Page, queryParameters.PageCount, list.Count(), data));
+        }
 
         [HttpGet("{id}")]
         [ProducesResponseType(StatusCodes.Status200OK)]
@@ -53,7 +75,7 @@ namespace API.Controllers
             return Ok(country);
 
         }
-        
+
         [HttpPost("create")]
         public async Task<ActionResult> CreateCountryAsync([FromBody] Country country)
         {
@@ -61,7 +83,7 @@ namespace API.Controllers
 
             return Ok(country);
         }
-        
+
         [HttpPut("{id}")]
         public async Task<ActionResult<Category>> UpdateCountry(int id, [FromBody] Country country)
         {

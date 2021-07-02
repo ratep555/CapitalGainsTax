@@ -190,7 +190,14 @@ namespace Infrastructure.Data.Migrations
                     CurrentPrice = table.Column<decimal>(type: "decimal(18,2)", nullable: false),
                     CompanyName = table.Column<string>(type: "nvarchar(70)", maxLength: 70, nullable: false),
                     CountryId = table.Column<int>(type: "int", nullable: false),
-                    CategoryId = table.Column<int>(type: "int", nullable: false)
+                    CategoryId = table.Column<int>(type: "int", nullable: false),
+                    NumberOfEmployees = table.Column<int>(type: "int", nullable: true),
+                    SharesOutstanding = table.Column<int>(type: "int", nullable: true),
+                    OwnShares = table.Column<int>(type: "int", nullable: true),
+                    Revenue = table.Column<decimal>(type: "decimal(18,2)", nullable: true),
+                    Expenditure = table.Column<decimal>(type: "decimal(18,2)", nullable: true),
+                    EnterpriseValue = table.Column<decimal>(type: "decimal(18,2)", nullable: true),
+                    Dividend = table.Column<decimal>(type: "decimal(18,2)", nullable: true)
                 },
                 constraints: table =>
                 {

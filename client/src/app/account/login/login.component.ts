@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
+import { ToastrService } from 'ngx-toastr';
 import { error } from 'selenium-webdriver';
 import { AccountService } from '../account.service';
 
@@ -13,7 +14,10 @@ export class LoginComponent implements OnInit {
   loginForm: FormGroup;
   returnUrl: string;
 
-  constructor(private accountService: AccountService, private router: Router, private activatedRoute: ActivatedRoute) { }
+  constructor(private accountService: AccountService,
+              private router: Router,
+              private activatedRoute: ActivatedRoute,
+              private toastr: ToastrService) { }
 
   ngOnInit(): void {
     this.returnUrl = this.activatedRoute.snapshot.queryParams.returnUrl || '';
@@ -31,7 +35,9 @@ export class LoginComponent implements OnInit {
   onSubmit() {
     this.accountService.login(this.loginForm.value).subscribe(() => {
       this.router.navigateByUrl(this.returnUrl);
-    }, error => {
+    },
+     error => {
+      this.toastr.error('Authorized, you are not!');
       console.log(error);
     }
     );

@@ -4,4 +4,5 @@ export interface IUser1 {
     token: string;
     userId: string;
     roleName: string;
+    lockoutEnd: Date;
   }

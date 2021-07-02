@@ -19,4 +19,20 @@ export class TaxliabilityService {
   showTaxLiability1() {
     return this.http.get<IProfitTotal>(this.baseUrl + 'transactions/profitwow');
   }
+
+  showTaxLiability3(id: number) {
+    return this.http.put<IProfitTotal>(this.baseUrl + 'transactions/profitwowy/' + id, {});
+  }
+
+  showTaxLiability2(values: any) {
+    return this.http.put<IProfitTotal>(this.baseUrl + 'transactions/profitwowz', values);
+  }
 }
+
+
+
+
+
+
+
+

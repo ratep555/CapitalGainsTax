@@ -7,7 +7,7 @@ import { TaxLiabilityDetailComponent } from './tax-liability-detail/tax-liabilit
 
 
 const routes: Routes = [
-// {path: '', component: TaxliabilityComponent},
+ {path: '', component: TaxliabilityComponent},
 {path: 'tax', component: TaxLiabilityDetailComponent, data: {breadcrumb: 'Tax Details'}},
 
 ];
@@ -15,7 +15,7 @@ const routes: Routes = [
 @NgModule({
   declarations: [],
   imports: [
-    RouterModule.forRoot(routes)
+    RouterModule.forChild(routes)
   ],
   exports: [RouterModule]
 

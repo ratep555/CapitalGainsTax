@@ -7,6 +7,7 @@ using Core.ViewModels;
 using Infrastructure.Data;
 using System.Linq;
 using Microsoft.EntityFrameworkCore;
+using System;
 
 namespace Infrastructure.Services
 {
@@ -122,15 +123,6 @@ namespace Infrastructure.Services
                                     
                              }).OrderBy(t => t.Id).ToListAsync();   
 
-              /*  int? basket = 0;
-               decimal? basket1 = 0;
-               decimal? basket2 = 0;
-               decimal? basket3 = 0;
-               decimal? basket4 = 0; */
-               /* decimal? basket5 = 0;
-               decimal? basket6 = 0;
-               decimal? basket7 = 0;
-               decimal? basket8 = 0; */
 
                foreach (var item in transactions)
                {
@@ -151,37 +143,87 @@ namespace Infrastructure.Services
                
                return await Task.FromResult(transactions);    
         }
-
-        public async Task<IQueryable<TransactionsForUserVM>> ShowTransactionsForSpecificUser2(QueryParameters queryParameters,
-         string email)
+        public async Task<IEnumerable<TransactionsForUserVM>> ShowTransactionsForSpecificUser4(
+        QueryParameters queryParameters,
+        string email)
         {
-            IQueryable<TransactionsForUserVM> transactions = 
-                              (from t in _context.StockTransactions
+            IEnumerable<TransactionsForUserVM> transactions = 
+                             await (from t in _context.StockTransactions
                                join u in _context.Users.Where(u => u.Email == email)                          
-                               on t.UserId equals u.Id 
+                               on t.Email equals u.Email 
                                join s in _context.Stocks
                                on t.StockId equals s.Id
                                select new TransactionsForUserVM 
                                {
                                     Id = t.Id,
-                                    UserId = t.UserId,
                                     StockId = s.Id,
                                     Stock = s.Symbol,
-                                    Price = t.Price,
                                     Quantity = t.Quantity,
                                     Purchase = t.Purchase,
+                                    Price = t.Price,
                                     Resolved = t.Resolved,
-                                    Date = t.Date    
+                                    Date = t.Date,
+                                    Email = email
                                     
-                             }).AsQueryable().OrderBy(s => s.Stock);         
+                             }).OrderBy(x => x.Date).ToListAsync();   
+
+
+            if (queryParameters.HasQuery())
+            {
+                     transactions =  transactions
+                               .Where(t => t.Stock.ToLowerInvariant().Contains(queryParameters.Query.ToLowerInvariant()));
+            }
+                         
+              /*  foreach (var item in transactions)
+               {
+                     var model1 = await _context.StockTransactions.FindAsync(item.Id);
+                     
+                     if (item.Purchase == true)
+                     {
+                         if (item.Resolved != 0)
+                         {                            
+                             item.NetProfit = (model1.Resolved * model1.Price);
+                         }
+                     }
+                     else if (item.Purchase == false)
+                     {
+                         item.NetProfit = (model1.Quantity * model1.Price);
+                     }                                                                                                                           
+               } */
+               
+               return await Task.FromResult(transactions);    
+        }
+
+        public async Task<IEnumerable<TransactionsForUserVM>> ShowTransactionsForSpecificUser2(QueryParameters queryParameters,
+         string email)
+        {
+            IQueryable<TransactionsForUserVM> transactions =
+                              (from t in _context.StockTransactions
+                               join u in _context.Users.Where(u => u.Email == email)                          
+                               on t.Email equals u.Email 
+                               join s in _context.Stocks
+                               on t.StockId equals s.Id
+                               select new TransactionsForUserVM 
+                               {
+                                    Id = t.Id,
+                                    StockId = s.Id,
+                                    Stock = s.Symbol,
+                                    Quantity = t.Quantity,
+                                    Purchase = t.Purchase,
+                                    Price = t.Price,
+                                    Resolved = t.Resolved,
+                                    Date = t.Date,
+                                    Email = email
+                                    
+                             }).AsQueryable().OrderBy(s => s.Date);         
 
             if (queryParameters.HasQuery())
             {
                     transactions = transactions
-                    .Where(t => t.Stock.ToLowerInvariant().Contains(queryParameters.Query.ToLowerInvariant()));
+                    .Where(t => t.Stock.Contains(queryParameters.Query));
             }
                                     
-               return await Task.FromResult(transactions);
+               return await transactions.ToListAsync();
      
         }
         public async Task<StockTransaction> CreateTransaction(StockTransaction transaction)
@@ -201,8 +243,8 @@ namespace Infrastructure.Services
 
              int soldQuantity = 0;
 
-             var list = _context.StockTransactions
-             .Where(x => x.StockId == stockId && x.Email == email).ToList();
+             var list = await _context.StockTransactions
+             .Where(x => x.StockId == stockId && x.Email == email).ToListAsync();
 
              foreach(var item in list)
              {
@@ -216,8 +258,8 @@ namespace Infrastructure.Services
              {
                     if(item.Purchase == true)
                     {
-                        var model1 = _context.StockTransactions.Where
-                        (x => x.Id == item.Id && x.StockId == stockId).FirstOrDefault();
+                        var model1 = await _context.StockTransactions.Where
+                        (x => x.Id == item.Id && x.StockId == stockId).FirstOrDefaultAsync();
                     
                         if(model1 != null) 
                         {
@@ -229,13 +271,13 @@ namespace Infrastructure.Services
                                     {
                                         model1.Resolved = item.Quantity;
 
-                                        _context.SaveChanges();
+                                        await _context.SaveChangesAsync();
                                     }
                                     else if(newSoldQuantity < 0)
                                     {
                                         model1.Resolved = soldQuantity;
 
-                                        _context.SaveChanges();
+                                        await _context.SaveChangesAsync();
                                     }
                                     soldQuantity = newSoldQuantity;
                                 }
@@ -243,7 +285,7 @@ namespace Infrastructure.Services
                     }                   
              }
 
-             return transaction;
+             return await Task.FromResult(transaction);
         }
         public async Task<string> GetUserId()
         {
@@ -262,8 +304,8 @@ namespace Infrastructure.Services
 
              int soldQuantity = 0;
 
-             var list = _context.StockTransactions
-             .Where(x => x.StockId == stockId && x.UserId == userId).ToList();
+             var list = await _context.StockTransactions
+             .Where(x => x.StockId == stockId && x.UserId == userId).ToListAsync();
 
              foreach(var item in list)
              {
@@ -277,8 +319,8 @@ namespace Infrastructure.Services
              {
                     if(item.Purchase == true)
                     {
-                        var model1 = _context.StockTransactions.Where
-                        (x => x.Id == item.Id && x.StockId == stockId).FirstOrDefault();
+                        var model1 = await _context.StockTransactions.Where
+                        (x => x.Id == item.Id && x.StockId == stockId).FirstOrDefaultAsync();
                     
                         if(model1 != null) 
                         {
@@ -290,13 +332,13 @@ namespace Infrastructure.Services
                                     {
                                         model1.Resolved = item.Quantity;
 
-                                        _context.SaveChanges();
+                                       await _context.SaveChangesAsync();
                                     }
                                     else if(newSoldQuantity < 0)
                                     {
                                         model1.Resolved = soldQuantity;
 
-                                        _context.SaveChanges();
+                                        await _context.SaveChangesAsync();
                                     }
                                     soldQuantity = newSoldQuantity;
                                 }
@@ -316,8 +358,8 @@ namespace Infrastructure.Services
 
              int soldQuantity = 0;
 
-             var list = _context.StockTransactions
-             .Where(x => x.StockId == stockId && x.Email == email).ToList();
+             var list = await _context.StockTransactions
+             .Where(x => x.StockId == stockId && x.Email == email).ToListAsync();
 
              foreach(var item in list)
              {
@@ -331,8 +373,8 @@ namespace Infrastructure.Services
              {
                     if(item.Purchase == true)
                     {
-                        var model1 = _context.StockTransactions.Where
-                        (x => x.Id == item.Id && x.StockId == stockId).FirstOrDefault();
+                        var model1 = await _context.StockTransactions.Where
+                        (x => x.Id == item.Id && x.StockId == stockId).FirstOrDefaultAsync();
                     
                         if(model1 != null) 
                         {
@@ -344,13 +386,13 @@ namespace Infrastructure.Services
                                     {
                                         model1.Resolved = item.Quantity;
 
-                                        _context.SaveChanges();
+                                       await _context.SaveChangesAsync();
                                     }
                                     else if(newSoldQuantity < 0)
                                     {
                                         model1.Resolved = soldQuantity;
 
-                                        _context.SaveChanges();
+                                       await _context.SaveChangesAsync();
                                     }
                                     soldQuantity = newSoldQuantity;
                                 }
@@ -451,6 +493,28 @@ namespace Infrastructure.Services
 
             return await Task.FromResult(taxLiability);
         }
+        public async Task<TaxLiabilityVM> ReturnTaxLiability1(string email, int surtaxId)
+        {
+            var surtax = await _context.Surtaxes.Where(s => s.Id == surtaxId).FirstOrDefaultAsync();
+            
+            decimal f = 100;
+            decimal? basket4 = await TotalNetProfit(email);
+            decimal? basket5 = (12 / f) * basket4;
+            decimal? basket6 = (surtax.Amount / f) * basket5;
+            decimal? basket7 = basket5 + basket6;
+            decimal? basket8 = basket4 - basket7;
+
+            var taxLiability = new TaxLiabilityVM
+            {
+                GrossProfit = basket4,
+                CapitalGainsTax = basket5,
+                Surtax = basket6,
+                TotalTaxLiaility = basket7,
+                NetProfit = basket8
+            };
+
+            return await Task.FromResult(taxLiability);
+        }
         public async Task<StockTransaction> GetTransactionByEmailAndId(string email, int stockId, int quantity)
         {
             var transaction = await _context.StockTransactions.Where(t => t.Email == email && t.StockId == stockId && t.Quantity == quantity)
@@ -462,6 +526,113 @@ namespace Infrastructure.Services
         {
             return await _context.Stocks.Where(s => s.Id == id).FirstOrDefaultAsync();
         }
+        public async Task<IEnumerable<StockTransaction>> Fifo(string email)
+        {
+            var today = DateTime.Now.AddDays(2);
+
+            var list = await  _context.StockTransactions.Where(o => (o.Email == email)).ToListAsync();
+
+            list = list.Where((o => (o.Purchase == true && o.Quantity != o.Resolved) && (
+            o.Purchase == false && o.Date > today))).ToList();
+
+            return await Task.FromResult(list);
+        }
+        public async Task<IEnumerable<StockTransaction>> Fifo1(string email)
+        {
+            var today = DateTime.Now.AddDays(2); 
+
+            var list = await  _context.StockTransactions.Where(o => (o.Email == email)).ToListAsync();
+
+            list = list.Where(o => o.Purchase == true && o.Quantity != o.Resolved).ToList();
+
+            return await Task.FromResult(list);
+        }
+
+        public async Task<IEnumerable<StockTransaction>> Again(string email)
+        {
+            var datesy = DateTime.Now.AddDays(2);
+
+            var list = await (from t in _context.StockTransactions
+                       where t.Email == email
+                       select t).ToListAsync();
+
+            var list1 = (from s in list
+                        where s.Purchase == true && s.Quantity != s.Resolved
+                        where s.Purchase != true && s.Date > datesy
+                        select s).ToList();
+
+            return await Task.FromResult(list1);
+        }
+
+
+        public async Task<string> GetUserId1()
+    {
+        var userId = await (from u in _context.Users
+                            select u.Id).FirstOrDefaultAsync();
+
+        return await Task.FromResult(userId);
+    }
+
+     public async Task<IEnumerable<StockTransaction>> Fifo5(string email)
+    {
+            var today = DateTime.Now.AddDays(2);
+
+            var list = await  _context.StockTransactions.Include(s => s.Stock)
+            .Where(o => o.Email == email && 
+            (o.Purchase == true && o.Quantity != o.Resolved) || (
+            o.Purchase == false && o.Date > today)).ToListAsync();
+
+            return await Task.FromResult(list);
+    }
+
+     private async Task<decimal> TotalNetProfit5(string userId)
+        { 
+            decimal basket = 0;
+
+            foreach (var item in _context.Stocks.ToList())
+            {
+                var totalNetProfit = (_context.StockTransactions
+                .Where(t => t.UserId == userId && t.StockId == item.Id && t.Purchase == false)
+                .Sum(t => t.Price * t.Quantity)) - 
+                (_context.StockTransactions
+                .Where(t => t.UserId == userId && t.StockId == item.Id && t.Purchase == true && t.Resolved > 0)
+                .Sum(t => t.Resolved * t.Price));
+
+                basket += totalNetProfit;
+            }
+
+            return await Task.FromResult(basket);
+        }
+
+           public async Task<TaxLiabilityVM> ReturnTaxLiability7(string userId)
+        {
+            decimal f = 100;
+            decimal? basket4 = await TotalNetProfit5(userId);
+            decimal? basket5 = (12 / f) * basket4;
+            decimal? basket6 = (18 / f) * basket5;
+            decimal? basket7 = basket5 + basket6;
+            decimal? basket8 = basket4 - basket7;
+
+            var taxLiability = new TaxLiabilityVM
+            {
+                GrossProfit = basket4,
+                CapitalGainsTax = basket5,
+                Surtax = basket6,
+                TotalTaxLiaility = basket7,
+                NetProfit = basket8
+            };
+
+            return await Task.FromResult(taxLiability);
+        }
+
+        public async Task<string> GetUserId7(string email)
+        {
+            var userId = await (from u in _context.Users.Where(u => u.Email == email)
+                         select u.Id).FirstOrDefaultAsync();         
+
+            return await Task.FromResult(userId);         
+        } 
+
     }
 }
 

@@ -10,6 +10,9 @@ namespace Core.Interfaces
         Task<IEnumerable<Category>> ListAllAsync();
         Task UpdateCategoryAsync(Category category);
 
+        Task<IEnumerable<Category>> ListAllAsync2(QueryParameters queryParameters);
+
+
         Task<Category> FindCategoryByIdAsync(int id);
         Task DeleteCategory(Category category);
 

@@ -17,6 +17,7 @@ namespace API.Extensions
             services.AddScoped<ICountryService, CountryService>();
             services.AddScoped<ITransactionService, TransactionService>();
             services.AddScoped<IStockService, StockService>();
+            services.AddScoped<ISurtaxService, SurtaxService>();
             services.AddScoped<IUserService, UserService>();
             services.AddScoped<ISecurityService, SecurityService>();
             services.AddScoped<IUnitOfWork, UnitOfWork>();

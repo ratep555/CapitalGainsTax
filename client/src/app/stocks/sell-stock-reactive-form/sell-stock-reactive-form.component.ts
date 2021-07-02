@@ -5,6 +5,7 @@ import { of, timer } from 'rxjs';
 import { map, switchMap } from 'rxjs/operators';
 import { IStock } from 'src/app/shared/models/stock';
 import { IStTransaction } from 'src/app/shared/models/transaction';
+import { parseWebAPIErrors } from 'src/app/shared/utils';
 import { TransactionsService } from 'src/app/transactions/transactions.service';
 import { BreadcrumbService } from 'xng-breadcrumb';
 import { StocksService } from '../stocks.service';
@@ -18,6 +19,8 @@ export class SellStockReactiveFormComponent implements OnInit {
   loginForm: FormGroup;
   stock: IStock;
   quantitivo: number;
+  errors: string[] = [];
+
 
   constructor(public service: StocksService,
               private activatedRoute: ActivatedRoute,
@@ -49,10 +52,13 @@ onSubmit() {
   this.service.sellStock1(this.loginForm.value).subscribe(() => {
     this.resetForm(this.loginForm);
     this.router.navigateByUrl('myportfolio');
-
   },
   error => {
-    console.log(error);
+     console.log(error);
+    // ovo nisi uspio iz felipe projekta, šljaka ti sada kada si promijenio u controlleru
+    // u bad request!
+     this.errors = parseWebAPIErrors(error);
+
   });
  // this.router.navigateByUrl('stocks');
 }

@@ -1,1 +1,186 @@
-<p>tax-liability-detail works!</p>
+<div class="container mt-5 mb-3">
+    <div *ngIf="profit?.grossProfit">
+      <div class="container">   
+       <!--  <div class="form-inline pull-left">
+            <button routerLink="/stocksAdmin/addadminstock/"  class="btn btn-info my-2 mr-2">
+              Please Select your Current Residence
+            </button>          
+        </div> -->
+
+        <!-- <div>
+          <ul *ngFor="let item of surtaxes">
+            <li>{{item.residence}}</li>
+          </ul>
+        </div> -->
+          <div class="row">                       
+            <div class="col-md-4">
+              <div class="form-inline pull-left" >
+                <form [formGroup]="surtaxForm" (ngSubmit)="onSubmit()">
+                <input
+                formControlName="residence"
+                [typeahead]="surtaxes"
+                typeaheadOptionField="residence"
+                [typeaheadOptionsInScrollableView]="5"
+                [typeaheadScrollable]="true"
+                (typeaheadOnSelect)="onSelect2($event)"
+                placeholder="Choose your residence"
+                class="form-control">  
+               <!--  <button type="submit" class="btn btn-info ml-2">
+                  <i class="fa fa-refresh mr-1" aria-hidden="true"></i>
+                  Reset</button> -->
+                  </form>
+              </div>                          
+            </div>
+            <div class="col-md-8">
+              <table class="center table table-bordered table-striped table-condensed table-hover">
+                <thead>
+                    <tr>
+                        <th>
+                          Total Gross Profit
+                        </th>
+                        <th>
+                           {{profit1?.grossProfit | currency}}
+                        </th>
+                    </tr>
+                    <tr>
+                        <th>
+                          Capital Gains Tax (12%)
+                        </th>
+                        <th>
+                      {{profit1?.capitalGainsTax | currency}}
+                  </th>
+                    </tr>
+                    <tr>
+                        <th>
+                          Surtax (18%)
+                        </th>
+                        <th>
+                           {{profit1?.surtax | currency}}
+                        </th>
+                    </tr>
+                    <tr>
+                      <th>
+                          Total Tax Liability
+                      </th>
+                      <th>
+                          {{profit1?.totalTaxLiaility | currency}}
+                      </th>
+                    </tr>
+                    <tr>
+                        <th>
+                          Total Net Profit
+                        </th>
+                        <th>
+                           {{profit1?.netProfit | currency}}
+                        </th>
+                    </tr>
+                </thead>
+                </table>
+             </div>     
+          </div>                    
+
+        <br/><br/><br/>
+       <div class="row">
+         <div class="col-md-4">
+          <input [(ngModel)]="selectedValue"
+          formControlName="id"
+          [typeahead]="surtaxes"
+          typeaheadOptionField="residence"
+          [typeaheadOptionsInScrollableView]="5"
+          [typeaheadScrollable]="true"
+          (typeaheadOnSelect)="onSelect2($event)"
+          placeholder="Choose your residence"
+          class="form-control">  
+          <!-- <input [(ngModel)]="selected"
+          [typeahead]="states"
+          placeholder="Choose your residence"
+          class="form-control"> -->
+         </div>
+        
+         <div class="col-md-8">
+          <table class="center table table-bordered table-striped table-condensed table-hover">
+            <thead>
+                <tr>
+                    <th>
+                      Total Gross Profit
+                    </th>
+                    <th>
+                       {{profit?.grossProfit | currency}}
+                    </th>
+                </tr>
+                <tr>
+                    <th>
+                      Capital Gains Tax (12%)
+                    </th>
+                    <th>
+                  {{profit?.capitalGainsTax | currency}}
+              </th>
+                </tr>
+                <tr>
+                    <th>
+                      Surtax (18%)
+                    </th>
+                    <th>
+                       {{profit?.surtax | currency}}
+                    </th>
+                </tr>
+                <tr>
+                  <th>
+                      Total Tax Liability
+                  </th>
+                  <th>
+                      {{profit?.totalTaxLiaility | currency}}
+                  </th>
+                </tr>
+                <tr>
+                    <th>
+                      Total Net Profit
+                    </th>
+                    <th>
+                       {{profit?.netProfit | currency}}
+                    </th>
+                </tr>
+            </thead>
+            </table>
+         </div>     
+          <div class="col-md-4">
+          <!--   <input [(ngModel)]="selectedValue" [typeahead]="countries" 
+            typeaheadOptionField="name" [typeaheadScrollable]="true"  
+    (typeaheadOnSelect)="onSelect($event)" class="form-control">   -->
+
+                 <!--ovo šljaka za sada!-->
+             <!-- <input [(ngModel)]="selectedValue"
+            [typeahead]="surtaxes"
+            typeaheadOptionField="residence"
+            [typeaheadOptionsInScrollableView]="5"
+            [typeaheadScrollable]="true"
+            (typeaheadOnSelect)="onSelect2($event)"
+            placeholder="Choose your residence"
+            class="form-control">   -->
+
+           <!-- <input            
+            [typeahead]="surtaxes1"
+            typeaheadOptionField="residence"
+                  [typeaheadScrollable]="true"
+                  [typeaheadOptionsInScrollableView]="5"
+                  (typeaheadOnSelect)="onSelect1($event)"
+            placeholder="Choose your residence"
+            class="form-control"> -->
+       </div>
+      
+         
+      
+        
+        
+       
+      
+    </div>
+   
+     <div *ngIf="!profit?.grossProfit">
+       <br/>
+      <div class="form-group text-center wiki">
+        <h2>There is no profit!</h2>               
+    </div>
+     </div>
+  </div>
+  

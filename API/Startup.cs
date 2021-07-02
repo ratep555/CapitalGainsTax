@@ -37,6 +37,8 @@ namespace API
             services.AddApplicationServices();
             services.AddIdentityServices(_config);
             services.AddSwaggerDocumentation();
+           // services.AddHttpContextAccessor();
+
             
             //dodao si novo httpclient
             services.AddHttpClient();

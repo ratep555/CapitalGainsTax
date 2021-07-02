@@ -72,8 +72,14 @@ export class StocksService {
     return this.http.get<IStockToCreate>(this.baseUrl + 'stocksAdmin/' + id);
   }
 
+  // ovo je da samo vraća totalQuantity
   getStock1(id: number) {
     return this.http.get(this.baseUrl + 'stocks/ajmoopet/' + id);
+  }
+
+  // ovo je najbolje, sve bez specifikacija
+  getStock3(id: number) {
+    return this.http.get<IStock>(this.baseUrl + 'stocks/aj/' + id);
   }
 
   getCategories() {

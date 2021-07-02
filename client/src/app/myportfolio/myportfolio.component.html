@@ -1,5 +1,33 @@
 
 <div class="container mt-3 mb-5">     
+    <table class="center table table-bordered table-striped table-condensed table-hover">
+        <thead class="piki">
+            <tr>
+                <th>
+                  Total Price of Purchase
+                </th>
+                <th>
+                    {{total | number: '1.2-2'}} kn
+                </th>
+            </tr>
+            <tr>
+                <th>
+                  Current Portfolio Market Value
+                </th>
+                <th>
+                    {{total1 | number: '1.2-2'}} kn
+          </th>
+            </tr>
+            <tr>
+                <th>
+                  Profit/Loss
+                </th>
+                <th>
+                    {{(total1 - total) | number: '1.2-2'}} kn
+                </th>
+            </tr>
+        </thead>
+        </table>
     <div class="form-inline pull-right">
         <input (keyup.enter)="onSearchUser()" type="text" 
         class="form-control mr-2" #searchTu style="width: 300px;"  
@@ -16,17 +44,24 @@
               <th>
                   Quantity
               </th>                    
+             
               <th>
-                  Current Price
+                  Purchased
               </th>
               <th>
-                  Average Price of Purchase
+                  Purchased Value
               </th>
               <th>
-                  Total
+                Market
+            </th>
+              <th>
+                Market Value
+            </th>
+              <th>
+                  Share
               </th>
               <th>
-                  Portfolio Percentage
+                  Yield
               </th>
               <th>
               </th>              
@@ -37,15 +72,21 @@
          
           <td>{{item.symbol}}</td>
           <td>{{item.totalQuantity}}</td>
-          <td>{{item.currentPrice | currency}}</td>
-          <td>{{item.averagePriceOfPurchase | currency}}</td>
-          <td>{{item.averagePriceOfPurchase * item.totalQuantity | currency}}</td>
+          <td>{{item.averagePriceOfPurchase | number: '1.2-2'}} kn</td>
+         <td>{{item.averagePriceOfPurchase * item.totalQuantity | number: '1.2-2'}} kn</td>
+          <td>{{item.currentPrice | number: '1.2-2'}} kn </td>
+          <td>{{item.currentPrice * item.totalQuantity | number: '1.2-2'}} kn</td>
           <td>{{item.portfolioPercentage | number : '1.2-2'}} % </td>
+          <td>{{(((item.totalQuantity * item.currentPrice) - (item.totalQuantity * item.averagePriceOfPurchase))
+               / (item.totalQuantity * item.averagePriceOfPurchase)) * 100 | number : '1.2-2'}} % </td>
           <td>  
               <div class="text-center">
-                <button routerLink="/stocks/{{item.stockId}}" mdbBtn size="sm" mdbWavesEffect type="button" class="m-0 btn btn-info mr-5">Details</button>
-                <button routerLink="/stocks/addstock/{{item.stockId}}"  mdbBtn size="sm" mdbWavesEffect type="button" class="mr-5 btn btn-success">Add Stock</button>
-                <button routerLink="/stocks/sellstockReactive/{{item.stockId}}"  mdbBtn size="sm" mdbWavesEffect type="button" class="m-0 btn btn-danger">Sell Stock</button>
+                <button routerLink="/stocks/{{item.stockId}}" 
+                class="m-0 btn btn-info mr-1  d-inline">Details</button>
+                <button routerLink="/stocks/addstockReactive/{{item.stockId}}"  
+                class=" btn btn-success mr-1 d-inline">Add Stock</button>
+                <button routerLink="/stocks/sellstockReactive/{{item.stockId}}"  
+                class=" btn btn-danger d-inline">Sell Stock</button>
               </div>
         </td>
       </tr>

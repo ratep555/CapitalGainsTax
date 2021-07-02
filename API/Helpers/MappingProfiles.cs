@@ -1,6 +1,7 @@
 using API.Dtos;
 using AutoMapper;
 using Core.Entities;
+using Core.ViewModels;
 
 namespace API.Helpers
 {
@@ -38,9 +39,14 @@ namespace API.Helpers
                 .ForPath(s => s.Category.CategoryName, o => o.MapFrom(s => s.Category))
                 .ForPath(s => s.Country.CountryName, o => o.MapFrom(s => s.Country));
 
-            
+            // možda ne bi trebao mapirati transactionId da si napisao id? - neil tako ne radi
             CreateMap<StockTransaction, TransactionToReturnDto>()
-                .ForMember(d => d.Stock, o => o.MapFrom(s => s.Stock.Symbol));
+                .ForMember(d => d.Stock, o => o.MapFrom(s => s.Stock.Symbol))
+                .ForMember(d => d.TransactionId, o => o.MapFrom(s => s.Id));
+
+            CreateMap<Country, CountryToReturnDto>().ReverseMap();
+            CreateMap<Country, CountryToReturnDto1>().ReverseMap();
+            CreateMap<Category, CategoryToReturnDto>().ReverseMap();
         }
     }
 }

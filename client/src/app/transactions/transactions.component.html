@@ -1,13 +1,5 @@
 
 <div class="container mt-3">     
-   <!--  <div class="form-inline pull-left">
-        <button class="btn-btn primary mr-5" routerLink="/transactions/addtransaction">
-            Buy Stock
-        </button>
-        <button class="btn-btn primary" routerLink="/transactions/sellstock">
-            Sell Stock
-        </button>
-   </div> -->
     <div class="form-inline pull-right">
             <input (keyup.enter)="onSearchUser()" type="text" 
             class="form-control mr-2" #searchTu style="width: 300px;"  
@@ -20,6 +12,9 @@
           <tr style="color: black;">
               <th>
                   Symbol
+              </th>              
+              <th>
+                  Type of Transaction
               </th>              
               <th>
                   Price
@@ -39,6 +34,9 @@
       <tr *ngFor="let transaction of transactionsForUser" style="color: black;">
          
           <td>{{transaction.stock}}</td>
+          <td *ngIf="transaction.purchase; else elseBlock">
+            Buying</td>
+            <ng-template #elseBlock><td>Selling</td></ng-template>
           <td>{{transaction.price | currency}}</td>
           <td>{{transaction.quantity}}</td>
           <td>{{transaction.resolved}}</td>

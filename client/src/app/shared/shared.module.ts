@@ -3,21 +3,25 @@ import { CommonModule } from '@angular/common';
 import { PaginationModule } from 'ngx-bootstrap/pagination';
 import { PagerComponent } from './components/pager/pager.component';
 import { CarouselModule } from 'ngx-bootstrap/carousel';
-import { ReactiveFormsModule } from '@angular/forms';
+import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { BsDropdownModule } from 'ngx-bootstrap/dropdown';
 import { TextInputComponent } from './components/text-input/text-input.component';
 import { Pager1Component } from './components/pager1/pager1.component';
+import { MycurrencyPipe } from './pipes/custom.currencypipe';
+import { TypeaheadModule } from 'ngx-bootstrap/typeahead';
 
 
 
 
 @NgModule({
-  declarations: [PagerComponent, TextInputComponent, Pager1Component],
+  declarations: [PagerComponent, TextInputComponent, Pager1Component, MycurrencyPipe],
   imports: [
     CommonModule,
+    FormsModule,
     PaginationModule.forRoot(),
     CarouselModule.forRoot(),
     BsDropdownModule.forRoot(),
+    TypeaheadModule.forRoot(),
     ReactiveFormsModule
     ],
   exports: [
@@ -27,7 +31,8 @@ import { Pager1Component } from './components/pager1/pager1.component';
     CarouselModule,
     ReactiveFormsModule,
     BsDropdownModule,
-    TextInputComponent
+    TextInputComponent,
+    MycurrencyPipe
   ]
 })
 export class SharedModule { }

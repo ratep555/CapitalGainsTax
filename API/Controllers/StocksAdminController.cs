@@ -45,6 +45,22 @@ namespace API.Controllers
             return Ok(new Pagination1<StockToReturnDto>
             (queryParameters.Page, queryParameters.PageCount, list.Count(), listy));
         }
+        // ovo koristiš, malo kraći kod od ovoga gore
+        [HttpGet("novi")]
+        public async Task<ActionResult<Pagination1<StockToReturnDto>>> GetStocks1(
+            [FromQuery] QueryParameters queryParameters)
+        {
+            var list = await _stockService.ListAllStocksAsync1(queryParameters);
+
+            var data = _mapper.Map<IEnumerable<Stock>, IEnumerable<StockToReturnDto>>(list); 
+
+            data = data.Skip(queryParameters.PageCount * (queryParameters.Page - 1))
+                       .Take(queryParameters.PageCount);
+            
+
+            return Ok(new Pagination1<StockToReturnDto>
+            (queryParameters.Page, queryParameters.PageCount, list.Count(), data));
+        }
 
         [HttpGet("categories")]
         public async Task<ActionResult<IEnumerable<Category>>> GetCategories()

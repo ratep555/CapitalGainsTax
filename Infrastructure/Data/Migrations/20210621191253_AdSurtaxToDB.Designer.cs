@@ -10,8 +10,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Infrastructure.Data.Migrations
 {
     [DbContext(typeof(StoreContext))]
-    [Migration("20210604093906_InitialCreate")]
-    partial class InitialCreate
+    [Migration("20210621191253_AdSurtaxToDB")]
+    partial class AdSurtaxToDB
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -72,6 +72,27 @@ namespace Infrastructure.Data.Migrations
                     b.Property<decimal>("CurrentPrice")
                         .HasColumnType("decimal(18,2)");
 
+                    b.Property<decimal?>("Dividend")
+                        .HasColumnType("decimal(18,2)");
+
+                    b.Property<decimal?>("EnterpriseValue")
+                        .HasColumnType("decimal(18,2)");
+
+                    b.Property<decimal?>("Expenditure")
+                        .HasColumnType("decimal(18,2)");
+
+                    b.Property<int?>("NumberOfEmployees")
+                        .HasColumnType("int");
+
+                    b.Property<int?>("OwnShares")
+                        .HasColumnType("int");
+
+                    b.Property<decimal?>("Revenue")
+                        .HasColumnType("decimal(18,2)");
+
+                    b.Property<int?>("SharesOutstanding")
+                        .HasColumnType("int");
+
                     b.Property<string>("Symbol")
                         .IsRequired()
                         .HasMaxLength(10)
@@ -122,6 +143,24 @@ namespace Infrastructure.Data.Migrations
                     b.HasIndex("StockId");
 
                     b.ToTable("StockTransactions");
+                });
+
+            modelBuilder.Entity("Core.Entities.Surtax", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int")
+                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+
+                    b.Property<int?>("Amount")
+                        .HasColumnType("int");
+
+                    b.Property<string>("Residence")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("Surtaxes");
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRole", b =>

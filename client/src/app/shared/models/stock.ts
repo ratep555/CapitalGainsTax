@@ -6,6 +6,13 @@ export interface IStock {
     country: string;
     category: string;
     totalQuantity: number;
+    numberOfEmployees: number;
+    sharesOutstanding: number;
+    ownShares: number;
+    revenue: number;
+    expenditure: number;
+    enterpriseValue: number;
+    dividend: number;
   }
 
 export class INewStock {

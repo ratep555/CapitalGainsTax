@@ -24,7 +24,7 @@ export class CountriesService {
     }
     params = params.append('page', mycategoryParams.pageNumber.toString());
     params = params.append('pageCount', mycategoryParams.pageSize.toString());
-    return this.http.get<IPagination2>(this.baseUrl + 'countries', {observe: 'response', params})
+    return this.http.get<IPagination2>(this.baseUrl + 'countries/novi', {observe: 'response', params})
     .pipe(
       map(response  => {
         return response.body;

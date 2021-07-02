@@ -30,7 +30,7 @@ export class CategoriesService {
     }
     params = params.append('page', mycategoryParams.pageNumber.toString());
     params = params.append('pageCount', mycategoryParams.pageSize.toString());
-    return this.http.get<IPagination1>(this.baseUrl + 'categories/pagingtup', {observe: 'response', params})
+    return this.http.get<IPagination1>(this.baseUrl + 'categories/novi', {observe: 'response', params})
     .pipe(
       map(response  => {
         return response.body;

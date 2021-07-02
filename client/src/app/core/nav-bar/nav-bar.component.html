@@ -1,6 +1,7 @@
 <header
     class="d-flex flex-column flex-md-row align-items-center justify-content-between p-3 px-md-4 mb-3 bg-white border-bottom shadow-sm fixed-top">
-    <img src="/assets/images/calculator.jpg" style="max-height: 70px; cursor: pointer; outline: none;" alt="logo" class="logo"
+    <img src="/assets/images/calculator.jpg" style="max-height: 70px; cursor: pointer; 
+    outline: none;" alt="logo" class="logo img-fluid"
     routerLink="/">
     <nav class="my-2 my-md-0 me-md-3 text-uppercase" style="font-size: larger;">
         <a class="p-2" [routerLink]="['/']" routerLinkActive="active" 
@@ -37,6 +38,18 @@
              <div class="dropdown-divider"></div>
              <a routerLink="/stocksAdmin">
                <i class="fa fa-balance-scale mr-3 ml-3"></i> Stocks
+             </a>  
+             <div class="dropdown-divider"></div>
+             <a routerLink="/users">
+               <i class="fa fa-user mr-3 ml-3"></i> Users
+             </a>  
+             <div class="dropdown-divider"></div>
+             <a routerLink="/surtaxes">
+               <i class="fa fa-user mr-3 ml-3"></i> Surtaxes
+             </a>  
+             <div class="dropdown-divider"></div>
+             <a routerLink="/taxliability/tax">
+               <i class="fa fa-user mr-3 ml-3"></i> Tax Liability
              </a>  
              <div class="dropdown-divider"></div>
              <a (click)="logout()" class="dropdown-items d-flex align-items-center py-2" >

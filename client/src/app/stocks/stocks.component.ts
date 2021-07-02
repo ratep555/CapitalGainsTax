@@ -4,7 +4,10 @@ import { ICategory } from '../shared/models/category';
 import { ICountry } from '../shared/models/country';
 import { IStock } from '../shared/models/stock';
 import { StockParams } from '../shared/models/stockParams';
+import { StocksAdminService } from '../stocks-admin/stocks-admin.service';
 import { StocksService } from './stocks.service';
+
+
 
 @Component({
   selector: 'app-stocks',
@@ -25,12 +28,13 @@ export class StocksComponent implements OnInit {
   ];
 
 
-  constructor(private stockService: StocksService) { }
+  constructor(private stockService: StocksService, private stocksAdmin: StocksAdminService) { }
 
   ngOnInit(): void {
   this.getStocks();
   this.getCategories();
   this.getCountries();
+  this.onRefresh();
   }
 
   getStocks() {
@@ -84,6 +88,15 @@ onSortSelected(sort: string) {
   this.stockParams.sort = sort;
   this.getStocks();
 }
+
+onRefresh() {
+  this.stocksAdmin.refreshPrices().subscribe(res => {
+   this.getStocks();
+  },
+  error => {
+    console.log(error);
+  });
+  }
 
 }
 

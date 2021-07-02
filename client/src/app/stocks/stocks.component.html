@@ -19,10 +19,16 @@
                   Symbol
               </th>              
               <th>
+                  Company Name
+              </th>              
+              <th>
                   Price
               </th>                    
               <th>
                   Category
+              </th>
+              <th>
+                  Country
               </th>
               <th>
               </th>              
@@ -32,14 +38,18 @@
       <tr *ngFor="let stock of stocks" style="color: black;">
          
           <td>{{stock.symbol}}</td>
-          <td>{{stock.currentPrice | currency}}</td>
+          <td>{{stock.companyName}}</td>
+          <td>{{stock.currentPrice | number: '1.2-2'}} kn</td>
           <td>{{stock.category}}</td>
+          <td>{{stock.country}}</td>
           <td>  
               <div class="text-center">
-                <button routerLink="/stocks/{{stock.id}}" mdbBtn size="sm" mdbWavesEffect type="button" class="m-0 btn btn-info mr-5">Details</button>
+                <button routerLink="/stocks/{{stock.id}}" 
+             class="m-0 btn btn-info d-inline mr-5">Details</button>
 <!--                 <button routerLink="/stocks/addstock/{{stock.id}}" mdbBtn size="sm" mdbWavesEffect type="button" class="mr-5 btn btn-success">Add Stock</button>
- -->                <button routerLink="/stocks/addstockReactive/{{stock.id}}" mdbBtn size="sm" mdbWavesEffect type="button" class="mr-5 btn btn-success">Add Reactive</button>
-                <button routerLink="/stocks/sellstockReactive/{{stock.id}}" mdbBtn size="sm" mdbWavesEffect type="button" class="m-0 btn btn-danger">Sell Reactive</button>
+ -->                <button routerLink="/stocks/addstockReactive/{{stock.id}}"
+              class="mr-5 d-inline btn btn-success">Add Reactive</button>
+                <button routerLink="/stocks/sellstockReactive/{{stock.id}}" class="m-0 btn btn-danger d-inline">Sell Reactive</button>
 
               </div>
         </td>

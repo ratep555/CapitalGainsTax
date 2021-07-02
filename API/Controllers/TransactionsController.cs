@@ -24,21 +24,28 @@ namespace API.Controllers
     [Authorize]
     public class TransactionsController : BaseApiController
     {
-    private readonly IMapper _mapper;
+        private readonly IMapper _mapper;
         private readonly ITransactionService _transactionService;
         private readonly IGenericRepository<StockTransaction> _transactionsRepo;
         private readonly IGenericRepository<Stock> _stocksRepo;
+        private readonly UserManager<AppUser> _userManager;
+
+
+
 
     public TransactionsController(
     IGenericRepository<StockTransaction> transactionsRepo,
     IMapper mapper,
     ITransactionService transactionService,
-    IGenericRepository<Stock> stocksRepo)
+    IGenericRepository<Stock> stocksRepo,
+    UserManager<AppUser> userManager
+    )
     {
         _transactionsRepo = transactionsRepo;
         _mapper = mapper;
         _transactionService = transactionService;
         _stocksRepo = stocksRepo;
+
         }
     [HttpGet]
     public async Task<ActionResult<Pagination<TransactionToReturnDto>>> GetTransactionsAsync(
@@ -84,27 +91,8 @@ namespace API.Controllers
         return _mapper.Map<StockTransaction, TransactionToReturnDto>(transaction);
 
     }
-   /*  [HttpGet("gogy")]
-    public async Task<ActionResult<IReadOnlyList<StockTransaction>>> GetAllTransactions()
-    {
-        var list = await _transactionsRepo.ListAllAsync();
 
-        return Ok(list);
-    } */
-
-  /*   [HttpPost]
-    public async Task<ActionResult<StockTransaction>> CreateTransaction(StockTransaction stockTransaction)
-    {
-        var userId = HttpContext.User.RetrieveIdFromPrincipal();
-        
-        var transaction = await _transactionService.CreateTransactionAsync(userId);
-
-        if(transaction == null) 
-        return BadRequest(new ApiResponse(400, "Problem creating order"));
-
-        return Ok(transaction);
-    } */
-
+ 
     [HttpGet("peki")]
     public async Task<ActionResult<IEnumerable<TransactionsForUserVM>>> GetTransactionsForSpecificUser()
     {
@@ -114,6 +102,7 @@ namespace API.Controllers
 
         return Ok(list);
     }
+
     [HttpGet("pekismeki")]
     public async Task<ActionResult<IQueryable<TransactionsForUserVM>>> GetTransactionsForSpecificUser1(
         [FromQuery]QueryParameters queryParameters)
@@ -124,6 +113,18 @@ namespace API.Controllers
 
         return Ok(list);
     }
+    // uspio si iqueryable, sve dela, ne treba ti ništa drugo!
+    [HttpGet("pekismekica")]
+    public async Task<ActionResult<IEnumerable<TransactionsForUserVM>>> GetTransactionsForSpecificUser5(
+        [FromQuery]QueryParameters queryParameters)
+    {
+         var email = HttpContext.User.RetrieveEmailFromPrincipal();
+
+         var list = await _transactionService.ShowTransactionsForSpecificUser2(queryParameters, email);
+
+        return Ok(list);
+    }
+    //ovo koristiš više ne, nego pekidrekimo
     [HttpGet("pekidreki")]
     public async Task<ActionResult<IQueryable<TransactionsForUserVM>>> GetTransactionsForSpecificUser2(
         [FromQuery]QueryParameters queryParameters)
@@ -141,17 +142,18 @@ namespace API.Controllers
 
         return Ok(list);
     }
-   /*  [HttpGet("pekidreki")]
-    public async Task<ActionResult<IQueryable<TransactionsForUserVM>>> GetTransactionsForSpecificUser2(
+    // ovo šljaka, najbolje je, to koristi obzirom da možeš filtrirati u services, alternativa je bila pekidreki!
+    [HttpGet("pekidrekimo")]
+    public async Task<ActionResult<IEnumerable<TransactionsForUserVM>>> GetTransactionsForSpecificUser77(
         [FromQuery]QueryParameters queryParameters)
     {
          var email = HttpContext.User.RetrieveEmailFromPrincipal();
 
-         var list = await _transactionService.ShowTransactionsForSpecificUser1(queryParameters, email);
+         var list = await _transactionService.ShowTransactionsForSpecificUser4(queryParameters, email);
 
         return Ok(list);
-    } */
-
+    }
+  
     [HttpPost]
     public async Task<ActionResult> CreateTransaction(StockTransaction transaction)
     {
@@ -212,8 +214,11 @@ namespace API.Controllers
 
         if(await _transactionService.TotalQuantity(transactionVM.Email, id) < transactionVM.Quantity)
         {
-              return new BadRequestObjectResult
-              (new ApiValidationErrorResponse{Errors = new []{"You are selling more than you have!"}});
+            // stavio si badrequest kako bi ti prošla ona fora od Felipea
+             // return new BadRequestObjectResult
+             // (new ApiValidationErrorResponse{Errors = new []{"You are selling more than you have!"}});
+
+             return BadRequest("You are selling more than you have!");
         }
 
         var transaction = new StockTransaction 
@@ -277,12 +282,72 @@ namespace API.Controllers
         return totalProfit;
 
     }
+
+    //ovo koristiš za taxliability!
     [HttpGet("profitwow")]
     public async Task<ActionResult<TaxLiabilityVM>> CheckTotalProfit1()
     {
         var email = User.RetrieveEmailFromPrincipal();
 
         var taxLiability = await _transactionService.ReturnTaxLiability(email);
+
+        return Ok(taxLiability);
+
+    }
+    [HttpPut("profitwowy/{id}")]
+    public async Task<ActionResult<TaxLiabilityVM>> CheckTotalProfit2(int id)
+    {
+        var email = User.RetrieveEmailFromPrincipal();
+
+        var taxLiability = await _transactionService.ReturnTaxLiability1(email, id);
+
+        return Ok(taxLiability);
+
+    }
+    [HttpPut("profitwowz")]
+    public async Task<ActionResult<TaxLiabilityVM>> CheckTotalProfit3(Surtax surtax)
+    {
+        var email = User.RetrieveEmailFromPrincipal();
+
+        var taxLiability = await _transactionService.ReturnTaxLiability1(email, surtax.Id);
+
+        return Ok(taxLiability);
+
+    }
+    // dobio si fifo uz pomoć stackowerflova
+    [HttpGet("fifo")]
+    public async Task<ActionResult<IEnumerable<StockTransaction>>> GetMeFifo()
+    {
+        var email = User.RetrieveEmailFromPrincipal();
+      //  var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+
+        var list = await _transactionService.Fifo5(email);
+
+        var data = _mapper.Map<IEnumerable<StockTransaction>, IEnumerable<TransactionToReturnDto>>(list);
+
+        return Ok(data); 
+    }
+
+     [HttpGet("profitwowpeki")]
+    public async Task<ActionResult<TaxLiabilityVM>> CheckTotalProfit11()
+    {
+         // var userId =  User.FindFirstValue(ClaimTypes.NameIdentifier); // will give the user's userId
+        // string userId1 =  _userManager.GetUserId(HttpContext.User);
+
+        //var user = new AppUser();
+        var id = _userManager.GetUserId(User);
+
+        var email = User.RetrieveEmailFromPrincipal();
+
+        var user = await _userManager.FindByEmailAsync(email);
+
+        string userid7 = await _transactionService.GetUserId7(email);
+
+       // var usery = _userManager.FindByIdAsync(user.Id);
+
+       //var userId = user.Id;
+            
+        var taxLiability = await _transactionService.ReturnTaxLiability7(userid7);
 
         return Ok(taxLiability);
 

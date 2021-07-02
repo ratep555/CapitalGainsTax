@@ -90,6 +90,11 @@ namespace API.Controllers
 
             if (!result.Succeeded) return Unauthorized(new ApiResponse(401));
 
+            if (user.LockoutEnd != null)
+            {
+               return Unauthorized(new ApiResponse(401));
+            }
+
             return new UserDto
             {
                 Email = user.Email,
@@ -123,6 +128,7 @@ namespace API.Controllers
                 DisplayName = user.DisplayName,
                 Token = _tokenService.CreateToken(user),
                 Email = user.Email
+                //RoleName = "Participant"
             };
         }
     }

@@ -15,6 +15,7 @@ namespace Infrastructure.Data
         public DbSet<Category> Categories { get; set; }
         public DbSet<Country> Countries { get; set; }
         public DbSet<AppUser> AppUsers { get; set; }
+        public DbSet<Surtax> Surtaxes { get; set; }
         public DbSet<StockTransaction> StockTransactions {get; set;}
  
         protected override void OnModelCreating(ModelBuilder modelBuilder) 

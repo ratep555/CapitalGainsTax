@@ -13,6 +13,9 @@ export class MyportfolioComponent implements OnInit {
   @ViewChild('searchTu', {static: false}) searchTermTu: ElementRef;
   myportfolioParams = new MyportfolioParams();
   portfolioAccount: IPortfolioAccount[];
+  total = 0;
+  total1 = 0;
+  private value;
 
   constructor(private myportfolioService: MyportfolioService) { }
 
@@ -24,8 +27,20 @@ export class MyportfolioComponent implements OnInit {
     this.myportfolioService.getPortfolioAccount(this.myportfolioParams)
     .subscribe((portfolioAccount: IPortfolioAccount[]) => {
       this.portfolioAccount = portfolioAccount;
+      this.findsum(this.portfolioAccount);
     }, error => console.log(error));
   }
+
+  findsum(data){
+    this.value = data;
+    console.log(this.value);
+    for (let j = 0; j < data.length; j++){
+         this.total += (this.value[j].totalQuantity * this.value[j].averagePriceOfPurchase);
+         this.total1 += (this.value[j].totalQuantity * this.value[j].currentPrice);
+         console.log(this.total);
+    }
+  }
+
 
   onSearchUser() {
     this.myportfolioParams.query = this.searchTermTu.nativeElement.value;

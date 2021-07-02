@@ -1,9 +1,11 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using API.Dtos;
 using API.Errors;
 using API.Extensions;
 using API.Helpers;
+using AutoMapper;
 using Core.Entities;
 using Core.Interfaces;
 using Microsoft.AspNetCore.Authorization;
@@ -12,15 +14,18 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace API.Controllers
 {
-     [Authorize]
+    [Authorize]
     public class CategoriesController : BaseApiController
     {
         private readonly IGenericRepository<Category> _categoryRepo;
         private readonly ICategoryService _categoryService;
 
+        private readonly IMapper _mapper;
 
-        public CategoriesController(IGenericRepository<Category> categoryRepo, ICategoryService categoryService)
+        public CategoriesController(IGenericRepository<Category> categoryRepo,
+        ICategoryService categoryService, IMapper mapper)
         {
+            _mapper = mapper;
             _categoryRepo = categoryRepo;
             _categoryService = categoryService;
         }
@@ -79,6 +84,24 @@ namespace API.Controllers
             return Ok(new Pagination1<Category>
             (queryParameters.Page, queryParameters.PageCount, list.Count(), listy));
         }
+        // ovo šljaka umjesto pagingtup!
+        [HttpGet("novi")]
+        public async Task<ActionResult<Pagination1<CategoryToReturnDto>>> GetCatewgories1(
+            [FromQuery] QueryParameters queryParameters
+        )
+        {
+            var list = await _categoryService.ListAllAsync2(queryParameters);
+
+            var data = _mapper.Map<IEnumerable<Category>, IEnumerable<CategoryToReturnDto>>(list);
+
+
+            data = data
+                          .Skip(queryParameters.PageCount * (queryParameters.Page - 1))
+                          .Take(queryParameters.PageCount);
+
+            return Ok(new Pagination1<CategoryToReturnDto>
+            (queryParameters.Page, queryParameters.PageCount, list.Count(), data));
+        }
 
         [HttpGet("{id}")]
         [ProducesResponseType(StatusCodes.Status200OK)]
@@ -132,7 +155,7 @@ namespace API.Controllers
 
             return Ok(category);
         }
-        
+
         [HttpDelete("{id}")]
         public async Task<IActionResult> DeleteCategory(int id)
         {

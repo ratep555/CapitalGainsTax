@@ -91,9 +91,28 @@ namespace API.Controllers
 
             var stocky = _mapper.Map<Stock, StockToReturnDto1>(stock);
 
-            stocky.TotalQuantity = await _stockService.TotalQuantity(email, id);
+            stocky.TotalQuantity = await _stockService.TotalQuantity(email, id);           
 
             return stocky.TotalQuantity;
+
+        }
+        // ovo sve prikazuje, a bez specifikacija
+        [HttpGet("aj/{id}")]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(ApiResponse), StatusCodes.Status404NotFound)]
+        public async Task<ActionResult<StockToReturnDto1>> GetStock2(int id) 
+        {
+            var email = User.RetrieveEmailFromPrincipal();
+            
+            var stock = await _stockService.FindStockById(id);
+
+            if(stock == null) return NotFound(new ApiResponse(404));
+
+            var stocky = _mapper.Map<Stock, StockToReturnDto1>(stock);
+
+            stocky.TotalQuantity = await _stockService.TotalQuantity(email, id);
+
+            return Ok(stocky);
 
         }
 

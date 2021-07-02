@@ -3,7 +3,6 @@ import { Router } from '@angular/router';
 import { ToastrService } from 'ngx-toastr';
 import { MycategoryParams } from '../shared/models/mycategoryParams';
 import { IStock } from '../shared/models/stock';
-import { StocksService } from '../stocks/stocks.service';
 import { StocksAdminService } from './stocks-admin.service';
 
 @Component({
@@ -23,6 +22,7 @@ export class StocksAdminComponent implements OnInit {
 
   ngOnInit(): void {
     this.getStocks();
+    this.onRefresh();
   }
 
   getStocks() {

@@ -24,7 +24,7 @@ export class TransactionsService {
     if (transactionsForUserParams.query) {
       params = params.append('query', transactionsForUserParams.query);
     }
-    return this.http.get(this.baseUrl + 'transactions/pekidreki', {observe: 'response', params})
+    return this.http.get(this.baseUrl + 'transactions/pekismekica', {observe: 'response', params})
     .pipe(
     map(response => {
     return response.body;

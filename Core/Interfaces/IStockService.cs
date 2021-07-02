@@ -9,6 +9,8 @@ namespace Core.Interfaces
         Task<int> TotalQuantity(string email, int stockId);
         Task<string> GetUserId();
         Task<IEnumerable<Stock>> ListAllStocksAsync();
+        Task<IEnumerable<Stock>> ListAllStocksAsync1(QueryParameters queryParameters);
+
         Task<IEnumerable<Country>> ListAllCountriesAsync();
         Task<IEnumerable<Category>> ListAllCategoriesAsync();  
         Task CreateStockAsync(Stock stock);

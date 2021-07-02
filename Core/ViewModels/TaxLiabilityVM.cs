@@ -7,5 +7,6 @@ namespace Core.ViewModels
         public decimal? Surtax { get; set; }
         public decimal? TotalTaxLiaility { get; set; }
         public decimal? NetProfit { get; set; }
+        
     }
 }
