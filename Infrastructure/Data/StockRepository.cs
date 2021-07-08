@@ -267,7 +267,15 @@ namespace Infrastructure.Data
 
                             basket3 += (subitem.Quantity - subitem.Resolved);
 
-                            item.AveragePriceOfPurchase = basket1 / basket3;                      
+                            if (basket1 > 0)
+                            {
+                                  item.AveragePriceOfPurchase = basket1 / basket3;                      
+                            }
+                            else
+                            {
+                                  
+                            }
+
                         }
                         basket = 0;
                     }

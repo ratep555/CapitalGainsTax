@@ -10,6 +10,12 @@ namespace Core.Interfaces
     {
         // Task<StockTransaction> CreateTransactionAsync(string userId);
        // Task<IReadOnlyList<StockTransaction>> GetTransactionsForUserAsync(string userId);
+       Task<TransactionsForUserListVM> ShowTransactionsForSpecificUser5(QueryParameters queryParameters,
+         string email);
+        Task InitializeTaxLiability(string email);
+        Task UpdateTaxLiability(string email);
+
+
         Task<IEnumerable<TransactionsForUserVM>> ShowTransactionsForSpecificUser(string email);
         Task<IEnumerable<TransactionsForUserVM>> ShowTransactionsForSpecificUser1(QueryParameters queryParameters, string email);
         Task<IEnumerable<TransactionsForUserVM>> ShowTransactionsForSpecificUser2(QueryParameters queryParameters, string email);

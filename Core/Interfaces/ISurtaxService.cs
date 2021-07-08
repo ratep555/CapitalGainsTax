@@ -8,6 +8,8 @@ namespace Core.Interfaces
     {
             Task<IEnumerable<Surtax>> ListAllAsync();
             Task<IEnumerable<Surtax>> ListAllAsync1();
+            Task<Surtax> FindSurtaxById(int id);
+
 
     }
 }

@@ -23,6 +23,7 @@ namespace API.Extensions
             services.AddScoped<IUnitOfWork, UnitOfWork>();
             services.AddScoped<IStockRepository, StockRepository>();
             services.AddScoped<ITransactionRepository, TransactionRepository>();
+            services.AddScoped<ITaxLiabilitiesService, TaxLiabilitiesService>();
             services.AddScoped(typeof(IGenericRepository<>), (typeof(GenericRepository<>)));
 
             services.Configure<ApiBehaviorOptions>(options =>

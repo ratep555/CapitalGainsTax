@@ -1,11 +1,33 @@
 
-<div class="container mt-3">     
+<div class="container mt-3 mb-5">  
+    <table class="center table table-bordered table-striped table-condensed table-hover">
+        <thead class="piki">
+            <tr>
+            </tr>
+            <tr>
+                <th>
+                  Current Gross Profit
+                </th>
+                <th>
+                    {{totalNetProfit | number: '1.2-2'}} kn
+          </th>
+            </tr>
+            <tr>
+                <th>
+                  Total Traffic
+                </th>
+                <th>
+                    {{totalTraffic | number: '1.2-2'}} kn
+                </th>
+            </tr>
+        </thead>
+        </table>
     <div class="form-inline pull-right">
-            <input (keyup.enter)="onSearchUser()" type="text" 
-            class="form-control mr-2" #searchTu style="width: 300px;"  
+            <input (keyup.enter)="onSearchUser1()" type="text" 
+            class="form-control mr-2" #searchTup style="width: 300px;"  
             placeholder="Search">
-            <button (click)="onSearchUser()" class="btn btn-info my-2">Search</button>
-            <button (click)="onResetTu()" class="btn btn-success ml-2">Reset</button>
+            <button (click)="onSearchUser1()" class="btn btn-info my-2">Search</button>
+            <button (click)="onResetTup()" class="btn btn-success ml-2">Reset</button>
         </div>             
     <table class="table table-bordered table-striped table-condensed table-hover">
         <thead>
@@ -31,7 +53,7 @@
           </tr>
               </thead>
               <tbody>
-      <tr *ngFor="let transaction of transactionsForUser" style="color: black;">
+      <tr *ngFor="let transaction of listOfTransactions" style="color: black;">
          
           <td>{{transaction.stock}}</td>
           <td *ngIf="transaction.purchase; else elseBlock">

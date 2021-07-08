@@ -20,19 +20,21 @@ namespace API.Controllers
         private readonly ITokenService _tokenService;
         private readonly IMapper _mapper;
         private readonly IUserService _userService;
+        private readonly ITransactionService _transactionService;
 
         public AccountController(UserManager<AppUser> userManager,
         SignInManager<AppUser> signInManager,
         ITokenService tokenService,
         IMapper mapper,
-        IUserService userService)
+        IUserService userService,
+        ITransactionService transactionService)
         {
             _tokenService = tokenService;
             _mapper = mapper;
             _userManager = userManager;
             _signInManager = signInManager;
             _userService = userService;
-
+            _transactionService = transactionService;
         }
         [Authorize]
         [HttpGet]
@@ -116,10 +118,13 @@ namespace API.Controllers
             {
                 DisplayName = registerDto.DisplayName,
                 Email = registerDto.Email,
-                UserName = registerDto.Email
+                UserName = registerDto.Email,
+                SurtaxId = 1
             };
 
             var result = await _userManager.CreateAsync(user, registerDto.Password);
+            // ovo si dodao, pripazi - za sada ne šljaka!
+            await _transactionService.InitializeTaxLiability(user.Email);
 
             if (!result.Succeeded) return BadRequest(new ApiResponse(400));
 

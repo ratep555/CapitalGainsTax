@@ -70,8 +70,15 @@ namespace API.Controllers
                 .Sum(x => x.TotalQuantity * x.AveragePriceOfPurchase);
 
                 if (basket7.HasValue)
-                basket7 = (basket4 / basket6) * 100;
-                item.PortfolioPercentage = basket7;
+                {
+                    basket7 = (basket4 / basket6) * 100;
+                    item.PortfolioPercentage = basket7;
+                }
+                else 
+                {
+                    item.PortfolioPercentage = 0;
+                }
+                
 
             }
 

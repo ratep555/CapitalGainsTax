@@ -96,7 +96,7 @@ namespace API.Controllers
             return stocky.TotalQuantity;
 
         }
-        // ovo sve prikazuje, a bez specifikacija
+        // ovo sve prikazuje, a bez specifikacija, to koristiš
         [HttpGet("aj/{id}")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(typeof(ApiResponse), StatusCodes.Status404NotFound)]

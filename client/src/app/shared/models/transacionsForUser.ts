@@ -9,3 +9,8 @@ export interface ITransactionsForUser {
     purchase: boolean;
     resolved: number;
 }
+export interface ITransactionsWithProfitAndTraffic {
+    listOfTransactions: ITransactionsForUser[];
+    totalNetProfit1: number;
+    totalTraffic1: number;
+}

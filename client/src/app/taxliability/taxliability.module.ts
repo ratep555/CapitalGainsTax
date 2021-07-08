@@ -6,12 +6,13 @@ import { TaxliabilityRoutingModule } from './taxliability-routing.module';
 import { SharedModule } from '../shared/shared.module';
 import { FormsModule } from '@angular/forms';
 import { TypeaheadModule } from 'ngx-bootstrap/typeahead';
+import { TaxLiabilityDetail1Component } from './tax-liability-detail1/tax-liability-detail1.component';
 
 
 
 
 @NgModule({
-  declarations: [TaxliabilityComponent, TaxLiabilityDetailComponent],
+  declarations: [TaxliabilityComponent, TaxLiabilityDetailComponent, TaxLiabilityDetail1Component],
   imports: [
     CommonModule,
     TaxliabilityRoutingModule,

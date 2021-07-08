@@ -1,7 +1,7 @@
 <div class="d-flex justify-content-center mt-5 mb-5">
     <div class="col-5">
         <form [formGroup]="fg" *ngFor="let fg of stockForms.controls" (submit)="recordSubmit(fg)">
-            <input formControlName="id" id="id" class="form-control" >
+            <input type="hidden" formControlName="id" id="id" class="form-control" >
 
             <app-text-input formControlName="symbol" [label]="'Symbol'"></app-text-input>
             <app-text-input formControlName="currentPrice" [label]="'Price'"></app-text-input>            

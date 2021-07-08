@@ -21,9 +21,14 @@ namespace Infrastructure.Services
         {
             return await _context.Surtaxes.ToListAsync();
         }
-         public async Task<IEnumerable<Surtax>> ListAllAsync1()
+        public async Task<IEnumerable<Surtax>> ListAllAsync1()
         {
             return await _context.Surtaxes.OrderBy(s => s.Residence).ToListAsync();
+        }
+        public async Task<Surtax> FindSurtaxById(int id) 
+        {
+            var surtax = await _context.Surtaxes.Where(s => s.Id == id).FirstOrDefaultAsync();           
+            return surtax;
         }
     }
 }

@@ -32,6 +32,19 @@ export class TransactionsService {
       );
     }
 
+  getTransactionsForUser1(transactionsForUserParams: TransactionsForUserParams) {
+    let params = new HttpParams();
+    if (transactionsForUserParams.query) {
+      params = params.append('query', transactionsForUserParams.query);
+    }
+    return this.http.get(this.baseUrl + 'transactions/pekismekica1', {observe: 'response', params})
+    .pipe(
+    map(response => {
+    return response.body;
+        })
+      );
+    }
+
    getTransactions(transactionParams: TransactionParams) {
    let params = new HttpParams();
    if (transactionParams.stockId !== 0) {

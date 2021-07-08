@@ -1,0 +1,100 @@
+<div class="container mt-5 mb-3">
+    <div class="row">
+        <div class="col-md-2">
+            <div class="form-inline pull-left">
+                <form [formGroup]="surtaxForm" (ngSubmit)="onSubmit()">
+                    <input
+                    formControlName="residence"
+                    [typeahead]="surtaxes"
+                    typeaheadOptionField="residence"
+                    [typeaheadOptionsInScrollableView]="5"
+                    [typeaheadScrollable]="true"
+                    (typeaheadOnSelect)="onSelect2($event)"
+                    placeholder="Choose your residence"
+                    class="form-control">  
+                   
+                      </form>           
+                     </div>
+
+        </div>
+        <div class="col-md-10">
+            <table class="center table table-bordered table-striped table-condensed table-hover">
+                <thead>
+                  <tr>
+                      <th>
+                        Residence
+                      </th>
+                      <th>
+                         {{taxliability?.residence}}
+                      </th>
+                  </tr>
+                  <tr>
+                      <th>
+                        Email
+                      </th>
+                      <th>
+                         {{taxliability?.email}}
+                      </th>
+                  </tr>
+                  <tr>
+                      <th>
+                        Year
+                      </th>
+                      <th>
+                         {{taxliability?.year}}
+                      </th>
+                  </tr>
+                    <tr>
+                        <th>
+                          Total Gross Profit
+                        </th>
+                        <th>
+                           {{taxliability?.grossProfit | currency}}
+                        </th>
+                    </tr>
+                    <tr>
+                        <th>
+                          Capital Gains Tax (12%)
+                        </th>
+                        <th>
+                      {{taxliability?.capitalGainsTax | currency}}
+                  </th>
+                    </tr>
+                    <tr>
+                        <th>
+                          Surtax
+                        </th>
+                        <th>
+                           {{taxliability?.surtaxAmount | currency}}
+                        </th>
+                    </tr>
+                    <tr>
+                        <th>
+                          Surtax Percentage
+                        </th>
+                        <th>
+                           {{taxliability?.percentage}} %
+                        </th>
+                    </tr>
+                    <tr>
+                      <th>
+                          Total Tax Liability
+                      </th>
+                      <th>
+                          {{taxliability?.totalTaxLiaility | currency}}
+                      </th>
+                    </tr>
+                    <tr>
+                        <th>
+                          Total Net Profit
+                        </th>
+                        <th>
+                           {{taxliability?.netProfit | currency}}
+                        </th>
+                    </tr>
+                </thead>
+                </table>
+        </div>
+    </div>
+    
+</div>

@@ -53,6 +53,18 @@ namespace Infrastructure.Data
 
                     await context.SaveChangesAsync();
                 }
+                if (!context.Surtaxes.Any())
+                {
+                    var surtaxData = File.ReadAllText("../Infrastructure/Data/SeedData/surtaxes.json");
+                    var surtaxes = JsonSerializer.Deserialize<List<Surtax>>(surtaxData);
+
+                    foreach (var item in surtaxes)
+                    {
+                        context.Surtaxes.Add(item);
+                    }
+
+                    await context.SaveChangesAsync();
+                }
             }
             catch (Exception ex)
             {

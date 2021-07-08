@@ -493,6 +493,7 @@ namespace Infrastructure.Services
 
             return await Task.FromResult(taxLiability);
         }
+       
         public async Task<TaxLiabilityVM> ReturnTaxLiability1(string email, int surtaxId)
         {
             var surtax = await _context.Surtaxes.Where(s => s.Id == surtaxId).FirstOrDefaultAsync();
@@ -632,6 +633,175 @@ namespace Infrastructure.Services
 
             return await Task.FromResult(userId);         
         } 
+
+         public async Task<TransactionsForUserListVM> ShowTransactionsForSpecificUser5(QueryParameters queryParameters,
+         string email)
+        {
+            TransactionsForUserListVM list = new TransactionsForUserListVM();
+
+            IQueryable<TransactionsForUserVM> transactions =
+                              (from t in _context.StockTransactions
+                               join u in _context.Users.Where(u => u.Email == email)                          
+                               on t.Email equals u.Email 
+                               join s in _context.Stocks
+                               on t.StockId equals s.Id
+                               select new TransactionsForUserVM 
+                               {
+                                    Id = t.Id,
+                                    StockId = s.Id,
+                                    Stock = s.Symbol,
+                                    Quantity = t.Quantity,
+                                    Purchase = t.Purchase,
+                                    Price = t.Price,
+                                    Resolved = t.Resolved,
+                                    Date = t.Date,
+                                    Email = email,
+                                    NetProfit = t.Quantity * t.Price
+                                   
+                                    
+                             }).AsQueryable().OrderBy(s => s.Date);         
+
+            if (queryParameters.HasQuery())
+            {
+                    transactions = transactions
+                    .Where(t => t.Stock.Contains(queryParameters.Query));
+            }
+            list.ListOfTransactions = transactions;
+
+            decimal? basket1 = 0;
+            decimal? basket2 = 0;
+            decimal? basket3 = 0;
+
+            foreach (var item in transactions)
+            {
+                basket1 += item.NetProfit;
+            }
+
+            foreach (var item in transactions)
+            {
+                 if (item.Purchase == false)
+                 {
+                     basket2 += item.NetProfit;
+                     
+                 }
+            }          
+            foreach (var item in transactions)
+            {
+                 if (item.Purchase == true && item.Resolved > 0)
+                 {
+                     basket3 += item.NetProfit;
+                 }
+            }          
+           
+           // list.TotalNetProfit = await TotalNetProfit7(email);
+            list.TotalNetProfit1 = basket2 - basket3;
+          //  list.TotalTraffic = await TotalTraffic(email);
+            list.TotalTraffic1 = basket1;
+
+               return await Task.FromResult(list);
+     
+        }
+         public async Task InitializeTaxLiability(string email)
+        {          
+            var taxLiability = new TaxLiability
+            {
+                Email = email,
+                GrossProfit = 0,
+                CapitalGainsTax = 0,
+                SurtaxId = 1,
+                SurtaxAmount = 0,
+                TotalTaxLiaility = 0,
+                NetProfit = 0
+            };
+            _context.TaxLiabilities.Add(taxLiability);
+            
+            await _context.SaveChangesAsync();           
+        }
+        public async Task UpdateTaxLiability(string email)
+        {      
+            var taxLiability = await _context.TaxLiabilities.Include(s => s.Surtax)
+            .Where(t => t.Email == email).FirstOrDefaultAsync();
+            
+            var user = await _context.AppUsers.Where(ap => ap.Email == email)
+                       .FirstOrDefaultAsync();
+
+            var surtax = await _context.Surtaxes.Where(s => s.Id == user.SurtaxId)
+                         .FirstOrDefaultAsync();
+
+            // todo - usera tu stavi da e poveže sa mailom!
+            decimal f = 100;
+            decimal? basket4 = await TotalNetProfit(email);
+            decimal? basket5 = (12 / f) * basket4;
+          //  decimal? basket6 = (18 / f) * basket5;
+           // decimal? basket7 = basket5 + basket6;
+           // decimal? basket8 = basket4 - basket7;
+
+
+            taxLiability.SurtaxId = surtax.Id;
+            taxLiability.Year = DateTime.Now.Year;
+            taxLiability.Email = email;    
+            taxLiability.GrossProfit = basket4;
+
+            if (basket4.HasValue && basket4 > 0)
+            {
+                taxLiability.CapitalGainsTax = basket5;
+            }
+            else
+            {
+                taxLiability.CapitalGainsTax = 0;
+            }
+
+            if (basket4.HasValue && basket4 > 0)
+            {
+                taxLiability.SurtaxAmount = (surtax.Amount / f) * basket5;
+            }
+            else
+            {
+                taxLiability.SurtaxAmount = 0;
+            }
+
+            if (basket4.HasValue && basket4 > 0)
+            {
+                taxLiability.TotalTaxLiaility = basket5 + taxLiability.SurtaxAmount;
+            }
+            else
+            {
+                taxLiability.TotalTaxLiaility = 0;
+            }
+
+            if (basket4.HasValue && basket4 > 0)
+            {
+                taxLiability.NetProfit = basket4 - taxLiability.TotalTaxLiaility;
+            }
+            else
+            {
+                taxLiability.NetProfit = 0;
+            }
+
+            _context.Entry(taxLiability).State = EntityState.Modified;        
+            await _context.SaveChangesAsync();         
+        }
+       
+      public async Task<TaxLiabilityVM> ReturnTaxLiability77(string email)
+        {
+            decimal f = 100;
+            decimal? basket4 = await TotalNetProfit(email);
+            decimal? basket5 = (12 / f) * basket4;
+            decimal? basket6 = (18 / f) * basket5;
+            decimal? basket7 = basket5 + basket6;
+            decimal? basket8 = basket4 - basket7;
+
+            var taxLiability = new TaxLiabilityVM
+            {
+                GrossProfit = basket4,
+                CapitalGainsTax = basket5,
+                Surtax = basket6,
+                TotalTaxLiaility = basket7,
+                NetProfit = basket8
+            };
+
+            return await Task.FromResult(taxLiability);
+        }
 
     }
 }

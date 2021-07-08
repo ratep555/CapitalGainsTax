@@ -205,6 +205,7 @@ namespace API.Controllers
 
         return Ok(transaction1);
     }
+    // ovo ti je za sellstockreactive!
     [HttpPost("kreativissimo/{id}")]
     public async Task<ActionResult> CreateTransactionist2(int id, TransactionToCreateVM transactionVM)
     {
@@ -235,6 +236,8 @@ namespace API.Controllers
        
         var transaction1 = await _transactionService
         .CreateTransaction1(transaction, id, User.RetrieveEmailFromPrincipal());
+
+        await _transactionService.UpdateTaxLiability(transactionVM.Email);
 
         return Ok(transaction1);
     }    
@@ -294,6 +297,7 @@ namespace API.Controllers
         return Ok(taxLiability);
 
     }
+    // ovo ti je za typeahead
     [HttpPut("profitwowy/{id}")]
     public async Task<ActionResult<TaxLiabilityVM>> CheckTotalProfit2(int id)
     {
@@ -351,6 +355,16 @@ namespace API.Controllers
 
         return Ok(taxLiability);
 
+    }
+[HttpGet("pekismekica1")]
+    public async Task<ActionResult<TransactionsForUserListVM>> GetTransactionsForSpecificUser575(
+        [FromQuery]QueryParameters queryParameters)
+    {
+         var email = HttpContext.User.RetrieveEmailFromPrincipal();
+
+         var list = await _transactionService.ShowTransactionsForSpecificUser5(queryParameters, email);
+
+        return Ok(list);
     }
   }
 }

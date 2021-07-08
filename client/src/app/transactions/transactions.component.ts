@@ -1,6 +1,6 @@
 import { HttpClient } from '@angular/common/http';
 import { Component, ElementRef, OnInit, ViewChild } from '@angular/core';
-import { ITransactionsForUser } from '../shared/models/transacionsForUser';
+import { ITransactionsForUser, ITransactionsWithProfitAndTraffic } from '../shared/models/transacionsForUser';
 import { IStockTransaction } from '../shared/models/transaction';
 import { TransactionParams } from '../shared/models/transactionParams';
 import { TransactionsForUserParams } from '../shared/models/transactionsForUserParams';
@@ -14,12 +14,17 @@ import { TransactionsService } from './transactions.service';
 export class TransactionsComponent implements OnInit {
   @ViewChild('search', {static: false}) searchTerm: ElementRef;
   @ViewChild('searchTu', {static: false}) searchTermTu: ElementRef;
+  @ViewChild('searchTup', {static: false}) searchTermTup: ElementRef;
+
   transactions: IStockTransaction[];
   transactionParams = new TransactionParams();
   totalCount: number;
   transactions1: any[];
   transactionsForUser: ITransactionsForUser[];
   transactionsForUserParams = new TransactionsForUserParams();
+  listOfTransactions: ITransactionsForUser[];
+  totalNetProfit: number;
+  totalTraffic: number;
 
 
   constructor(private transactionsService: TransactionsService, private http: HttpClient) { }
@@ -27,6 +32,7 @@ export class TransactionsComponent implements OnInit {
   ngOnInit(): void {
  // this.getTransactions();
   this.getTransactionsForUser();
+  this.getTransactionsForUser1();
 }
 
 getTransactionsForUser() {
@@ -38,9 +44,25 @@ getTransactionsForUser() {
   });
 }
 
+getTransactionsForUser1() {
+  this.transactionsService.getTransactionsForUser1(this.transactionsForUserParams).
+  subscribe((data: ITransactionsWithProfitAndTraffic) => {
+    this.listOfTransactions = data.listOfTransactions;
+    this.totalNetProfit = data.totalNetProfit1;
+    this.totalTraffic = data.totalTraffic1;
+  }, error => {
+    console.log(error);
+  });
+}
+
 onSearchUser() {
   this.transactionsForUserParams.query = this.searchTermTu.nativeElement.value;
   this.getTransactionsForUser();
+}
+
+onSearchUser1() {
+  this.transactionsForUserParams.query = this.searchTermTup.nativeElement.value;
+  this.getTransactionsForUser1();
 }
 
 /* getTransactionsForUser() {
@@ -80,6 +102,12 @@ onSearchUser() {
     this.transactionsForUserParams = new TransactionsForUserParams();
     // we need our unfiltered list of products
     this.getTransactionsForUser();
+  }
+
+  onResetTup() {
+    this.searchTermTup.nativeElement.value = '';
+    this.transactionsForUserParams = new TransactionsForUserParams();
+    this.getTransactionsForUser1();
   }
 }
 

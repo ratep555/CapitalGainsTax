@@ -20,6 +20,7 @@ namespace API.Extensions
             builder = new IdentityBuilder(builder.UserType, builder.Services);
             
             //ovu liniju koda dolje si dodao naknadno zbog rola, štima iako nije po ps-u
+            //pogledaj kod felipea kako je to napravljeno za role, i u paycompute identično!
             builder.AddRoles<IdentityRole>();
             builder.AddEntityFrameworkStores<StoreContext>();
             builder.AddSignInManager<SignInManager<AppUser>>();

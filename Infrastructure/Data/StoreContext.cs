@@ -17,6 +17,7 @@ namespace Infrastructure.Data
         public DbSet<AppUser> AppUsers { get; set; }
         public DbSet<Surtax> Surtaxes { get; set; }
         public DbSet<StockTransaction> StockTransactions {get; set;}
+        public DbSet<TaxLiability> TaxLiabilities {get; set;}
  
         protected override void OnModelCreating(ModelBuilder modelBuilder) 
         {

@@ -161,6 +161,47 @@ namespace Infrastructure.Data.Migrations
                     b.ToTable("Surtaxes");
                 });
 
+            modelBuilder.Entity("Core.Entities.TaxLiability", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int")
+                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+
+                    b.Property<decimal?>("CapitalGainsTax")
+                        .HasColumnType("decimal(18,2)");
+
+                    b.Property<string>("Email")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<decimal?>("GrossProfit")
+                        .HasColumnType("decimal(18,2)");
+
+                    b.Property<bool>("Locked")
+                        .HasColumnType("bit");
+
+                    b.Property<decimal?>("NetProfit")
+                        .HasColumnType("decimal(18,2)");
+
+                    b.Property<decimal?>("SurtaxAmount")
+                        .HasColumnType("decimal(18,2)");
+
+                    b.Property<int>("SurtaxId")
+                        .HasColumnType("int");
+
+                    b.Property<decimal?>("TotalTaxLiaility")
+                        .HasColumnType("decimal(18,2)");
+
+                    b.Property<int?>("Year")
+                        .HasColumnType("int");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("SurtaxId");
+
+                    b.ToTable("TaxLiabilities");
+                });
+
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRole", b =>
                 {
                     b.Property<string>("Id")
@@ -370,6 +411,11 @@ namespace Infrastructure.Data.Migrations
                     b.Property<string>("DisplayName")
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<int>("SurtaxId")
+                        .HasColumnType("int");
+
+                    b.HasIndex("SurtaxId");
+
                     b.HasDiscriminator().HasValue("AppUser");
                 });
 
@@ -401,6 +447,17 @@ namespace Infrastructure.Data.Migrations
                         .IsRequired();
 
                     b.Navigation("Stock");
+                });
+
+            modelBuilder.Entity("Core.Entities.TaxLiability", b =>
+                {
+                    b.HasOne("Core.Entities.Surtax", "Surtax")
+                        .WithMany()
+                        .HasForeignKey("SurtaxId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Surtax");
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<string>", b =>
@@ -452,6 +509,15 @@ namespace Infrastructure.Data.Migrations
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
+                });
+
+            modelBuilder.Entity("Core.Entities.AppUser", b =>
+                {
+                    b.HasOne("Core.Entities.Surtax", "Surtax")
+                        .WithMany()
+                        .HasForeignKey("SurtaxId");
+
+                    b.Navigation("Surtax");
                 });
 #pragma warning restore 612, 618
         }

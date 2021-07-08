@@ -25,7 +25,8 @@ namespace Infrastructure.Data
                 {
                     DisplayName = "Bob",
                     Email = "bob@test.com",
-                    UserName = "bob@test.com"
+                    UserName = "bob@test.com",
+                    SurtaxId = 1
                  
                 };
 
@@ -34,7 +35,8 @@ namespace Infrastructure.Data
                 if (identityResult.Succeeded)
                 {
                     userManager.AddToRoleAsync(user, "Admin").Wait();
-                }            
+                }   
+                         
             }
         }
     }

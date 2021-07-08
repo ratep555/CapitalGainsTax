@@ -16,6 +16,13 @@ namespace API.Helpers
             CreateMap<StockToCreateDto, Stock>().ReverseMap();
             CreateMap<StockToEditDto, Stock>().ReverseMap();
 
+            CreateMap<TaxLiability, TaxLiabilityDTO>()
+                .ForMember(d => d.Residence, o => o.MapFrom(s => s.Surtax.Residence))
+                .ForMember(d => d.Percentage, o => o.MapFrom(s => s.Surtax.Amount));
+            
+            CreateMap<TaxLiability, TaxLiabilityToEditDTO>().ReverseMap();
+
+
             /*  CreateMap<Stock, StockToCreateDto>()
                 .ForMember(d => d.Category, o => o.MapFrom(s => s.Category.CategoryName))
                 .ForMember(d => d.Country, o => o.MapFrom(s => s.Country.CountryName))
