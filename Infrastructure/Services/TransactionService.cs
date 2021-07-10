@@ -689,7 +689,7 @@ namespace Infrastructure.Services
             {
                  if (item.Purchase == true && item.Resolved > 0)
                  {
-                     basket3 += item.NetProfit;
+                     basket3 += (item.Price * item.Resolved);
                  }
             }          
            
@@ -782,7 +782,7 @@ namespace Infrastructure.Services
             await _context.SaveChangesAsync();         
         }
        
-      public async Task<TaxLiabilityVM> ReturnTaxLiability77(string email)
+        public async Task<TaxLiabilityVM> ReturnTaxLiability77(string email)
         {
             decimal f = 100;
             decimal? basket4 = await TotalNetProfit(email);
@@ -802,6 +802,95 @@ namespace Infrastructure.Services
 
             return await Task.FromResult(taxLiability);
         }
+
+        public async Task InitialisingTaxLiability(string email)
+        {
+            if (!_context.StockTransactions.Any())
+            {
+                await InitializeTaxLiability(email);
+            }
+        }
+
+        public async Task<IEnumerable<StockTransaction>> GetListOftransactionsByEmail( string email)
+        {
+            return await _context.StockTransactions.Where(t => t.Email == email)
+                   .ToListAsync();
+        }
+
+        public async Task NewYearTaxLiability(
+            TransactionToCreateVM transactionVM, 
+            int stockId, 
+            string email)
+        {
+
+        var transaction = new StockTransaction 
+        {
+             Id = transactionVM.Id,
+             Date = DateTime.Now,
+             StockId = stockId,
+             Purchase = false,
+             Quantity = transactionVM.Quantity,
+             Price = transactionVM.Price,
+             Resolved = transactionVM.Resolved,
+             Email = transactionVM.Email,
+             Locked = true
+        };
+
+             _context.StockTransactions.Add(transaction);
+             await _context.SaveChangesAsync();
+
+             int soldQuantity = 0;
+
+             var list = await _context.StockTransactions
+             .Where(x => x.StockId == transaction.StockId && x.Email == transaction.Email).ToListAsync();
+
+             foreach(var item in list)
+             {
+                 if(item.Purchase == false)
+                 {
+                     soldQuantity = soldQuantity + item.Quantity;
+                 }
+             }
+
+             foreach(var item in list)
+             {
+                 if(item.Locked != true)
+                 {
+                    if(item.Purchase == true)
+                    {
+                        var model1 = await _context.StockTransactions.Where
+                        (x => x.Id == item.Id && x.StockId == stockId).FirstOrDefaultAsync();
+                    
+                        if(model1 != null) 
+                        {
+                                if(soldQuantity > 0)
+                                {
+                                    var newSoldQuantity = soldQuantity - item.Quantity;
+
+                                    if(newSoldQuantity >= 0)
+                                    {
+                                        model1.Resolved = item.Quantity;
+                                        model1.Locked = true;
+
+                                        await _context.SaveChangesAsync();
+                                    }
+                                    else if(newSoldQuantity < 0)
+                                    {
+                                        model1.Resolved = soldQuantity;
+
+                                        await _context.SaveChangesAsync();
+                                    }
+                                    soldQuantity = newSoldQuantity;
+                                }
+                        }
+                    }                   
+                 }
+             }
+
+            
+        }
+    
+
 
     }
 }

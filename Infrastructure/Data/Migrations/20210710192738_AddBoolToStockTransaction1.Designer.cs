@@ -10,7 +10,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Infrastructure.Data.Migrations
 {
     [DbContext(typeof(StoreContext))]
-    [Migration("20210710083512_AddBoolToStockTransaction1")]
+    [Migration("20210710192738_AddBoolToStockTransaction1")]
     partial class AddBoolToStockTransaction1
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)

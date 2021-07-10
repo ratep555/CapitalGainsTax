@@ -49,7 +49,8 @@ export class SellStockReactiveFormComponent implements OnInit {
 
 onSubmit() {
   this.service.formData.stockId = this.stock.id;
-  this.service.sellStock1(this.loginForm.value).subscribe(() => {
+  // inače si koristio sellstock1 prije za varijantu bez locked
+  this.service.sellStock1NewYear(this.loginForm.value).subscribe(() => {
     this.resetForm(this.loginForm);
     this.router.navigateByUrl('myportfolio');
   },

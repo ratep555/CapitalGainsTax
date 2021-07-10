@@ -124,7 +124,7 @@ namespace API.Controllers
 
             var result = await _userManager.CreateAsync(user, registerDto.Password);
             // ovo si dodao, pripazi - za sada ne šljaka!
-            await _transactionService.InitializeTaxLiability(user.Email);
+           // await _transactionService.InitializeTaxLiability(user.Email);
 
             if (!result.Succeeded) return BadRequest(new ApiResponse(400));
 

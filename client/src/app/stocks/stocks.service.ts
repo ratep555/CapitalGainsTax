@@ -40,9 +40,13 @@ export class StocksService {
   checkQuantity(quantity: string) {
     return this.http.get(`${this.baseUrlTup2}/${this.formData.id}/${this.formData.stockId}/exceed?quantiy=` + quantity);
   }
-
+  // ovo koristiš, newyear je samo za probu!
   sellStock1(values: any) {
     return this.http.post(`${this.baseUrlTup1}/${this.formData.stockId}`, values);
+  }
+
+  sellStock1NewYear(values: any) {
+    return this.http.post(`${this.baseUrl}transactions/kreativissimo1/${this.formData.stockId}`, values);
   }
 
   getStocks(stockParams: StockParams) {

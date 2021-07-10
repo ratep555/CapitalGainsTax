@@ -192,6 +192,8 @@ namespace API.Controllers
     {     
         transactionVM.Email = User.RetrieveEmailFromPrincipal();
 
+        await _transactionService.InitialisingTaxLiability(transactionVM.Email);
+
         var transaction = new StockTransaction                                                                                                    
         {
              Id = transactionVM.Id,
@@ -383,11 +385,13 @@ namespace API.Controllers
            return Ok(userId);
     }
 
-    // ova dva dolje su ti za kupnju i prodaju uz stvaranje taxliability
+    // ova dva dolje su ti za kupnju i prodaju uz stvaranje taxliability, sada za probu:)
     [HttpPost("kreativo1/{id}")]
     public async Task<ActionResult> CreateTransactionist11(int id, TransactionToCreateVM transactionVM)
     {     
         transactionVM.Email = User.RetrieveEmailFromPrincipal();
+
+        await _transactionService.InitialisingTaxLiability(transactionVM.Email);
 
         var transaction = new StockTransaction                                                                                                    
         {
@@ -405,41 +409,22 @@ namespace API.Controllers
 
         return Ok(transaction1);
     }
-    // ovo ti je za sellstockreactive!
+
     [HttpPost("kreativissimo1/{id}")]
     public async Task<ActionResult> CreateTransactionist22(int id, TransactionToCreateVM transactionVM)
     {
         transactionVM.Email = User.RetrieveEmailFromPrincipal();
 
-       // var userId = await _transactionService.GetUserId();
-
         if(await _transactionService.TotalQuantity(transactionVM.Email, id) < transactionVM.Quantity)
         {
-            // stavio si badrequest kako bi ti prošla ona fora od Felipea
-             // return new BadRequestObjectResult
-             // (new ApiValidationErrorResponse{Errors = new []{"You are selling more than you have!"}});
-
              return BadRequest("You are selling more than you have!");
         }
 
-        var transaction = new StockTransaction 
-        {
-             Id = transactionVM.Id,
-             Date = DateTime.Now,
-             StockId = id,
-             Purchase = false,
-             Quantity = transactionVM.Quantity,
-             Price = transactionVM.Price,
-             Resolved = transactionVM.Resolved,
-             Email = transactionVM.Email
-        };
-       
-        var transaction1 = await _transactionService
-        .CreateTransaction1(transaction, id, User.RetrieveEmailFromPrincipal());
+        await _transactionService.NewYearTaxLiability(transactionVM, id, transactionVM.Email);
 
         await _transactionService.UpdateTaxLiability(transactionVM.Email);
 
-        return Ok(transaction1);
+        return NoContent();
     }    
   }
 }

@@ -54,7 +54,14 @@ namespace Core.Interfaces
         Task<Stock> FindStockById(int id);
 
         Task<string> GetUserId7(string email);
+        Task InitialisingTaxLiability(string email);
 
+        Task<IEnumerable<StockTransaction>> GetListOftransactionsByEmail( string email);
+        Task NewYearTaxLiability(
+            TransactionToCreateVM transactionVM, 
+            int stockId, 
+            string email);
+        
 
 
 
