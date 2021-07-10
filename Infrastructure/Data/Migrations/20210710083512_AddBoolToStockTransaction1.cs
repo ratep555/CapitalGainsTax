@@ -3,7 +3,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 
 namespace Infrastructure.Data.Migrations
 {
-    public partial class InitialCreate : Migration
+    public partial class AddBoolToStockTransaction1 : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
@@ -192,7 +192,8 @@ namespace Infrastructure.Data.Migrations
                     Quantity = table.Column<int>(type: "int", nullable: false),
                     Purchase = table.Column<bool>(type: "bit", nullable: false),
                     Resolved = table.Column<int>(type: "int", nullable: false),
-                    Email = table.Column<string>(type: "nvarchar(max)", nullable: true)
+                    Email = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    Locked = table.Column<bool>(type: "bit", nullable: false)
                 },
                 constraints: table =>
                 {

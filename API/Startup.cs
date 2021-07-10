@@ -1,3 +1,4 @@
+using System.IdentityModel.Tokens.Jwt;
 using API.Extensions;
 using API.Helpers;
 using API.Middleware;
@@ -17,6 +18,9 @@ namespace API
         private readonly IConfiguration _config;
         public Startup(IConfiguration config)
         {
+            // maknuo si ovo iako ti prolazi za userid u jwt
+           // JwtSecurityTokenHandler.DefaultInboundClaimTypeMap.Clear();
+
             _config = config;
         }
 

@@ -18,6 +18,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
 
 namespace API.Controllers
 {
@@ -45,7 +46,7 @@ namespace API.Controllers
         _mapper = mapper;
         _transactionService = transactionService;
         _stocksRepo = stocksRepo;
-
+        _userManager = userManager;
         }
     [HttpGet]
     public async Task<ActionResult<Pagination<TransactionToReturnDto>>> GetTransactionsAsync(
@@ -184,6 +185,8 @@ namespace API.Controllers
 
         return Ok(transaction1);
     }
+
+    // ovo ti je za buystockreactive!
     [HttpPost("kreativo/{id}")]
     public async Task<ActionResult> CreateTransactionist1(int id, TransactionToCreateVM transactionVM)
     {     
@@ -356,7 +359,7 @@ namespace API.Controllers
         return Ok(taxLiability);
 
     }
-[HttpGet("pekismekica1")]
+    [HttpGet("pekismekica1")]
     public async Task<ActionResult<TransactionsForUserListVM>> GetTransactionsForSpecificUser575(
         [FromQuery]QueryParameters queryParameters)
     {
@@ -366,6 +369,78 @@ namespace API.Controllers
 
         return Ok(list);
     }
+    // uspio si povući userid bez jwt autentikacije, očito trebaš usermanagera!!!!!!!!
+    // šljaka ti varijanta i sa jwt, samo u startup moraš u konstruktor sve staviti 
+    [HttpGet("ajdevratiga")]
+   // [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
+    public async Task<ActionResult> GetUserId()
+    {
+        // var email = HttpContext.User.Claims.FirstOrDefault(x => x.Type == "email").Value;
+           var email = User.RetrieveEmailFromPrincipal();
+           var user = await _userManager.FindByEmailAsync(email);
+           var userId = user.Id;
+
+           return Ok(userId);
+    }
+
+    // ova dva dolje su ti za kupnju i prodaju uz stvaranje taxliability
+    [HttpPost("kreativo1/{id}")]
+    public async Task<ActionResult> CreateTransactionist11(int id, TransactionToCreateVM transactionVM)
+    {     
+        transactionVM.Email = User.RetrieveEmailFromPrincipal();
+
+        var transaction = new StockTransaction                                                                                                    
+        {
+             Id = transactionVM.Id,
+             Date = DateTime.Now,
+             StockId = id,
+             Purchase = true,
+             Quantity = transactionVM.Quantity,
+             Price = transactionVM.Price,
+             Resolved = transactionVM.Resolved,
+             Email = transactionVM.Email
+        };
+       
+        var transaction1 = await _transactionService.CreateTransaction(transaction);
+
+        return Ok(transaction1);
+    }
+    // ovo ti je za sellstockreactive!
+    [HttpPost("kreativissimo1/{id}")]
+    public async Task<ActionResult> CreateTransactionist22(int id, TransactionToCreateVM transactionVM)
+    {
+        transactionVM.Email = User.RetrieveEmailFromPrincipal();
+
+       // var userId = await _transactionService.GetUserId();
+
+        if(await _transactionService.TotalQuantity(transactionVM.Email, id) < transactionVM.Quantity)
+        {
+            // stavio si badrequest kako bi ti prošla ona fora od Felipea
+             // return new BadRequestObjectResult
+             // (new ApiValidationErrorResponse{Errors = new []{"You are selling more than you have!"}});
+
+             return BadRequest("You are selling more than you have!");
+        }
+
+        var transaction = new StockTransaction 
+        {
+             Id = transactionVM.Id,
+             Date = DateTime.Now,
+             StockId = id,
+             Purchase = false,
+             Quantity = transactionVM.Quantity,
+             Price = transactionVM.Price,
+             Resolved = transactionVM.Resolved,
+             Email = transactionVM.Email
+        };
+       
+        var transaction1 = await _transactionService
+        .CreateTransaction1(transaction, id, User.RetrieveEmailFromPrincipal());
+
+        await _transactionService.UpdateTaxLiability(transactionVM.Email);
+
+        return Ok(transaction1);
+    }    
   }
 }
 

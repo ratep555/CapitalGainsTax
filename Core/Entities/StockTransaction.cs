@@ -7,8 +7,7 @@ namespace Core.Entities
     public class StockTransaction : BaseEntity
     {
         [ForeignKey("Stock")]
-        public int StockId { get; set; }
-        
+        public int StockId { get; set; }       
         public Stock Stock { get; set; }   
 
         public string UserId { get; set; }
@@ -25,6 +24,7 @@ namespace Core.Entities
         public bool Purchase { get; set; }
         public int Resolved { get; set; }
         public string Email { get; set; }
+        public bool Locked { get; set; }
 
     }
 }

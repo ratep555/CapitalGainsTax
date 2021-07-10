@@ -1,8 +1,9 @@
 <div class="container mt-3 mb-5">   
     <div class="form-inline pull-left">
         <h3>{{totalCount}} <i class="fa fa-user"></i></h3>
-     </div>{{today() | date:"dd.MM.yyyy"}}
-    <div class="form-inline pull-right">
+     </div>
+<!--      {{today() | date:"dd.MM.yyyy"}}
+ -->    <div class="form-inline pull-right">
         <input (keyup.enter)="onSearch()" type="text" 
         class="form-control mr-2" #search style="width: 300px;"  
         placeholder="Search">
