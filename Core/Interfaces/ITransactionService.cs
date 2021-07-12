@@ -15,6 +15,7 @@ namespace Core.Interfaces
         Task InitializeTaxLiability(string email);
         Task UpdateTaxLiability(string email);
 
+        Task<StockTransaction> ReturnLastTranscation( string email);
 
         Task<IEnumerable<TransactionsForUserVM>> ShowTransactionsForSpecificUser(string email);
         Task<IEnumerable<TransactionsForUserVM>> ShowTransactionsForSpecificUser1(QueryParameters queryParameters, string email);
@@ -57,11 +58,25 @@ namespace Core.Interfaces
         Task InitialisingTaxLiability(string email);
 
         Task<IEnumerable<StockTransaction>> GetListOftransactionsByEmail( string email);
-        Task NewYearTaxLiability(
-            TransactionToCreateVM transactionVM, 
+
+        // ovo mijenjaj!
+        Task CreatingNewStockTransaction(
+            StockTransaction transaction, 
             int stockId, 
             string email);
         
+        Task UpdateTaxLiabilityIncludingLocked(string email);
+        Task CreateNewTaxLiabilityUponNewYear(string email);
+        Task<StockTransaction> LetsSellStock(TransactionToCreateVM transactionVM, int id);
+        Task<StockTransaction> UpdateResolvedAndLocked(
+            StockTransaction transaction, 
+            int stockId, 
+            string email);
+        
+        Task<AnnualProfitOrLoss> ReturnTotalNetProfitOrLoss(string email);
+        Task CreatingLoginNewAnnualProfitOrLoss(string email);
+
+
 
 
 

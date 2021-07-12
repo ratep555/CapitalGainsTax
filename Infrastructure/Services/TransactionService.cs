@@ -711,7 +711,8 @@ namespace Infrastructure.Services
                 SurtaxId = 1,
                 SurtaxAmount = 0,
                 TotalTaxLiaility = 0,
-                NetProfit = 0
+                NetProfit = 0,
+                Locked = false
             };
             _context.TaxLiabilities.Add(taxLiability);
             
@@ -728,14 +729,9 @@ namespace Infrastructure.Services
             var surtax = await _context.Surtaxes.Where(s => s.Id == user.SurtaxId)
                          .FirstOrDefaultAsync();
 
-            // todo - usera tu stavi da e poveže sa mailom!
             decimal f = 100;
             decimal? basket4 = await TotalNetProfit(email);
             decimal? basket5 = (12 / f) * basket4;
-          //  decimal? basket6 = (18 / f) * basket5;
-           // decimal? basket7 = basket5 + basket6;
-           // decimal? basket8 = basket4 - basket7;
-
 
             taxLiability.SurtaxId = surtax.Id;
             taxLiability.Year = DateTime.Now.Year;
@@ -817,45 +813,29 @@ namespace Infrastructure.Services
                    .ToListAsync();
         }
 
-        public async Task NewYearTaxLiability(
-            TransactionToCreateVM transactionVM, 
+        public async Task CreatingNewStockTransaction(
+            StockTransaction transaction, 
             int stockId, 
             string email)
         {
 
-        var transaction = new StockTransaction 
-        {
-             Id = transactionVM.Id,
-             Date = DateTime.Now,
-             StockId = stockId,
-             Purchase = false,
-             Quantity = transactionVM.Quantity,
-             Price = transactionVM.Price,
-             Resolved = transactionVM.Resolved,
-             Email = transactionVM.Email,
-             Locked = true
-        };
-
-             _context.StockTransactions.Add(transaction);
-             await _context.SaveChangesAsync();
-
              int soldQuantity = 0;
 
              var list = await _context.StockTransactions
-             .Where(x => x.StockId == transaction.StockId && x.Email == transaction.Email).ToListAsync();
+             .Where(x => x.StockId == transaction.StockId && x.Email == email).ToListAsync();
 
              foreach(var item in list)
-             {
-                 if(item.Purchase == false)
+            {
+                 if(item.Locked != true && item.Purchase == false)
                  {
                      soldQuantity = soldQuantity + item.Quantity;
                  }
-             }
+            }
 
              foreach(var item in list)
-             {
+            {
                  if(item.Locked != true)
-                 {
+                {
                     if(item.Purchase == true)
                     {
                         var model1 = await _context.StockTransactions.Where
@@ -871,6 +851,200 @@ namespace Infrastructure.Services
                                     {
                                         model1.Resolved = item.Quantity;
                                         model1.Locked = true;
+                                        
+                                        _context.Entry(model1).State = EntityState.Modified;
+                                        await _context.SaveChangesAsync();
+                                    }
+                                    else if(newSoldQuantity < 0)
+                                    {
+                                        model1.Resolved = soldQuantity;
+
+                                        _context.Entry(model1).State = EntityState.Modified;
+                                        await _context.SaveChangesAsync();
+                                    }
+                                    soldQuantity = newSoldQuantity;
+                                }
+                        }
+                    }                   
+                }
+
+                if (item.Purchase == false)
+                {
+                        var model2 = await _context.StockTransactions.Where
+                        (x => x.Id == item.Id && x.StockId == stockId).FirstOrDefaultAsync();
+
+                        model2.Locked = true;
+                        _context.Entry(model2).State = EntityState.Modified;
+                        await _context.SaveChangesAsync();
+                }
+            }           
+        }
+    
+        public async Task<StockTransaction> ReturnLastTranscation( string email)
+        {
+
+            var transaction = await _context.StockTransactions.Where(t => t.Email == email).
+                   OrderBy(t => t.Date) .LastOrDefaultAsync();
+
+            var today = transaction.Date.Year;
+
+            return transaction;
+        }
+
+        public async Task CreateNewTaxLiabilityUponNewYear(string email)
+        {
+            var taxliability = await _context.TaxLiabilities.Where(t => t.Email == email && t.Locked == false)
+                               .FirstOrDefaultAsync();
+
+             var transaction = await _context.StockTransactions.Where(t => t.Email == email).
+                               OrderBy(t => t.Date) .LastOrDefaultAsync();
+
+            var today = transaction.Date.Year;
+
+        if (DateTime.Now.Year > today)
+        {
+                taxliability.Locked = true;
+                await _context.SaveChangesAsync();
+
+            var taxLiability = new TaxLiability
+            {
+                Email = email,
+                Year = DateTime.Now.Year,
+                GrossProfit = 0,
+                CapitalGainsTax = 0,
+                SurtaxId = taxliability.SurtaxId,
+                SurtaxAmount = 0,
+                TotalTaxLiaility = 0,
+                NetProfit = 0,
+                Locked = false
+            };
+
+            _context.TaxLiabilities.Add(taxLiability);
+            
+            await _context.SaveChangesAsync();   
+        }
+        else
+        {
+            await UpdateTaxLiabilityIncludingLocked(email);
+        }
+           
+        }
+         public async Task UpdateTaxLiabilityIncludingLocked(string email)
+        {      
+            var taxLiability = await _context.TaxLiabilities.Include(s => s.Surtax)
+            .Where(t => t.Email == email && t.Locked != true).FirstOrDefaultAsync();
+            
+            var user = await _context.AppUsers.Where(ap => ap.Email == email)
+                       .FirstOrDefaultAsync();
+
+            var surtax = await _context.Surtaxes.Where(s => s.Id == user.SurtaxId)
+                         .FirstOrDefaultAsync();
+
+            decimal f = 100;
+            decimal? basket4 = await TotalNetProfit(email);
+            decimal? basket5 = (12 / f) * basket4;
+
+            taxLiability.SurtaxId = surtax.Id;
+            taxLiability.Year = DateTime.Now.Year;
+            taxLiability.Email = email;    
+            taxLiability.GrossProfit = basket4;
+
+            if (basket4.HasValue && basket4 > 0)
+            {
+                taxLiability.CapitalGainsTax = basket5;
+            }
+            else
+            {
+                taxLiability.CapitalGainsTax = 0;
+            }
+
+            if (basket4.HasValue && basket4 > 0)
+            {
+                taxLiability.SurtaxAmount = (surtax.Amount / f) * basket5;
+            }
+            else
+            {
+                taxLiability.SurtaxAmount = 0;
+            }
+
+            if (basket4.HasValue && basket4 > 0)
+            {
+                taxLiability.TotalTaxLiaility = basket5 + taxLiability.SurtaxAmount;
+            }
+            else
+            {
+                taxLiability.TotalTaxLiaility = 0;
+            }
+
+            if (basket4.HasValue && basket4 > 0)
+            {
+                taxLiability.NetProfit = basket4 - taxLiability.TotalTaxLiaility;
+            }
+            else
+            {
+                taxLiability.NetProfit = 0;
+            }
+
+            _context.Entry(taxLiability).State = EntityState.Modified;        
+            await _context.SaveChangesAsync();         
+        }       
+
+        public async Task<StockTransaction> LetsSellStock(TransactionToCreateVM transactionVM, int id)
+        {
+            var transaction = new StockTransaction 
+            {
+             Id = transactionVM.Id,
+             Date = DateTime.Now,
+             StockId = id,
+             Purchase = false,
+             Quantity = transactionVM.Quantity,
+             Price = transactionVM.Price,
+             Resolved = transactionVM.Resolved,
+             Email = transactionVM.Email,
+             Locked = true
+             
+            };
+
+            _context.StockTransactions.Add(transaction);
+             await _context.SaveChangesAsync();
+
+             return transaction;
+        }
+         public async Task<StockTransaction> UpdateResolvedAndLocked(
+            StockTransaction transaction, 
+            int stockId, 
+            string email)
+        {
+
+            int soldQuantity = 0;
+
+            var list = await _context.StockTransactions
+            .Where(x => x.StockId == stockId && x.Email == email).ToListAsync();
+
+            foreach(var item in list)
+            {
+                 if(item.Purchase == false)
+                 {
+                     soldQuantity = soldQuantity + item.Quantity;
+                 }
+            }
+
+            foreach(var item in list)
+            {
+                    if(item.Purchase == true)
+                    {
+                        var model1 = await _context.StockTransactions.Where
+                        (x => x.Id == item.Id && x.StockId == stockId).FirstOrDefaultAsync();
+                    
+                        if(model1 != null) 
+                        {
+                                if(soldQuantity > 0)
+                                {
+                                    var newSoldQuantity = soldQuantity - item.Quantity;
+
+                                    if(newSoldQuantity >= 0)
+                                    {
+                                        model1.Resolved = item.Quantity;
 
                                         await _context.SaveChangesAsync();
                                     }
@@ -884,13 +1058,65 @@ namespace Infrastructure.Services
                                 }
                         }
                     }                   
-                 }
-             }
+            }
 
-            
+            foreach (var item in list)
+            {
+                if (item.Purchase == true )
+                {
+                      if (item.Quantity == item.Resolved)
+                      {
+                          item.Locked = true;
+                          _context.Entry(item).State = EntityState.Modified;
+                          await _context.SaveChangesAsync();
+                      }
+                }
+            }
+             return await Task.FromResult(transaction);
         }
-    
 
+        public async Task<AnnualProfitOrLoss> ReturnTotalNetProfitOrLoss(string email)
+        {
+            var totalNetProfit = new AnnualProfitOrLoss
+            {
+                Email = email,
+                Year = DateTime.Now.Year,
+                Amount = await TotalNetProfit(email)
+            };
+
+            return totalNetProfit;
+        }
+
+        public async Task CreatingLoginNewAnnualProfitOrLoss(string email)
+        {
+            var user = await _context.AppUsers.Where(u => u.Email == email).FirstOrDefaultAsync();
+            var taxcard = await _context.AnnualProfitsOrLosses.Where(a => a.Email == email && a.Locked == false).FirstOrDefaultAsync();
+
+            if (_context.AnnualProfitsOrLosses.Where(x => x.Email == email && x.Locked == false).Any())
+            {
+                if (DateTime.Now.Year > taxcard.Year)
+                {
+                    taxcard.Locked = true;
+                    _context.Entry(taxcard).State = EntityState.Modified;
+                    await _context.SaveChangesAsync();
+
+                    var taxcard1 = new AnnualProfitOrLoss
+                    {
+                        Year = DateTime.Now.Year,
+                        Amount = 0,
+                        Email = email,
+                        Locked = false
+                    };
+
+                    _context.AnnualProfitsOrLosses.Add(taxcard1);
+                    await _context.SaveChangesAsync();
+
+
+                }
+                 
+            }
+
+        }
 
     }
 }

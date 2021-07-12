@@ -18,6 +18,7 @@ namespace Infrastructure.Data
         public DbSet<Surtax> Surtaxes { get; set; }
         public DbSet<StockTransaction> StockTransactions {get; set;}
         public DbSet<TaxLiability> TaxLiabilities {get; set;}
+        public DbSet<AnnualProfitOrLoss> AnnualProfitsOrLosses {get; set;}
  
         protected override void OnModelCreating(ModelBuilder modelBuilder) 
         {

@@ -114,7 +114,7 @@ namespace Infrastructure.Services
         int id)
         {      
             var taxLiability = await _context.TaxLiabilities
-            .Where(t => t.Email == email)
+            .Where(t => t.Email == email && t.Locked == false)
             .FirstOrDefaultAsync();
 
             var surtax = await _context.Surtaxes.Where(st => st.Id == id)

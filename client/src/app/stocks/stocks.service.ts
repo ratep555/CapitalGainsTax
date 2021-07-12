@@ -40,7 +40,7 @@ export class StocksService {
   checkQuantity(quantity: string) {
     return this.http.get(`${this.baseUrlTup2}/${this.formData.id}/${this.formData.stockId}/exceed?quantiy=` + quantity);
   }
-  // ovo koristiš, newyear je samo za probu!
+  // ovo koristiš, newyear je samo za probu! - sad si ga stavio za stalno pa kaj bude:)
   sellStock1(values: any) {
     return this.http.post(`${this.baseUrlTup1}/${this.formData.stockId}`, values);
   }

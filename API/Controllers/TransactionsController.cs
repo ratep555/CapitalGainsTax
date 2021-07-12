@@ -371,7 +371,8 @@ namespace API.Controllers
 
         return Ok(list);
     }
-    // uspio si povući userid bez jwt autentikacije, očito trebaš usermanagera!!!!!!!!
+    // uspio si povući userid bez jwt autentikacije (inače trebaš auth, gore na vrhu ti je), očito 
+    // trebaš usermanagera!!!!!!!!
     // šljaka ti varijanta i sa jwt, samo u startup moraš u konstruktor sve staviti 
     [HttpGet("ajdevratiga")]
    // [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
@@ -386,6 +387,7 @@ namespace API.Controllers
     }
 
     // ova dva dolje su ti za kupnju i prodaju uz stvaranje taxliability, sada za probu:)
+    // šljakaju za sada, koristiš ih
     [HttpPost("kreativo1/{id}")]
     public async Task<ActionResult> CreateTransactionist11(int id, TransactionToCreateVM transactionVM)
     {     
@@ -415,16 +417,37 @@ namespace API.Controllers
     {
         transactionVM.Email = User.RetrieveEmailFromPrincipal();
 
-        if(await _transactionService.TotalQuantity(transactionVM.Email, id) < transactionVM.Quantity)
+        if (await _transactionService.TotalQuantity(transactionVM.Email, id) < transactionVM.Quantity)
         {
              return BadRequest("You are selling more than you have!");
         }
 
-        await _transactionService.NewYearTaxLiability(transactionVM, id, transactionVM.Email);
+        var transaction = await _transactionService.LetsSellStock(transactionVM, id);
+        
+        await _transactionService.UpdateResolvedAndLocked(transaction, id, User.RetrieveEmailFromPrincipal());
 
-        await _transactionService.UpdateTaxLiability(transactionVM.Email);
+       // ovo si zakomentirao, šljakao je kod sa locked, stavio si drugi kod
+        await _transactionService.UpdateTaxLiabilityIncludingLocked(transactionVM.Email);
 
         return NoContent();
+    }    
+    [HttpGet("lastelement")]
+    public async Task<ActionResult> ReturnLastTransaction()
+    {
+        var email = User.RetrieveEmailFromPrincipal();
+
+        var lastTransaction = await _transactionService.ReturnLastTranscation(email);
+
+        return Ok(lastTransaction);
+    }    
+    [HttpGet("profitko")]
+    public async Task<ActionResult> ReturnTotalProfit()
+    {
+        var email = User.RetrieveEmailFromPrincipal();
+
+        var profit = await _transactionService.ReturnTotalNetProfitOrLoss(email);
+
+        return Ok(profit);
     }    
   }
 }
