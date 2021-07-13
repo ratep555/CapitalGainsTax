@@ -96,7 +96,9 @@ namespace API.Controllers
             {
                return Unauthorized(new ApiResponse(401));
             }
-           
+            // stvaraš novu poreznu karticu u novoj godini
+            await _transactionService.CreatingLoginNewAnnualProfitOrLoss(loginDto.Email);
+
             // želiš vratiti novu taxlibility ako je datum veći
            // await _transactionService.CreateNewTaxLiabilityUponNewYear(loginDto.Email);
 

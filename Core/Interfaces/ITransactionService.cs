@@ -75,6 +75,8 @@ namespace Core.Interfaces
         
         Task<AnnualProfitOrLoss> ReturnTotalNetProfitOrLoss(string email);
         Task CreatingLoginNewAnnualProfitOrLoss(string email);
+        Task CreatingPurchaseNewAnnualProfitOrLoss(string email);
+        Task CreatingSellingNewAnnualProfitOrLoss(string email);
 
 
 

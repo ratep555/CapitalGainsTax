@@ -395,6 +395,10 @@ namespace API.Controllers
 
         await _transactionService.InitialisingTaxLiability(transactionVM.Email);
 
+        // ovo stavljaš anual
+      //  await _transactionService.CreatingPurchaseNewAnnualProfitOrLoss(transactionVM.Email);
+
+
         var transaction = new StockTransaction                                                                                                    
         {
              Id = transactionVM.Id,
@@ -426,8 +430,9 @@ namespace API.Controllers
         
         await _transactionService.UpdateResolvedAndLocked(transaction, id, User.RetrieveEmailFromPrincipal());
 
-       // ovo si zakomentirao, šljakao je kod sa locked, stavio si drugi kod
         await _transactionService.UpdateTaxLiabilityIncludingLocked(transactionVM.Email);
+
+       // await _transactionService.CreatingLoginNewAnnualProfitOrLoss(transactionVM.Email);
 
         return NoContent();
     }    

@@ -701,7 +701,7 @@ namespace Infrastructure.Services
                return await Task.FromResult(list);
      
         }
-         public async Task InitializeTaxLiability(string email)
+        public async Task InitializeTaxLiability(string email)
         {          
             var taxLiability = new TaxLiability
             {
@@ -717,6 +717,19 @@ namespace Infrastructure.Services
             _context.TaxLiabilities.Add(taxLiability);
             
             await _context.SaveChangesAsync();           
+        }
+        public async Task InitializeAnnualProfitOrLoss(string email)
+        {          
+             var taxcard1 = new AnnualProfitOrLoss
+                    {
+                        Year = DateTime.Now.Year,
+                        Amount = 0,
+                        Email = email,
+                        Locked = false
+                    };
+
+                    _context.AnnualProfitsOrLosses.Add(taxcard1);
+                    await _context.SaveChangesAsync();       
         }
         public async Task UpdateTaxLiability(string email)
         {      
@@ -801,10 +814,14 @@ namespace Infrastructure.Services
 
         public async Task InitialisingTaxLiability(string email)
         {
-            if (!_context.StockTransactions.Any())
+            if (!_context.StockTransactions.Where(x => x.Email == email).Any())
             {
                 await InitializeTaxLiability(email);
+                //ovo sve dolje si dodao za annual
+                await InitializeAnnualProfitOrLoss(email);                
             }
+                await CreatingPurchaseNewAnnualProfitOrLoss(email);
+
         }
 
         public async Task<IEnumerable<StockTransaction>> GetListOftransactionsByEmail( string email)
@@ -986,7 +1003,10 @@ namespace Infrastructure.Services
             }
 
             _context.Entry(taxLiability).State = EntityState.Modified;        
-            await _context.SaveChangesAsync();         
+            await _context.SaveChangesAsync();  
+
+            // sada dodaješ kod za annual
+               await    CreatingSellingNewAnnualProfitOrLoss(email);
         }       
 
         public async Task<StockTransaction> LetsSellStock(TransactionToCreateVM transactionVM, int id)
@@ -1090,7 +1110,8 @@ namespace Infrastructure.Services
         public async Task CreatingLoginNewAnnualProfitOrLoss(string email)
         {
             var user = await _context.AppUsers.Where(u => u.Email == email).FirstOrDefaultAsync();
-            var taxcard = await _context.AnnualProfitsOrLosses.Where(a => a.Email == email && a.Locked == false).FirstOrDefaultAsync();
+            var taxcard = await _context.AnnualProfitsOrLosses.Where(a => a.Email == email && a.Locked == false)
+                          .FirstOrDefaultAsync();
 
             if (_context.AnnualProfitsOrLosses.Where(x => x.Email == email && x.Locked == false).Any())
             {
@@ -1110,14 +1131,86 @@ namespace Infrastructure.Services
 
                     _context.AnnualProfitsOrLosses.Add(taxcard1);
                     await _context.SaveChangesAsync();
+                }                
+            }
+        }
+        public async Task CreatingPurchaseNewAnnualProfitOrLoss(string email)
+        {
+            var user = await _context.AppUsers.Where(u => u.Email == email).FirstOrDefaultAsync();
+            var taxcard = await _context.AnnualProfitsOrLosses.Where(a => a.Email == email && a.Locked == false).FirstOrDefaultAsync();
 
+          /*   if (!_context.StockTransactions.Where(x => x.Email == email).Any())
+            {
+                    var taxcard1 = new AnnualProfitOrLoss
+                    {
+                        Year = DateTime.Now.Year,
+                        Amount = 0,
+                        Email = email,
+                        Locked = false
+                    };
 
-                }
-                 
+                    _context.AnnualProfitsOrLosses.Add(taxcard1);
+                    await _context.SaveChangesAsync();
+            } */
+      
+            if (_context.AnnualProfitsOrLosses.Where(x => x.Email == email && x.Locked == false).Any())
+                           
+            {
+                if (DateTime.Now.Year > taxcard.Year)
+                   {
+                    taxcard.Locked = true;
+                    _context.Entry(taxcard).State = EntityState.Modified;
+                    await _context.SaveChangesAsync();
+
+                    var taxcard2 = new AnnualProfitOrLoss
+                    {
+                        Year = DateTime.Now.Year,
+                        Amount = 0,
+                        Email = email,
+                        Locked = false
+                    };
+
+                    _context.AnnualProfitsOrLosses.Add(taxcard2);
+                    await _context.SaveChangesAsync();
+                   }
+            }
+        }
+        public async Task CreatingSellingNewAnnualProfitOrLoss(string email)
+        {
+            var user = await _context.AppUsers.Where(u => u.Email == email).FirstOrDefaultAsync();
+            var taxcard = await _context.AnnualProfitsOrLosses.Where(a => a.Email == email && a.Locked == false).FirstOrDefaultAsync();
+
+            if (DateTime.Now.Year == taxcard.Year)
+            {
+                 taxcard.Year = DateTime.Now.Year;
+                 taxcard.Email = email;
+                 taxcard.Amount = 100;
+                 taxcard.Locked = false;
             }
 
-        }
+            _context.Entry(taxcard).State = EntityState.Modified;
+            await _context.SaveChangesAsync();
 
+            if (DateTime.Now.Year > taxcard.Year)
+                {
+                    taxcard.Locked = true;
+                    _context.Entry(taxcard).State = EntityState.Modified;
+                    await _context.SaveChangesAsync();
+
+                    var taxcard2 = new AnnualProfitOrLoss
+                    {
+                        Year = DateTime.Now.Year,
+                        Amount = 0,
+                        Email = email,
+                        Locked = false
+                    };
+
+                    _context.AnnualProfitsOrLosses.Add(taxcard2);
+                    await _context.SaveChangesAsync();
+                }
+           
+        }
+        
     }
 }
 
