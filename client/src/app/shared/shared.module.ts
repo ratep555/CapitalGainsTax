@@ -9,6 +9,9 @@ import { TextInputComponent } from './components/text-input/text-input.component
 import { Pager1Component } from './components/pager1/pager1.component';
 import { MycurrencyPipe } from './pipes/custom.currencypipe';
 import { TypeaheadModule } from 'ngx-bootstrap/typeahead';
+import { GoogleChartsModule } from 'angular-google-charts';
+import { ChartsModule } from '../charts/charts.module';
+import { ChartsComponent } from '../charts/charts.component';
 
 
 
@@ -22,7 +25,9 @@ import { TypeaheadModule } from 'ngx-bootstrap/typeahead';
     CarouselModule.forRoot(),
     BsDropdownModule.forRoot(),
     TypeaheadModule.forRoot(),
-    ReactiveFormsModule
+    ReactiveFormsModule,
+    GoogleChartsModule.forRoot({ mapsApiKey: 'AIzaSyD-9tSrke72PouQMnMX-a7eZSW0jkFMBWY' })
+
     ],
   exports: [
     PaginationModule,
@@ -32,7 +37,8 @@ import { TypeaheadModule } from 'ngx-bootstrap/typeahead';
     ReactiveFormsModule,
     BsDropdownModule,
     TextInputComponent,
-    MycurrencyPipe
+    MycurrencyPipe,
+    GoogleChartsModule
   ]
 })
 export class SharedModule { }

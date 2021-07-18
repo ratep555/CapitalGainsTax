@@ -454,6 +454,14 @@ namespace API.Controllers
 
         return Ok(profit);
     }    
+    [HttpGet("bravoo")]
+    public async Task<ActionResult> TotalNetProfitForCurrentYear()
+    {
+        var email = User.RetrieveEmailFromPrincipal();
+         
+        decimal? profit = await _transactionService.TotalNetProfitForCurrentYear2(email);
+        return Ok(profit);
+    }    
   }
 }
 

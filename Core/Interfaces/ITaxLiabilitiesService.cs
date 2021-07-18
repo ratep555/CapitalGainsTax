@@ -19,7 +19,11 @@ namespace Core.Interfaces
         int id);
         Task<TaxLiability> FindTaxLiabilityByEmail(string email);
 
+        Task<FinalTaxLiabilityVM> FindAnnualByEmail(string email, int id);
 
+        public decimal Broj();
+        public decimal Broj1();
+        Task<AnnualProfitOrLoss> GiveMeAnnual(string email);
 
 
 

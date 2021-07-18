@@ -213,7 +213,7 @@ namespace Infrastructure.Data.Migrations
                     b.Property<decimal?>("SurtaxAmount")
                         .HasColumnType("decimal(18,2)");
 
-                    b.Property<int>("SurtaxId")
+                    b.Property<int?>("SurtaxId")
                         .HasColumnType("int");
 
                     b.Property<decimal?>("TotalTaxLiaility")
@@ -480,9 +480,7 @@ namespace Infrastructure.Data.Migrations
                 {
                     b.HasOne("Core.Entities.Surtax", "Surtax")
                         .WithMany()
-                        .HasForeignKey("SurtaxId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .HasForeignKey("SurtaxId");
 
                     b.Navigation("Surtax");
                 });

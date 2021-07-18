@@ -1,0 +1,104 @@
+<div class="container mt-5 mb-3">
+    <div class="row">
+        <div class="col-md-2">
+            <div class="form-inline pull-left">
+                <form [formGroup]="surtaxForm" (ngSubmit)="onSubmit()">
+                    <input
+                    formControlName="residence"
+                    [typeahead]="surtaxes"
+                    typeaheadOptionField="residence"
+                    [typeaheadOptionsInScrollableView]="5"
+                    [typeaheadScrollable]="true"
+                    (typeaheadOnSelect)="onSelect2($event)"
+                    placeholder="Choose your residence"
+                    class="form-control"
+                    style="width: 250px;">  
+                    <button class="btn btn-info my-2">
+                      <i class="fa fa-search mr-1" aria-hidden="true">Find</i>
+                    </button>
+
+                      </form>           
+                     </div>
+
+        </div>
+        <div class="col-md-10">
+            <table class="center table table-bordered table-striped table-condensed table-hover">
+                <thead>
+                  <tr>
+                      <th>
+                        Email
+                      </th>
+                      <th>
+                         {{annual?.email}}
+                      </th>
+                  </tr>
+                  <tr>
+                      <th>
+                        Year
+                      </th>
+                      <th>
+                         {{annual?.year}}
+                      </th>
+                  </tr>
+                    <tr>
+                        <th>
+                          Total Gross Profit
+                        </th>
+                        <th>
+                           {{annual?.amount | currency}}
+                        </th>
+                    </tr>
+                    <tr>
+                        <th>
+                          Residence
+                        </th>
+                        <th>
+                           {{annual?.residence}}
+                        </th>
+                    </tr>
+                    <tr>
+                        <th>
+                          Capital Gains Tax (12%)
+                        </th>
+                        <th>
+                      {{annual?.capitalGainsTax | currency}}
+                  </th>
+                    </tr>
+                    <tr>
+                        <th>
+                          Surtax
+                        </th>
+                        <th>
+                           {{annual?.surtaxAmount | currency}}
+                        </th>
+                    </tr>
+                   <!--  <tr>
+                        <th>
+                          Surtax Percentage
+                        </th>
+                        <th>
+                           {{annual?.percentage}} %
+                        </th>
+                    </tr> -->
+                    <tr>
+                      <th>
+                          Total Tax Liability
+                      </th>
+                      <th>
+                          {{annual?.totalTaxLiaility | currency}}
+                      </th>
+                    </tr>
+                    <tr>
+                        <th>
+                          Total Net Profit
+                        </th>
+                        <th>
+                           {{annual?.netProfit | currency}}
+                        </th>
+                    </tr>
+                </thead>
+                </table>
+        </div>
+      </div>
+  
+ </div>

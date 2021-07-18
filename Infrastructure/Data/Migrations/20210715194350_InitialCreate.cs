@@ -3,7 +3,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 
 namespace Infrastructure.Data.Migrations
 {
-    public partial class AddBool : Migration
+    public partial class InitialCreate : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
@@ -174,7 +174,7 @@ namespace Infrastructure.Data.Migrations
                 {
                     Id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
-                    SurtaxId = table.Column<int>(type: "int", nullable: false),
+                    SurtaxId = table.Column<int>(type: "int", nullable: true),
                     Year = table.Column<int>(type: "int", nullable: true),
                     Email = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     GrossProfit = table.Column<decimal>(type: "decimal(18,2)", nullable: true),
@@ -192,7 +192,7 @@ namespace Infrastructure.Data.Migrations
                         column: x => x.SurtaxId,
                         principalTable: "Surtaxes",
                         principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
+                        onDelete: ReferentialAction.Restrict);
                 });
 
             migrationBuilder.CreateTable(

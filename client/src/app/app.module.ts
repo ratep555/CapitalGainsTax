@@ -24,6 +24,7 @@ import { CountriesModule } from './countries/countries.module';
 import { StocksAdminModule } from './stocks-admin/stocks-admin.module';
 import { UsersModule } from './users/users.module';
 import { SurtaxModule } from './surtax/surtax.module';
+import { ChartsModule } from './charts/charts.module';
 
 
 @NgModule({
@@ -44,7 +45,8 @@ import { SurtaxModule } from './surtax/surtax.module';
     CountriesModule,
     StocksAdminModule,
     UsersModule,
-    SurtaxModule
+    SurtaxModule,
+    ChartsModule
   ],
   providers: [
     {provide: HTTP_INTERCEPTORS, useClass: JwtInterceptor, multi: true}

@@ -10,8 +10,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Infrastructure.Data.Migrations
 {
     [DbContext(typeof(StoreContext))]
-    [Migration("20210712220948_AddBool")]
-    partial class AddBool
+    [Migration("20210715194350_InitialCreate")]
+    partial class InitialCreate
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -215,7 +215,7 @@ namespace Infrastructure.Data.Migrations
                     b.Property<decimal?>("SurtaxAmount")
                         .HasColumnType("decimal(18,2)");
 
-                    b.Property<int>("SurtaxId")
+                    b.Property<int?>("SurtaxId")
                         .HasColumnType("int");
 
                     b.Property<decimal?>("TotalTaxLiaility")
@@ -482,9 +482,7 @@ namespace Infrastructure.Data.Migrations
                 {
                     b.HasOne("Core.Entities.Surtax", "Surtax")
                         .WithMany()
-                        .HasForeignKey("SurtaxId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .HasForeignKey("SurtaxId");
 
                     b.Navigation("Surtax");
                 });

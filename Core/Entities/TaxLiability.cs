@@ -6,7 +6,7 @@ namespace Core.Entities
     public class TaxLiability : BaseEntity
     {
         [ForeignKey("Surtax")]
-        public int SurtaxId { get; set; }       
+        public int? SurtaxId { get; set; }       
         public Surtax Surtax { get; set; }   
 
         public int? Year { get; set; } = DateTime.Now.Year;

@@ -1184,7 +1184,7 @@ namespace Infrastructure.Services
             {
                  taxcard.Year = DateTime.Now.Year;
                  taxcard.Email = email;
-                 taxcard.Amount = 100;
+                 taxcard.Amount = await TotalNetProfitForCurrentYear2(email);
                  taxcard.Locked = false;
             }
 
@@ -1207,10 +1207,198 @@ namespace Infrastructure.Services
 
                     _context.AnnualProfitsOrLosses.Add(taxcard2);
                     await _context.SaveChangesAsync();
-                }
-           
+                }          
+        }        
+        public async Task<int> FindSurtaxIdForZagreb()
+        {
+            int surtaxId =  _context.Surtaxes.Where(s => s.Residence == "Zagreb")
+                           .FirstOrDefaultAsync().Id;
+
+            return await Task.FromResult(surtaxId);
         }
-        
+        public async Task<decimal?> TotalNetProfitForCurrentYear(string email)
+        { 
+            var annualProfit = await _context.AnnualProfitsOrLosses
+                               .Where(x => x.Email == email && x.Locked == false)
+                               .FirstOrDefaultAsync();
+            
+            int currentYear = annualProfit.Year;
+
+            decimal? basket = 0;
+            decimal? basket1 = 0;
+            decimal? basket3 = 0;
+            int? count = 0;
+           
+            foreach (var item in _context.Stocks.ToList())
+            {
+                 var totalNetProfit = (_context.StockTransactions
+                .Where(t => t.Email == email && t.StockId == item.Id && t.Purchase == false && t.Date.Year == currentYear)
+                .Sum(t => t.Price * t.Quantity)) - 
+                (_context.StockTransactions
+                .Where(t => t.Email == email && t.StockId == item.Id && t.Purchase == true && t.Resolved > 0 && t.Date.Year == currentYear)
+                .Sum(t => t.Resolved * t.Price));
+
+                basket += totalNetProfit;
+
+                count = (_context.StockTransactions
+                        .Where(t => t.Email == email && t.StockId == item.Id && t.Purchase == false 
+                        && t.Date.Year == currentYear). Sum(t => t.Quantity));
+
+                basket3 += count;
+                
+                 var listOfLeftovers = await _context.StockTransactions.Where(x => x.Email == email 
+                                     && x.StockId == item.Id &&
+                                     x.Purchase == true && x.Date.Year < currentYear 
+                                     && x.Quantity != x.Resolved).ToListAsync();
+
+                if (_context.StockTransactions.Where(x => x.Email == email && x.StockId == item.Id &&
+                     x.Purchase == true && x.Date.Year < currentYear && x.Quantity != x.Resolved).Any())
+                {
+                    foreach (var subitem in listOfLeftovers) 
+                    {
+                        var totalsubprofit = (_context.StockTransactions
+                                           .Where(t => t.Email == email && t.StockId == item.Id 
+                                           && t.Purchase == true)
+                                           .Sum(t => t.Price * count));
+
+                        basket1 += totalsubprofit;
+                    }               
+                }
+              
+            }
+
+            decimal? basket2 = basket - basket1;
+
+            return await Task.FromResult(basket2);
+        }
+        public async Task<decimal?> TotalNetProfitForCurrentYear1(string email)
+        { 
+            var annualProfit = await _context.AnnualProfitsOrLosses
+                               .Where(x => x.Email == email && x.Locked == false)
+                               .FirstOrDefaultAsync();
+            
+            int currentYear = annualProfit.Year;
+
+            decimal? basket = 0;
+            decimal? basket1 = 0;
+           
+            int num = 0;
+            int num1 = 0;
+           
+            foreach (var item in _context.Stocks.ToList())
+            {
+                
+                
+                var listOfLeftovers = await _context.StockTransactions.Where(x => x.Email == email 
+                                     && x.StockId == item.Id && x.Date.Year < currentYear &&  x.Resolved != 0)
+                                     .OrderByDescending(x => x.Id).ToListAsync();
+
+                
+                num = (_context.StockTransactions
+                .Where(t => t.Email == email && t.StockId == item.Id && t.Purchase == false && t.Date.Year == currentYear)
+                .Sum(t => t.Quantity)) - 
+                (_context.StockTransactions
+                .Where(t => t.Email == email && t.StockId == item.Id && t.Purchase == true && t.Resolved > 0 && t.Date.Year == currentYear)
+                .Sum(t => t.Resolved));
+
+                num1 = _context.StockTransactions
+                .Where(t => t.Email == email && t.StockId == item.Id && t.Purchase == false && t.Date.Year == currentYear)
+                .Sum(t => t.Quantity);
+
+                
+                 
+                decimal pomozibože = SumOfLastTransaction1(listOfLeftovers, num1);
+
+                var totalNetProfit = (_context.StockTransactions
+                .Where(t => t.Email == email && t.StockId == item.Id && t.Purchase == false && t.Date.Year == currentYear)
+                .Sum(t => t.Price * t.Quantity)) - 
+                ((_context.StockTransactions
+                .Where(t => t.Email == email && t.StockId == item.Id && t.Purchase == true && t.Resolved > 0 && t.Date.Year == currentYear)
+                .Sum(t => t.Resolved * t.Price)));
+
+                basket += totalNetProfit;
+                              
+            }
+
+            decimal? basket2 = basket - basket1;
+
+            return await Task.FromResult(basket);
+        }
+        private decimal SumOfLastTransaction1(IEnumerable<StockTransaction> stockTransactions, int max)
+        {
+        decimal result = 0;
+        int sum = 0;
+        foreach(var stockTransaction in stockTransactions. OrderBy(x => x.Id))
+        {
+            
+            if(sum + stockTransaction.Quantity <= max)
+            {
+                result += stockTransaction.Quantity * stockTransaction.Price;
+                sum += stockTransaction.Quantity;
+            }
+            else
+            {
+                result += (max - sum) * stockTransaction.Price;
+                return result;
+            }
+        }
+        return result;
+    }
+    // ovo dolje ti daje fifo!
+      public async Task<decimal?> TotalNetProfitForCurrentYear2(string email)
+        { 
+            var annualProfit = await _context.AnnualProfitsOrLosses
+                               .Where(x => x.Email == email && x.Locked == false)
+                               .FirstOrDefaultAsync();
+            
+            int currentYear = annualProfit.Year;
+
+            decimal? basket = 0;
+           // decimal? basket1 = 0;
+            decimal? basket2 = 0;
+           
+            int num = 0;
+            int num1 = 0;
+           
+            foreach (var item in _context.Stocks.ToList())
+            {
+                
+                
+                var listOfLeftovers = await _context.StockTransactions.Where(x => x.Email == email 
+                                     && x.StockId == item.Id &&
+                                       x.Resolved != 0 && x.Purchase == true)
+                                     .OrderByDescending(x => x.Id).ToListAsync();
+
+                
+                num = (_context.StockTransactions
+                .Where(t => t.Email == email && t.StockId == item.Id && t.Purchase == false && t.Date.Year == currentYear)
+                .Sum(t => t.Quantity)) - 
+                (_context.StockTransactions
+                .Where(t => t.Email == email && t.StockId == item.Id && t.Purchase == true && t.Resolved > 0 && t.Date.Year == currentYear)
+                .Sum(t => t.Resolved));
+
+                num1 = _context.StockTransactions
+                .Where(t => t.Email == email && t.StockId == item.Id && t.Purchase == false && t.Date.Year == currentYear)
+                .Sum(t => t.Quantity);
+
+                
+                
+                decimal pomozibože = SumOfLastTransaction1(listOfLeftovers, num1);
+                basket2 += pomozibože;
+
+                var totalNetProfit = (_context.StockTransactions
+                .Where(t => t.Email == email && t.StockId == item.Id && t.Purchase == false && t.Date.Year == currentYear)
+                .Sum(t => t.Price * t.Quantity)) - pomozibože
+                ;
+
+                basket += totalNetProfit;
+                              
+            }
+
+            //decimal? basket2 = basket - basket1;
+
+            return await Task.FromResult(basket);
+        }
     }
 }
 

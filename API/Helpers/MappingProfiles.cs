@@ -22,6 +22,10 @@ namespace API.Helpers
             
             CreateMap<TaxLiability, TaxLiabilityToEditDTO>().ReverseMap();
 
+             CreateMap<AnnualProfitOrLoss, AnnualProfitOrLossDto>()
+                .ForMember(d => d.Year, o => o.MapFrom(s => s.Year));
+            
+
 
             /*  CreateMap<Stock, StockToCreateDto>()
                 .ForMember(d => d.Category, o => o.MapFrom(s => s.Category.CategoryName))

@@ -46,6 +46,8 @@ const routes: Routes = [
    {path: 'users', canActivate: [AuthGuard],
   loadChildren: () => import('./users/users.module').then(mod => mod.UsersModule),
   data: {breadcrumb: 'List of Users'}},
+  {path: 'charts', loadChildren: () => import('./charts/charts.module').then(mod => mod.ChartsModule),
+  data: {breadcrumb: 'Charts'}},
 
   {path: 'account', loadChildren: () => import('./account/account.module').then(mod => mod.AccountModule),
   data: {breadcrumb: {skip: true}}},

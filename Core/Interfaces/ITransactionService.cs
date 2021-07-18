@@ -77,6 +77,12 @@ namespace Core.Interfaces
         Task CreatingLoginNewAnnualProfitOrLoss(string email);
         Task CreatingPurchaseNewAnnualProfitOrLoss(string email);
         Task CreatingSellingNewAnnualProfitOrLoss(string email);
+        Task<int> FindSurtaxIdForZagreb();
+        Task<decimal?> TotalNetProfitForCurrentYear(string email);
+        Task<decimal?> TotalNetProfitForCurrentYear1(string email);
+        Task<decimal?> TotalNetProfitForCurrentYear2(string email);
+
+
 
 
 

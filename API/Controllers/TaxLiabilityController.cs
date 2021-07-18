@@ -80,9 +80,42 @@ namespace API.Controllers
             return NoContent();
         }
 
-         // ovo ti je za typeahead
+        // ovo ti je za annual
+        [Authorize]
+        [HttpPut("annual/{id}")]
+        public async Task<ActionResult<FinalTaxLiabilityVM>> GetAnnualByEmail(int id)
+        {
+            var email = User.RetrieveEmailFromPrincipal();
 
-    }
+            var annual = await _taxLiabilitiesService.FindAnnualByEmail(email, id);
+
+            return Ok(annual);
+        }
+        [Authorize]
+        [HttpGet("annualidemo")]
+        public async Task<ActionResult<FinalTaxLiabilityVM>> GetAnnualByEmail1()
+        {
+            var email = User.RetrieveEmailFromPrincipal();
+
+            var annual = await _taxLiabilitiesService.GiveMeAnnual(email);
+
+            return Ok(annual);
+        }
+    
+    // ovdje ćeš pokušati dobiti exception za kupnju dionice nakon 2 godine
+    // uspio si, čuvaj ovo:)!
+
+        [Authorize]
+        [HttpGet("bojke")]
+        public async Task<ActionResult<FinalTaxLiabilityVM>> VratiBrojke()
+        {
+            var email = User.RetrieveEmailFromPrincipal();
+
+            var annual =  _taxLiabilitiesService.Broj1();
+
+            return Ok(annual);
+        }
+}
 }
 
 

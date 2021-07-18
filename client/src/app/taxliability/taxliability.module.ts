@@ -7,12 +7,20 @@ import { SharedModule } from '../shared/shared.module';
 import { FormsModule } from '@angular/forms';
 import { TypeaheadModule } from 'ngx-bootstrap/typeahead';
 import { TaxLiabilityDetail1Component } from './tax-liability-detail1/tax-liability-detail1.component';
+import { TaxLiabilityDetail2Component } from './tax-liability-detail2/tax-liability-detail2.component';
+import { ChartsModule } from '../charts/charts.module';
+import { ChartsComponent } from '../charts/charts.component';
+import { ChartsRoutingModule } from '../charts/charts-routing.module';
 
 
 
 
 @NgModule({
-  declarations: [TaxliabilityComponent, TaxLiabilityDetailComponent, TaxLiabilityDetail1Component],
+  declarations: [
+    TaxliabilityComponent,
+    TaxLiabilityDetailComponent,
+    TaxLiabilityDetail1Component,
+    TaxLiabilityDetail2Component],
   imports: [
     CommonModule,
     TaxliabilityRoutingModule,
