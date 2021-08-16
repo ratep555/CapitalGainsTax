@@ -17,7 +17,32 @@ namespace Core.Entities
         public decimal? EnterpriseValue { get; set; }
         public decimal? Dividend { get; set; }
     }
+    public class Stock1
+    {
+        public string Symbol { get; set; }
+        public int? NumberOfEmployees { get; set; }
+        public int? SharesOutstanding { get; set; }
+        public int? OwnShares { get; set; }
+        public decimal? Revenue { get; set; }
+        public decimal? Expenditure { get; set; }
+        public decimal? EnterpriseValue { get; set; }
+        public decimal? Dividend { get; set; }
+    }
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 

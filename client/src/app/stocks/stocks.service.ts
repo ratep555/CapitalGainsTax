@@ -44,7 +44,7 @@ export class StocksService {
   sellStock1(values: any) {
     return this.http.post(`${this.baseUrlTup1}/${this.formData.stockId}`, values);
   }
-
+  // samo si mijenjao kreativisiimo1 u 2 pa si vratio
   sellStock1NewYear(values: any) {
     return this.http.post(`${this.baseUrl}transactions/kreativissimo1/${this.formData.stockId}`, values);
   }

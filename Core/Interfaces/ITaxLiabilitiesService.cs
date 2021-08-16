@@ -23,6 +23,7 @@ namespace Core.Interfaces
 
         public decimal Broj();
         public decimal Broj1();
+        public decimal Broj2();
         Task<AnnualProfitOrLoss> GiveMeAnnual(string email);
 
 

@@ -1,10 +1,12 @@
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
 using Core.Entities;
 using Core.Interfaces;
 using Infrastructure.Data;
 using Microsoft.EntityFrameworkCore;
+using OfficeOpenXml;
 
 namespace Infrastructure.Services
 {
@@ -175,6 +177,68 @@ namespace Infrastructure.Services
                 _context.Stocks.Remove(stock);
                 await _context.SaveChangesAsync();
     }
+    // ovo je excel
+          public async Task<List<Stock1>> LoadExcelFile2(FileInfo file)
+        {
+            List<Stock1> output = new();
+
+            using var package = new ExcelPackage(file);
+            await package.LoadAsync(file);
+           
+            var ws = package.Workbook.Worksheets[0];
+
+            int row = 2;
+            int col = 1;
+
+            while (string.IsNullOrWhiteSpace(ws.Cells[row, col].Value?.ToString()) == false)
+            {
+                Stock1 p = new();
+                p.Symbol = ws.Cells[row, col].Value.ToString();
+                p.NumberOfEmployees = int.Parse(ws.Cells[row, col + 1].Value.ToString());
+                p.SharesOutstanding = int.Parse(ws.Cells[row, col + 2].Value.ToString());
+                p.OwnShares = int.Parse(ws.Cells[row, col + 3].Value.ToString());
+                p.Revenue = decimal.Parse(ws.Cells[row, col + 4].Value.ToString());
+                p.Expenditure = decimal.Parse(ws.Cells[row, col + 5].Value.ToString());
+                p.EnterpriseValue = decimal.Parse(ws.Cells[row, col + 6].Value.ToString());
+                p.Dividend = decimal.Parse(ws.Cells[row, col + 7].Value.ToString());
+                output.Add(p);
+             
+
+                row += 1;
+            }
+
+            return output;
+        }  
+        public async Task Excelica(FileInfo file)
+        {
+              List<Stock1> lista = await LoadExcelFile2(file);
+
+            List<Stock> lista1 = await _context.Stocks
+            .Include(p => p.Category)
+            .Include(p => p.Country)
+            .ToListAsync();
+
+            foreach (var item in lista)
+            {
+                foreach (var subitem in lista1)
+                {
+                    if (subitem.Symbol == item.Symbol)
+                    {
+                        subitem.NumberOfEmployees = item.NumberOfEmployees;
+                        subitem.SharesOutstanding = item.SharesOutstanding;
+                        subitem.OwnShares = item.OwnShares;
+                        subitem.Revenue = item.Revenue;
+                        subitem.Expenditure = item.Expenditure;
+                        subitem.EnterpriseValue = item.EnterpriseValue;
+                        subitem.Dividend = item.Dividend;
+                        
+                        _context.Entry(subitem).State = EntityState.Modified;
+                        await _context.SaveChangesAsync();
+                    }
+                }
+            }
+
+        }
 
     
 }

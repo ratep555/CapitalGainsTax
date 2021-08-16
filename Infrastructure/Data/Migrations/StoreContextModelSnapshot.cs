@@ -35,6 +35,12 @@ namespace Infrastructure.Data.Migrations
                     b.Property<bool>("Locked")
                         .HasColumnType("bit");
 
+                    b.Property<decimal?>("TaxExemption")
+                        .HasColumnType("decimal(18,2)");
+
+                    b.Property<decimal?>("TaxableIncome")
+                        .HasColumnType("decimal(18,2)");
+
                     b.Property<int>("Year")
                         .HasColumnType("int");
 

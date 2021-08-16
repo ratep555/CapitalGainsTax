@@ -37,7 +37,7 @@ export class LoginComponent implements OnInit {
       this.router.navigateByUrl(this.returnUrl);
     },
      error => {
-      this.toastr.error('Authorized, you are not!');
+      // this.toastr.error('Authorized, you are not!');
       console.log(error);
     }
     );

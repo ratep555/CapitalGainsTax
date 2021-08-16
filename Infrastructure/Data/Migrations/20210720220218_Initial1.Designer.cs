@@ -10,8 +10,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Infrastructure.Data.Migrations
 {
     [DbContext(typeof(StoreContext))]
-    [Migration("20210715194350_InitialCreate")]
-    partial class InitialCreate
+    [Migration("20210720220218_Initial1")]
+    partial class Initial1
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -36,6 +36,12 @@ namespace Infrastructure.Data.Migrations
 
                     b.Property<bool>("Locked")
                         .HasColumnType("bit");
+
+                    b.Property<decimal?>("TaxExemption")
+                        .HasColumnType("decimal(18,2)");
+
+                    b.Property<decimal?>("TaxableIncome")
+                        .HasColumnType("decimal(18,2)");
 
                     b.Property<int>("Year")
                         .HasColumnType("int");

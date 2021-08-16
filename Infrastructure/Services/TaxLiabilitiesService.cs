@@ -402,7 +402,7 @@ namespace Infrastructure.Services
         
     }
      public decimal Broj1()
-        {
+     {
             List<StockTransaction> list = new List<StockTransaction>
             {
                 new StockTransaction {Id = 1, Purchase = true, Quantity = 10, Resolved = 9, Price = 1700, Date = DateTime.Now.AddDays(1)},
@@ -417,9 +417,6 @@ namespace Infrastructure.Services
 
             var list1 = list.Where(x => x.Purchase == true && x.Resolved > 0);
 
-
-            var requiredSum = list.Where(x=>x.Id==4).Select(x=>x.Price).First();
-
             decimal last4 = SumOfLastTransaction1(list1, last5);
 
             decimal rezultat = (list.Where(x => x.Purchase == false).Sum(x => x.Price * x.Quantity) - last3) -
@@ -428,11 +425,39 @@ namespace Infrastructure.Services
             
             int sellingquantity = list.Where(x => x.Purchase == false).Sum(x => x.Quantity);
 
-            var broji = requiredSum + last3;
+            return rezultat;
+        }
+  
+     public decimal Broj2()
+     {
+            List<StockTransaction> list = new List<StockTransaction>
+            {
+        new StockTransaction {Id = 1, StockId = 1, Purchase = true, Quantity = 10, Resolved = 10, Price = 1000, Date = DateTime.Now.AddDays(1)},
+        new StockTransaction {Id = 2, StockId = 1, Purchase = true, Quantity = 5, Resolved = 0, Price = 1000, Date = DateTime.Now.AddDays(2)},
+        new StockTransaction {Id = 3, StockId = 1, Purchase = false, Quantity = 8, Resolved = 0, Price = 2000, Date = DateTime.Now.AddDays(3)},
+        new StockTransaction {Id = 4, StockId = 2, Purchase = true, Quantity = 5, Resolved = 1, Price = 1000, Date = DateTime.Now.AddDays(4)},
+        new StockTransaction {Id = 4, StockId = 1, Purchase = true, Quantity = 1, Resolved = 0, Price = 1000, Date = DateTime.Now.AddDays(5)},
+        new StockTransaction {Id = 5, StockId = 2, Purchase = false, Quantity = 1, Resolved = 0, Price = 2000, Date = DateTime.Now.AddDays(6)},
+        new StockTransaction {Id = 5, StockId = 1, Purchase = false, Quantity = 1, Resolved = 0, Price = 2000, Date = DateTime.Now.AddDays(7)},
+        new StockTransaction {Id = 5, StockId = 1, Purchase = false, Quantity = 1, Resolved = 0, Price = 2000, Date = DateTime.Now.AddYears(3)},
+            }; 
+            foreach (var item in list)
+            {
+                
+            }
 
-            SumOfLastTransaction(list, 1);
+            decimal last3 = list.OrderByDescending(x=>x.Date).Take(1).Select(x=>x.Quantity * x.Price).Sum();
+            int last5 = list.OrderByDescending(x=>x.Date).Take(1).Select(x=>x.Quantity).Sum();
 
-            var pliz = SumOfLastTransaction1(list, 3);
+            var list1 = list.Where(x => x.Purchase == true && x.Resolved > 0);
+
+            decimal last4 = SumOfLastTransaction1(list1, last5);
+
+            decimal rezultat = (list.Where(x => x.Purchase == false).Sum(x => x.Price * x.Quantity) - last3) -
+                               
+                               (list.Where(x => x.Purchase == true && x.Resolved > 0).Sum(x => x.Price * x.Resolved) - last4);
+            
+            int sellingquantity = list.Where(x => x.Purchase == false).Sum(x => x.Quantity);
 
             return rezultat;
         }

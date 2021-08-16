@@ -26,6 +26,7 @@ import { ChartsRoutingModule } from '../charts/charts-routing.module';
     TaxliabilityRoutingModule,
     SharedModule,
     FormsModule,
+    ChartsModule,
     TypeaheadModule.forRoot()
   ],
 })

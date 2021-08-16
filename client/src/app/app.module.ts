@@ -2,7 +2,7 @@ import { NgModule } from '@angular/core';
 import { BrowserModule } from '@angular/platform-browser';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import {HttpClientModule, HTTP_INTERCEPTORS} from '@angular/common/http';
-// import { ErrorInterceptor } from './core/interceptors/error.interceptor';
+import { ErrorInterceptor } from './core/interceptors/error.interceptor';
 
 // import {LOCALE_ID} from '@angular/core';
 // import { registerLocaleData } from '@angular/common';
@@ -49,6 +49,7 @@ import { ChartsModule } from './charts/charts.module';
     ChartsModule
   ],
   providers: [
+    {provide: HTTP_INTERCEPTORS, useClass: ErrorInterceptor, multi: true},
     {provide: HTTP_INTERCEPTORS, useClass: JwtInterceptor, multi: true}
 
   ],

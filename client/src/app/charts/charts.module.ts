@@ -11,6 +11,7 @@ import { ChartsRoutingModule } from './charts-routing.module';
     CommonModule,
     SharedModule,
     ChartsRoutingModule
-  ]
+  ],
+  exports: [ChartsComponent]
 })
 export class ChartsModule { }

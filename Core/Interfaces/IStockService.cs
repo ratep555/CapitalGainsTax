@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using System.IO;
 using System.Threading.Tasks;
 using Core.Entities;
 
@@ -32,9 +33,15 @@ namespace Core.Interfaces
      string companyName,
      string categoryId, 
      string countryId);
+
+    Task<List<Stock1>> LoadExcelFile2(FileInfo file);
+    Task Excelica(FileInfo file);
+
     }      
     
+
 }
+
      
 
 

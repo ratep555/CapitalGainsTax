@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
 using API.Dtos;
@@ -10,6 +11,7 @@ using Core.Entities;
 using Core.Interfaces;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using OfficeOpenXml;
 
 namespace API.Controllers
 {
@@ -125,7 +127,8 @@ namespace API.Controllers
         //ovo isto šljaka, koristiš je u angularu za create, najbolja jer koristiš najmanje koda
         //ovako radi neil:)
         [HttpPost("pikilili")]
-        public async Task<ActionResult<StockToCreateDto>> CreateStockAsyncPip([FromBody] StockToCreateDto stockDTO)
+        public async Task<ActionResult<StockToCreateDto>> CreateStockAsyncPip(
+            [FromBody] StockToCreateDto stockDTO)
         {
             var stock = _mapper.Map<StockToCreateDto, Stock>(stockDTO);
 
@@ -190,6 +193,17 @@ namespace API.Controllers
 
             await _stockService.DeleteStockAsync(stock);
 
+            return NoContent();
+        }
+        // probati ćeš excel
+         [HttpPut("excelimo")]
+        public async Task<ActionResult<IEnumerable<Stock>>> ListaDionica()
+        {
+            ExcelPackage.LicenseContext = LicenseContext.NonCommercial;
+            var file = new FileInfo(@"C:\Users\petar\Desktop\Tim_Corey\CroDemos\Dionice2.xlsx");
+
+            await _stockService.Excelica(file);
+           
             return NoContent();
         }
     }

@@ -107,7 +107,7 @@ namespace API.Controllers
             StockDataModel1 stockData = new StockDataModel1();
 
             var request = new HttpRequestMessage(HttpMethod.Get,
-           "https://rest.zse.hr/web/Bvt9fe2peQ7pwpyYqODM/price-list/XZAG/2021-06-15/json");
+           "https://rest.zse.hr/web/Bvt9fe2peQ7pwpyYqODM/price-list/XZAG/2021-07-27/json");
 
             var client = _clientFactory.CreateClient();
 
@@ -123,8 +123,8 @@ namespace API.Controllers
                 {
                     foreach (var subitem in stockData.securities)
                     {
-                    await _securityService
-                         .GetMeStocks1(subitem.symbol, Convert.ToDecimal(subitem.close_price));
+                        await _securityService
+                        .GetMeStocks1(subitem.symbol, Convert.ToDecimal(subitem.close_price));
                     }
                 }                      
             }           

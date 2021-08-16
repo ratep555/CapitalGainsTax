@@ -3,7 +3,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 
 namespace Infrastructure.Data.Migrations
 {
-    public partial class InitialCreate : Migration
+    public partial class Initial1 : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
@@ -15,6 +15,8 @@ namespace Infrastructure.Data.Migrations
                         .Annotation("SqlServer:Identity", "1, 1"),
                     Year = table.Column<int>(type: "int", nullable: false),
                     Amount = table.Column<decimal>(type: "decimal(18,2)", nullable: true),
+                    TaxableIncome = table.Column<decimal>(type: "decimal(18,2)", nullable: true),
+                    TaxExemption = table.Column<decimal>(type: "decimal(18,2)", nullable: true),
                     Email = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     Locked = table.Column<bool>(type: "bit", nullable: false)
                 },

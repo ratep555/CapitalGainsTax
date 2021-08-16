@@ -30,16 +30,15 @@ namespace API.Controllers
         private readonly IGenericRepository<StockTransaction> _transactionsRepo;
         private readonly IGenericRepository<Stock> _stocksRepo;
         private readonly UserManager<AppUser> _userManager;
+        private readonly IStockService _stockService;
 
-
-
-
-    public TransactionsController(
+        public TransactionsController(
     IGenericRepository<StockTransaction> transactionsRepo,
     IMapper mapper,
     ITransactionService transactionService,
     IGenericRepository<Stock> stocksRepo,
-    UserManager<AppUser> userManager
+    UserManager<AppUser> userManager,
+    IStockService stockService
     )
     {
         _transactionsRepo = transactionsRepo;
@@ -47,6 +46,7 @@ namespace API.Controllers
         _transactionService = transactionService;
         _stocksRepo = stocksRepo;
         _userManager = userManager;
+        _stockService = stockService;
         }
     [HttpGet]
     public async Task<ActionResult<Pagination<TransactionToReturnDto>>> GetTransactionsAsync(
@@ -212,7 +212,8 @@ namespace API.Controllers
     }
     // ovo ti je za sellstockreactive!
     [HttpPost("kreativissimo/{id}")]
-    public async Task<ActionResult> CreateTransactionist2(int id, TransactionToCreateVM transactionVM)
+    public async Task<ActionResult> CreateTransactionist2(int id, 
+    TransactionToCreateVM transactionVM)
     {
         transactionVM.Email = User.RetrieveEmailFromPrincipal();
 
@@ -430,7 +431,10 @@ namespace API.Controllers
         
         await _transactionService.UpdateResolvedAndLocked(transaction, id, User.RetrieveEmailFromPrincipal());
 
+        await _transactionService.TwoYearException(transactionVM.Email, transaction );
+
         await _transactionService.UpdateTaxLiabilityIncludingLocked(transactionVM.Email);
+
 
        // await _transactionService.CreatingLoginNewAnnualProfitOrLoss(transactionVM.Email);
 
@@ -461,6 +465,29 @@ namespace API.Controllers
          
         decimal? profit = await _transactionService.TotalNetProfitForCurrentYear2(email);
         return Ok(profit);
+    }    
+    // sada ćeš pokušati implementirati cjelokupnu prodaju u jednoj metodi skupa sa exception od 2 godine
+    [HttpPost("kreativissimo2/{id}")]
+    public async Task<ActionResult> CreateTransaction(int id, TransactionToCreateVM transactionVM)
+    {
+        var stock = await _stockService.FindStockById(id);
+
+        if (stock == null) return BadRequest();
+
+        transactionVM.Email = User.RetrieveEmailFromPrincipal();
+
+        if (await _transactionService.TotalQuantity(transactionVM.Email, id) < transactionVM.Quantity)
+        {
+             return BadRequest("You are selling more than you have!");
+        }
+
+        var transaction = await _transactionService.LetsSellStock(transactionVM, id);
+        
+        await _transactionService.UpdateResolvedAndLocked(transaction, id, User.RetrieveEmailFromPrincipal());
+
+        await _transactionService.CreatingSellingNewAnnualProfitOrLoss1(transactionVM.Email, transaction);
+
+        return NoContent();
     }    
   }
 }

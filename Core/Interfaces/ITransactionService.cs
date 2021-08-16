@@ -81,12 +81,8 @@ namespace Core.Interfaces
         Task<decimal?> TotalNetProfitForCurrentYear(string email);
         Task<decimal?> TotalNetProfitForCurrentYear1(string email);
         Task<decimal?> TotalNetProfitForCurrentYear2(string email);
-
-
-
-
-
-
+        Task CreatingSellingNewAnnualProfitOrLoss1(string email, StockTransaction transaction);
+        Task TwoYearException(string email, StockTransaction transaction);
 
 
     }

@@ -656,9 +656,7 @@ namespace Infrastructure.Services
                                     Resolved = t.Resolved,
                                     Date = t.Date,
                                     Email = email,
-                                    NetProfit = t.Quantity * t.Price
-                                   
-                                    
+                                    NetProfit = t.Quantity * t.Price                                    
                              }).AsQueryable().OrderBy(s => s.Date);         
 
             if (queryParameters.HasQuery())
@@ -681,8 +679,7 @@ namespace Infrastructure.Services
             {
                  if (item.Purchase == false)
                  {
-                     basket2 += item.NetProfit;
-                     
+                     basket2 += item.NetProfit;                    
                  }
             }          
             foreach (var item in transactions)
@@ -946,7 +943,7 @@ namespace Infrastructure.Services
         }
            
         }
-         public async Task UpdateTaxLiabilityIncludingLocked(string email)
+        public async Task UpdateTaxLiabilityIncludingLocked(string email)
         {      
             var taxLiability = await _context.TaxLiabilities.Include(s => s.Surtax)
             .Where(t => t.Email == email && t.Locked != true).FirstOrDefaultAsync();
@@ -1185,6 +1182,15 @@ namespace Infrastructure.Services
                  taxcard.Year = DateTime.Now.Year;
                  taxcard.Email = email;
                  taxcard.Amount = await TotalNetProfitForCurrentYear2(email);
+              /*   if (taxcard.TaxExemption.HasValue && taxcard.TaxExemption > 0)
+                {
+                     taxcard.TaxExemption = await TwoYearException1(email);
+                }
+                else
+                {
+                    taxcard.TaxExemption = 0;
+                }
+ */
                  taxcard.Locked = false;
             }
 
@@ -1201,6 +1207,8 @@ namespace Infrastructure.Services
                     {
                         Year = DateTime.Now.Year,
                         Amount = 0,
+                        TaxableIncome = 0,
+                        TaxExemption = 0,
                         Email = email,
                         Locked = false
                     };
@@ -1326,24 +1334,25 @@ namespace Infrastructure.Services
         }
         private decimal SumOfLastTransaction1(IEnumerable<StockTransaction> stockTransactions, int max)
         {
-        decimal result = 0;
-        int sum = 0;
-        foreach(var stockTransaction in stockTransactions. OrderBy(x => x.Id))
-        {
+            decimal result = 0;
+            int sum = 0;
+            foreach(var stockTransaction in stockTransactions. OrderBy(x => x.Id))
+            {
             
-            if(sum + stockTransaction.Quantity <= max)
-            {
-                result += stockTransaction.Quantity * stockTransaction.Price;
-                sum += stockTransaction.Quantity;
+                if(sum + stockTransaction.Quantity <= max)
+                {
+                      result += stockTransaction.Quantity * stockTransaction.Price;
+                      sum += stockTransaction.Quantity;
+                }
+                else
+                {
+                       result += (max - sum) * stockTransaction.Price;
+                       return result;
+                }
             }
-            else
-            {
-                result += (max - sum) * stockTransaction.Price;
-                return result;
-            }
+
+            return result;
         }
-        return result;
-    }
     // ovo dolje ti daje fifo!
       public async Task<decimal?> TotalNetProfitForCurrentYear2(string email)
         { 
@@ -1354,22 +1363,18 @@ namespace Infrastructure.Services
             int currentYear = annualProfit.Year;
 
             decimal? basket = 0;
-           // decimal? basket1 = 0;
             decimal? basket2 = 0;
            
             int num = 0;
             int num1 = 0;
            
             foreach (var item in _context.Stocks.ToList())
-            {
-                
-                
+            {                               
                 var listOfLeftovers = await _context.StockTransactions.Where(x => x.Email == email 
                                      && x.StockId == item.Id &&
                                        x.Resolved != 0 && x.Purchase == true)
                                      .OrderByDescending(x => x.Id).ToListAsync();
-
-                
+               
                 num = (_context.StockTransactions
                 .Where(t => t.Email == email && t.StockId == item.Id && t.Purchase == false && t.Date.Year == currentYear)
                 .Sum(t => t.Quantity)) - 
@@ -1378,7 +1383,8 @@ namespace Infrastructure.Services
                 .Sum(t => t.Resolved));
 
                 num1 = _context.StockTransactions
-                .Where(t => t.Email == email && t.StockId == item.Id && t.Purchase == false && t.Date.Year == currentYear)
+                .Where(t => t.Email == email && t.StockId == item.Id && t.Purchase == false 
+                && t.Date.Year == currentYear)
                 .Sum(t => t.Quantity);
 
                 
@@ -1391,16 +1397,209 @@ namespace Infrastructure.Services
                 .Sum(t => t.Price * t.Quantity)) - pomozibože
                 ;
 
-                basket += totalNetProfit;
-                              
+                basket += totalNetProfit;                         
             }
-
-            //decimal? basket2 = basket - basket1;
-
             return await Task.FromResult(basket);
         }
-    }
+        // probati ćeš dolje exception za 2 godine
+        public async Task<decimal?> TotalNetProfitForCurrentYear3(string email, StockTransaction transaction)
+        { 
+            var annualProfit = await _context.AnnualProfitsOrLosses
+                               .Where(x => x.Email == email && x.Locked == false)
+                               .FirstOrDefaultAsync();
+            
+            int currentYear = annualProfit.Year;
+
+            decimal? basket = 0;           
+            int num1 = 0;
+
+            var list = _context.Stocks.ToList();
+           
+            foreach (var item in list)
+            {                
+                var listOfLeftovers = await _context.StockTransactions.Where(x => x.Email == email 
+                                     && x.StockId == item.Id &&
+                                       x.Resolved != 0 && x.Purchase == true)
+                                     .OrderByDescending(x => x.Id).ToListAsync();
+
+                num1 = _context.StockTransactions
+                .Where(t => t.Email == email && t.StockId == item.Id && t.Purchase == false && t.Date.Year == currentYear)
+                .Sum(t => t.Quantity);
+                
+                decimal pomozibože = SumOfLastTransaction1(listOfLeftovers, num1);
+
+                var totalNetProfit = (_context.StockTransactions
+                .Where(t => t.Email == email && t.StockId == item.Id && t.Purchase == false && t.Date.Year == currentYear)
+                .Sum(t => t.Price * t.Quantity)) - pomozibože;
+
+                basket += totalNetProfit;    
+
+                // sada dodaješ exception za 2 godine                        
+
+                var today = transaction.Date;
+
+                var transactionOlderThenTwoyears = await _context.StockTransactions
+                                             .Where(x => x.Email == transaction.Email && x.StockId == transaction.StockId 
+                                             && x.Purchase == true && x.Quantity != x.Resolved /* && x.Date < today.AddYears(-2) */)
+                                            .LastOrDefaultAsync();
+
+                if (transactionOlderThenTwoyears.Date < transaction.Date.AddYears(-2))
+                {
+                    decimal last3 = _context.StockTransactions.Where(x => x.Email == email && x.StockId == item.Id && x.Purchase == false)
+                    .OrderByDescending(x => x.Date).Take(1).Select(x => x.Quantity * x.Price).Sum();
+
+                    int last5 = _context.StockTransactions.Where(x => x.Email == email && x.StockId == item.Id && x.Purchase == false)
+                    .OrderByDescending(x => x.Date).Take(1).Select(x => x.Quantity).Sum();
+
+                    var list1 = _context.StockTransactions.Where(x => x.Purchase == true && x.Resolved > 0);
+
+                    decimal last4 = SumOfLastTransaction1(list1, last5);
+
+                    totalNetProfit = (_context.StockTransactions
+                                      .Where(x => x.Email == email && x.StockId == item.Id && x.Purchase == false)
+                                      .Sum(x => x.Price * x.Quantity) - last3) -                               
+                                      (_context.StockTransactions.Where
+                                      (x => x.Email  == email && x.StockId == item.Id && x.Purchase == true && x.Resolved > 0)
+                                      .Sum(x => x.Price * x.Resolved) - last4);
+
+                    basket += totalNetProfit;    
+                }
+            }
+            return basket;
+        }
+
+
+        public async Task CreatingSellingNewAnnualProfitOrLoss1(string email, StockTransaction transaction)
+        {
+            var user = await _context.AppUsers.Where(u => u.Email == email).FirstOrDefaultAsync();
+            var taxcard = await _context.AnnualProfitsOrLosses.Where(a => a.Email == email && a.Locked == false).FirstOrDefaultAsync();
+
+            if (DateTime.Now.Year == taxcard.Year)
+            {
+                 taxcard.Year = DateTime.Now.Year;
+                 taxcard.Email = email;
+                 taxcard.Amount = await TotalNetProfitForCurrentYear3(email, transaction);
+                 taxcard.Locked = false;
+            }
+
+            _context.Entry(taxcard).State = EntityState.Modified;
+            await _context.SaveChangesAsync();
+
+            if (DateTime.Now.Year > taxcard.Year)
+                {
+                    taxcard.Locked = true;
+                    _context.Entry(taxcard).State = EntityState.Modified;
+                    await _context.SaveChangesAsync();
+
+                    var taxcard2 = new AnnualProfitOrLoss
+                    {
+                        Year = DateTime.Now.Year,
+                        Amount = 0,
+                        Email = email,
+                        Locked = false
+                    };
+
+                    _context.AnnualProfitsOrLosses.Add(taxcard2);
+                    await _context.SaveChangesAsync();
+                }          
+        }      
+        //ponovo ćeš probati exception dodati na kraju u kreativissimo1  
+    
+        public async Task TwoYearException(string email, StockTransaction transaction)
+        {
+            var annual = await _context.AnnualProfitsOrLosses.Where(x => x.Email == email && x.Locked == false)
+                         .FirstOrDefaultAsync();
+
+            decimal basket = 0;
+            decimal basket1 = 0;
+            var today = transaction.Date;
+
+            var transactionOlderThenTwoyears = await _context.StockTransactions
+                                              .Where(x => x.Email == transaction.Email && x.StockId == transaction.StockId 
+                                              && x.Purchase == true && x.Resolved > 0).OrderByDescending(x => x.Id)
+                                              .FirstOrDefaultAsync();
+
+            foreach (var item in _context.Stocks.Where(x => x.Id == transaction.StockId).ToList())
+            {
+                  if (transactionOlderThenTwoyears.Date < transaction.Date.AddYears(-2))
+                  {
+                    decimal last3 = _context.StockTransactions.Where(x => x.Email == email && x.StockId == item.Id && x.Purchase == false)
+                                .OrderByDescending(x => x.Date).Take(1).Select(x => x.Quantity * x.Price).Sum();
+
+                    int last5 = _context.StockTransactions.Where(x => x.Email == email && x.StockId == item.Id && x.Purchase == false)
+                            .OrderByDescending(x => x.Date).Take(1).Select(x => x.Quantity).Sum();
+
+                    var list1 = _context.StockTransactions.Where(x => x.Purchase == true && x.Resolved > 0 && x.StockId == item.Id);
+
+                    decimal last4 = SumOfLastTransaction1(list1, last5);
+
+                    var totalNetProfit = _context.StockTransactions
+                                      .Where(x => x.Email == email && x.StockId == item.Id && x.Purchase == false)
+                                      .Sum(x => x.Price * x.Quantity) -                               
+                                      _context.StockTransactions.Where
+                                      (x => x.Email  == email && x.StockId == item.Id && x.Purchase == true && x.Resolved > 0)
+                                      .Sum(x => x.Price * x.Resolved) - (last3 - last4);
+
+                   // basket += totalNetProfit;  
+                    basket += (last3 - last4);  
+                    basket1 += totalNetProfit;
+                 }
+            }  
+            annual.TaxExemption = basket;
+           // annual.TaxableIncome = annual.Amount - annual.TaxExemption;
+             _context.Entry(annual).State = EntityState.Modified;
+            await _context.SaveChangesAsync();
+        }
+        public async Task<decimal?> TwoYearException1(string email)
+        {
+            var annual = await _context.AnnualProfitsOrLosses.Where(x => x.Email == email && x.Locked == false)
+                         .FirstOrDefaultAsync();
+
+            decimal? basket = 0;
+
+            foreach (var item in _context.Stocks.ToList())
+            {
+                /*  decimal last3 = _context.StockTransactions.Where(x => x.Email == email && x.StockId == item.Id && x.Purchase == false)
+                                .OrderByDescending(x => x.Date).Take(1).Select(x => x.Quantity * x.Price).Sum();
+
+                    int last5 = _context.StockTransactions.Where(x => x.Email == email && x.StockId == item.Id && x.Purchase == false)
+                            .OrderByDescending(x => x.Date).Take(1).Select(x => x.Quantity).Sum(); */
+
+                             var lastselling = await _context.StockTransactions
+                                  .Where(x => x.Email == email && x.StockId == item.Id && x.Purchase == false)
+                                  .OrderByDescending(x => x.Id). LastOrDefaultAsync();
+
+                var transactionOlderThenTwoyears = await _context.StockTransactions
+                                              .Where(x => x.Email == email && x.StockId == lastselling.StockId
+                                              && x.Purchase == true && x.Resolved > 0).OrderByDescending(x => x.Id)
+                                              .LastOrDefaultAsync();
+
+               
+                  if (transactionOlderThenTwoyears.Date < lastselling.Date.AddYears(-2))
+                  {
+                    var list = await _context.StockTransactions
+                               .Where(x => x.StockId == item.Id && x.Purchase == true && x.Email == email && x.Resolved > 0)
+                               .OrderByDescending(x => x.Id).ToListAsync();
+
+                    var numberofselling = lastselling.Quantity;
+                    var priceofselling = _context.StockTransactions.Where(x => x.Email == email && x.StockId == item.Id && x.Purchase == false)
+                                .OrderByDescending(x => x.Date).Take(1).Select(x => x.Quantity * x.Price).Sum();
+
+                    decimal priceofpurchase = SumOfLastTransaction1(list, numberofselling);
+                    decimal total = priceofselling - priceofpurchase;
+
+                    basket += priceofselling;
+                 }
+            }  
+            return basket;           
+        }
+      
+     }
 }
+                      
+        
+    
+
 
 
 

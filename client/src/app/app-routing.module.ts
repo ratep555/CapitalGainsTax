@@ -43,7 +43,7 @@ const routes: Routes = [
   // VAŽNO, OVO TI JE I JEDNA I DRUGA VARIJANTA KOJE ŠLJAKAJU ZA USERA, TI KORISTIŠ LOADCHILDREN!
 /*    {path: 'users', component: UsersComponent, data: {breadcrumb: 'List of Users'}},
  */
-   {path: 'users', canActivate: [AuthGuard],
+  {path: 'users', canActivate: [AuthGuard],
   loadChildren: () => import('./users/users.module').then(mod => mod.UsersModule),
   data: {breadcrumb: 'List of Users'}},
   {path: 'charts', loadChildren: () => import('./charts/charts.module').then(mod => mod.ChartsModule),
