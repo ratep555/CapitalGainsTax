@@ -17,4 +17,6 @@ export class IStTransaction {
     quantity: number = 0;
     purchase: boolean = true;
     resolved: number = 0;
+    buyingDate: Date;
+
 }

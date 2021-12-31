@@ -3,9 +3,11 @@ using API.Extensions;
 using API.Helpers;
 using API.Middleware;
 using AutoMapper;
+using Core.Entities;
 using Infrastructure.Data;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -40,6 +42,16 @@ namespace API
            
             services.AddApplicationServices();
             services.AddIdentityServices(_config);
+
+            // možeš u startup ovo staviti, pogledaj si code maze, ne moraš
+            // stavljati kod password dodatna pravila!
+           /*  services.AddIdentity<AppUser, IdentityRole>(opt => 
+              {
+               opt.Password.RequiredLength = 7;
+               opt.Password.RequireDigit = false;
+               opt.User.RequireUniqueEmail = true;
+              }); */
+
             services.AddSwaggerDocumentation();
            // services.AddHttpContextAccessor();
 

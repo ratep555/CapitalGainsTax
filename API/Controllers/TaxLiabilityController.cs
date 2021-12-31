@@ -105,7 +105,7 @@ namespace API.Controllers
     // ovdje ćeš pokušati dobiti exception za kupnju dionice nakon 2 godine
     // uspio si, čuvaj ovo:)!
 
-        [Authorize]
+       /*  [Authorize]
         [HttpGet("bojke")]
         public async Task<ActionResult<FinalTaxLiabilityVM>> VratiBrojke()
         {
@@ -114,7 +114,7 @@ namespace API.Controllers
             var annual =  _taxLiabilitiesService.Broj1();
 
             return Ok(annual);
-        }
+        } */
 }
 }
 

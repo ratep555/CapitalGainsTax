@@ -3,4 +3,11 @@ export interface IUser {
     email: string;
     token: string;
     roleName: string;
+    role: Role;
   }
+
+export enum Role {
+    Admin = 'Admin'
+  }
+
+

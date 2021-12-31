@@ -12,12 +12,12 @@ import { TypeaheadModule } from 'ngx-bootstrap/typeahead';
 import { GoogleChartsModule } from 'angular-google-charts';
 import { ChartsModule } from '../charts/charts.module';
 import { ChartsComponent } from '../charts/charts.component';
-
-
-
+import { CollapseModule } from 'ngx-bootstrap/collapse';
+import {BsDatepickerModule} from 'ngx-bootstrap/datepicker';
+import { DateInputComponent } from './components/date-input/date-input.component';
 
 @NgModule({
-  declarations: [PagerComponent, TextInputComponent, Pager1Component, MycurrencyPipe],
+  declarations: [PagerComponent, TextInputComponent, Pager1Component, MycurrencyPipe, DateInputComponent],
   imports: [
     CommonModule,
     FormsModule,
@@ -26,7 +26,9 @@ import { ChartsComponent } from '../charts/charts.component';
     BsDropdownModule.forRoot(),
     TypeaheadModule.forRoot(),
     ReactiveFormsModule,
-    GoogleChartsModule.forRoot({ mapsApiKey: 'AIzaSyD-9tSrke72PouQMnMX-a7eZSW0jkFMBWY' })
+    GoogleChartsModule.forRoot({ mapsApiKey: 'AIzaSyD-9tSrke72PouQMnMX-a7eZSW0jkFMBWY' }),
+    CollapseModule.forRoot(),
+    BsDatepickerModule.forRoot()
 
     ],
   exports: [
@@ -37,8 +39,11 @@ import { ChartsComponent } from '../charts/charts.component';
     ReactiveFormsModule,
     BsDropdownModule,
     TextInputComponent,
+    DateInputComponent,
     MycurrencyPipe,
-    GoogleChartsModule
+    GoogleChartsModule,
+    BsDatepickerModule
+
   ]
 })
 export class SharedModule { }

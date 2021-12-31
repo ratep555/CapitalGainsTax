@@ -1,0 +1,93 @@
+<nav class="navbar navbar-expand-lg navbar-dark bg-primary fixed-top">
+    <a class="navbar-brand text-uppercase" [routerLink]="['/']" routerLinkActive="active" 
+    [routerLinkActiveOptions]="{exact:true}">Home</a>
+
+    <button class="navbar-toggler" type="button" 
+    data-toggle="collapse" data-target="#navbarNav" 
+    (click)="isCollapsed = !isCollapsed"
+    [attr.aria-expanded]="!isCollapsed"
+    aria-controls="navbarSupportedContent" 
+    aria-label="Toggle navigation">
+      <span class="navbar-toggler-icon"></span>
+    </button>
+  
+    <div class="collapse navbar-collapse" id="navbarNav" id="navbarSupportedContent" [collapse]="isCollapsed">
+      <ul class="navbar-nav mr-auto">
+        <li class="nav-item">
+          <a class="nav-link text-uppercase" routerLink="/stocks" routerLinkActive="active" >List of Stocks</a> 
+        </li>  
+        <li class="nav-item">
+          <a class="nav-link text-uppercase"  routerLink="/myportfolio" routerLinkActive="active">My Portfolio</a>  
+        </li>  
+        <li class="nav-item">
+          <a class="nav-link text-uppercase" routerLink="/transactions" routerLinkActive="active">Transactions</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link text-uppercase"routerLink="/taxliability" routerLinkActive="active">Tax Liability</a>
+        </li>
+        <ng-container>
+          <div class="dropdown peki mr-5" dropdown *ngIf="(currentUser$ | async) && (currentUser$ | async)?.roleName ==='Admin'">
+            <a class="nav-link dropdown-toggle text-white text-uppercase" dropdownToggle (click)="false" 
+            routerLinkActive="active">More</a>
+            <div class="dropdown-menu" *dropdownMenu>    
+              <a routerLink="/categories" href="#" class="dropdown-item">
+                <i class="fa fa-list mr-3"></i> Categories</a>       
+              <a routerLink="/countries" href="#" class="dropdown-item">
+                <i class="fa fa-list mr-3"></i> Countries </a>    
+              <a routerLink="/segments" href="#" class="dropdown-item">
+                <i class="fa fa-list mr-3"></i> Segments </a>   
+              <a routerLink="/stocksAdmin" href="#" class="dropdown-item">
+                <i class="fa fa-list mr-3"></i> Stocks </a>      
+              <a routerLink="/surtaxes" href="#" class="dropdown-item">
+                <i class="fa fa-list mr-3"></i> Surtaxes </a>   
+              <a routerLink="/typesofstock" href="#" class="dropdown-item">
+                <i class="fa fa-list mr-3"></i> Types </a>   
+              <a routerLink="/users" href="#" class="dropdown-item">
+                <i class="fa fa-user mr-3 ml-1"></i> Users </a>    
+              <a (click)='logout()' class="dropdown-item">
+                <i class="fa fa-sign-out mr-3"></i> Logout</a>
+            </div>
+          </div>
+        </ng-container>
+      
+      </ul>
+
+      <div>
+      <ul class="nav navbar-nav">
+        <li *ngIf="(currentUser$ | async) === null" class="nav-item">
+          <a class="nav-link"
+          routerLink="/account/register"
+          routerLinkActive="active"
+          >Register</a>
+        </li>
+        <li *ngIf="(currentUser$ | async) === null" class="nav-item">
+          <a class="nav-link"
+          routerLink="/account/login"
+          routerLinkActive="active"
+          >Login</a>
+        </li>
+
+        <div *ngIf="(currentUser$ | async) && (currentUser$ | async)?.roleName ==='Admin'" class="dropdown mr-5" dropdown>
+          <a href="#" class="dropdown-toggle text-white" dropdownToggle (click)="false">
+            <strong>Welcome {{(currentUser$ | async).roleName}} </strong> 
+          </a>
+          <div class="dropdown-menu" *dropdownMenu>                          
+              <a (click)='logout()' class="dropdown-item">
+                <i class="fa fa-sign-out mr-3"></i> Logout</a>
+          </div>
+        </div>
+        <div *ngIf="(currentUser$ | async) && (currentUser$ | async)?.roleName !=='Admin'" class="dropdown mr-5" dropdown>
+          <a href="#" class="dropdown-toggle text-white" dropdownToggle (click)="false">
+            <strong>Welcome {{(currentUser$ | async).displayName}} </strong> 
+          </a>
+          <div class="dropdown-menu" *dropdownMenu>
+              <a routerLink="/taxliability/taxyimo" href="#" class="dropdown-item">
+                <i class="fa fa-list mr-3"></i> Profit/Loss List</a>                                             
+              <a (click)='logout()' class="dropdown-item">
+                <i class="fa fa-sign-out mr-3"></i> Logout</a>
+          </div>
+        </div>
+      </ul>
+    </div>
+  </div>
+</nav>

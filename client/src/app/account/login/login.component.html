@@ -1,5 +1,5 @@
 <div class="d-flex justify-content-center mt-5">
-    <div class="col-3">
+    <div class="col-4">
         <form [formGroup]="loginForm" (ngSubmit)="onSubmit()">
             <div class="text-center mb-4">
           <h1 class="h3 mb-3 font-weight-normal">Login</h1>
@@ -11,6 +11,19 @@
             <button [disabled]="loginForm.invalid" class="btn btn-lg btn-primary btn-block" 
             type="submit">Sign in</button>
           </form>
+          <div class="text-center" style="margin-top: 40px; margin-bottom: 40px;">
+            <h4>External Providers</h4>
+            <div style="padding: 20px;">
+                <button class="btn btn-info" type="button" style="width: 100px;" (click)="externalLogin()">
+                  <i class="fa fa-google mr-1" aria-hidden="true"></i>
+                </button>
+            </div>
+            <div style="padding: 20px;">
+                <button class="btn btn-info" type="button" style="width: 100px;" (click)="externalLogout()">
+                  <i class="fa fa-google mr-1" aria-hidden="true"></i>Logout
+                </button>
+            </div>
+        </div>
     </div>
 </div>
 

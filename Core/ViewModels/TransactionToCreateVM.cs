@@ -1,3 +1,4 @@
+using System;
 using System.ComponentModel.DataAnnotations;
 
 namespace Core.ViewModels
@@ -15,6 +16,15 @@ namespace Core.ViewModels
         public int Quantity { get; set; }
         public int Resolved { get; set; }
         public string Email { get; set; }
+        public DateTime BuyingDate { get; set; }
 
     }
 }
+
+
+
+
+
+
+
+

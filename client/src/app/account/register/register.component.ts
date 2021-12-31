@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { AsyncValidatorFn, FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { AbstractControl, AsyncValidatorFn, FormBuilder, FormGroup, ValidatorFn, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
 import { of, timer } from 'rxjs';
 import { map, switchMap } from 'rxjs/operators';
@@ -28,8 +28,18 @@ export class RegisterComponent implements OnInit {
         [Validators.required, Validators.pattern('^[\\w-\\.]+@([\\w-]+\\.)+[\\w-]{2,4}$')],
         [this.validateEmailNotTaken()]
       ],
-      password: [null, [Validators.required]]
+      password: [null, [Validators.required]],
+      confirmPassword: ['', [Validators.required, this.matchValues('password')]]
     });
+  }
+
+  matchValues(matchTo: string): ValidatorFn {
+    return (control: AbstractControl) => {
+      // if the passwords match, we return null, passwords match
+      // if they don't match, then we attach validator error called ismatching to control
+      return control?.value === control?.parent?.controls[matchTo].value
+        ? null : {isMatching: true};
+    };
   }
 
   validateEmailNotTaken(): AsyncValidatorFn {

@@ -28,6 +28,15 @@ namespace API.Extensions
            /*  services.Configure<IdentityOptions>(options => 
     options.ClaimsIdentity.UserIdClaimType = ClaimTypes.NameIdentifier); */
 
+          // ovo ti je alternativa iz code maze, ne šljaka baš!
+          /* services.AddIdentity<AppUser, IdentityRole>(opt => 
+          {
+           opt.Password.RequiredLength = 7;
+           opt.Password.RequireDigit = false;
+           opt.User.RequireUniqueEmail = true;
+          })
+          .AddEntityFrameworkStores<StoreContext>(); */
+          
            services.AddAuthentication();
 
            services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)

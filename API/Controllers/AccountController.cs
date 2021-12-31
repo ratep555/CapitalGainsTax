@@ -7,6 +7,7 @@ using AutoMapper;
 using Core.Entities;
 using Core.Interfaces;
 using Core.ViewModels;
+using Infrastructure.Google;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
@@ -21,13 +22,16 @@ namespace API.Controllers
         private readonly IMapper _mapper;
         private readonly IUserService _userService;
         private readonly ITransactionService _transactionService;
+        private readonly IGoogleAuth _googleAuth;
+
 
         public AccountController(UserManager<AppUser> userManager,
         SignInManager<AppUser> signInManager,
         ITokenService tokenService,
         IMapper mapper,
         IUserService userService,
-        ITransactionService transactionService)
+        ITransactionService transactionService,
+        IGoogleAuth googleAuth)
         {
             _tokenService = tokenService;
             _mapper = mapper;
@@ -35,6 +39,7 @@ namespace API.Controllers
             _signInManager = signInManager;
             _userService = userService;
             _transactionService = transactionService;
+            _googleAuth = googleAuth;
         }
         [Authorize]
         [HttpGet]
@@ -124,7 +129,7 @@ namespace API.Controllers
                 DisplayName = registerDto.DisplayName,
                 Email = registerDto.Email,
                 UserName = registerDto.Email,
-                SurtaxId = 1
+                SurtaxId = null
             };
 
             var result = await _userManager.CreateAsync(user, registerDto.Password);
@@ -141,6 +146,54 @@ namespace API.Controllers
                 //RoleName = "Participant"
             };
         }
+
+       [HttpPost("externallogin")]
+		public async Task<ActionResult<UserDto>> ExternalLogin([FromBody] ExternalAuthDto externalAuth)
+		{
+			var payload =  await _googleAuth.VerifyGoogleToken(externalAuth);
+			if(payload == null)
+				return BadRequest("Invalid External Authentication.");
+
+			var info = new UserLoginInfo(externalAuth.Provider, payload.Subject, externalAuth.Provider);
+
+			var user = await _userManager.FindByLoginAsync(info.LoginProvider, info.ProviderKey);
+			if (user == null)
+			{
+				user = await _userManager.FindByEmailAsync(payload.Email);
+
+				if (user == null)
+				{
+					user = new AppUser { Email = payload.Email, UserName = payload.Email, DisplayName = payload.Email };
+					await _userManager.CreateAsync(user);
+
+					//prepare and send an email for the email confirmation
+
+					await _userManager.AddLoginAsync(user, info);
+				}
+				else
+				{
+					await _userManager.AddLoginAsync(user, info);
+				}
+			}
+
+			if (user == null)
+				return BadRequest("Invalid External Authentication.");
+
+			//check for the Locked out account
+
+			var token = _tokenService.CreateToken(user);
+
+            return new UserDto
+            {
+                Email = user.Email,
+                Token = token,
+                DisplayName = user.Email
+            };
+
+			//return Ok(new AuthResponseDto { Token = token, IsAuthSuccessful = true });
+		}
+
+
     }
 }
 

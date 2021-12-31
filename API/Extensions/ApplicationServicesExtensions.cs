@@ -2,6 +2,7 @@ using System.Linq;
 using API.Errors;
 using Core.Interfaces;
 using Infrastructure.Data;
+using Infrastructure.Google;
 using Infrastructure.Services;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.DependencyInjection;
@@ -25,7 +26,9 @@ namespace API.Extensions
             services.AddScoped<ITransactionRepository, TransactionRepository>();
             services.AddScoped<ITaxLiabilitiesService, TaxLiabilitiesService>();
             services.AddScoped<IChartsService, ChartsService>();
+            services.AddScoped<IGoogleAuth,GoogleAuth>();
             services.AddScoped(typeof(IGenericRepository<>), (typeof(GenericRepository<>)));
+
 
             services.Configure<ApiBehaviorOptions>(options =>
             {

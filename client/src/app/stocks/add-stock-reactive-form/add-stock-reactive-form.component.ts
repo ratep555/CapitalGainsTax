@@ -31,7 +31,8 @@ export class AddStockReactiveFormComponent implements OnInit {
 createLoginForm() {
     this.loginForm = new FormGroup({
     price: new FormControl('', [Validators.required]),
-    quantity: new FormControl('', Validators.required)
+    quantity: new FormControl('', Validators.required),
+    buyingDate: new FormControl('', Validators.required)
   });
 }
 

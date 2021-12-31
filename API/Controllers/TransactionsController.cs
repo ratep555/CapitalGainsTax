@@ -197,7 +197,7 @@ namespace API.Controllers
         var transaction = new StockTransaction                                                                                                    
         {
              Id = transactionVM.Id,
-             Date = DateTime.Now,
+             Date = transactionVM.BuyingDate,
              StockId = id,
              Purchase = true,
              Quantity = transactionVM.Quantity,

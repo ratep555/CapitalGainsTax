@@ -1,0 +1,48 @@
+.navbar {
+    padding-top: 20px;
+    padding-bottom: 20px;
+    font-size: 20px;
+}
+
+.navbar .active {
+    color: darkblue;
+}
+
+.navbar-brand {
+    margin-left: 40px;
+    margin-right: 40px;
+    font-size: 23px;
+}
+
+.nav-link {
+    margin-left: 10px;
+}
+
+.navbar > a {
+    cursor: pointer;
+}
+
+.dropdown-menu {
+    background-color: #ff6600;
+}
+
+.dropdown-menu > a:hover{
+    color: black;
+    cursor: pointer;
+}
+
+.dropdown > a:hover{
+    text-decoration: none;
+}
+
+.dropdown-item {
+    color: black;
+}
+
+
+
+
+
+
+
+
